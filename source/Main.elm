@@ -1,7 +1,11 @@
-module Main exposing (..)
+{-
+  Hel Repository single-page web app
+  2016 (c) MoonlightOwl
+-}
 
-import Html exposing (div, span, strong, text)
-import Html.App
+import Html.App as App
+import Html exposing (..)
+import Html.Attributes exposing (href, class, style)
 
 import Http
 import Json.Decode as Json exposing ((:=))
@@ -9,34 +13,53 @@ import Task exposing (Task)
 
 import List exposing (length, map)
 
-import Ui.Container
-import Ui.Button
-import Ui.App
-import Ui
+import Material
+import Material.Scheme
+import Material.Button as Button
+import Material.Card as Card
+import Material.Color as Color
+import Material.Elevation as Elevation
+import Material.Grid exposing (..)
+import Material.Icon as Icon
+import Material.Layout as Layout
+import Material.Spinner as Loading
+import Material.Options as Options exposing (cs, css)
 
 
 -- MODEL
 
-type alias Model =
-  { app : Ui.App.Model
+type alias Package =
+  { name : String
+  , description : String
+  , owners : List String
+  , authors : List String
+  , tags : List String
+  }
+
+type alias Model = 
+  { mdl : Material.Model
+  , selectedTab : Int
+  , loading : Bool
   , error : String
   , packages : List Package
   }
 
 
-type alias Package =
-  { name : String
-  , description : String
-  , owner : String
-  , authors : List String
-  , tags : List String
+model : Model 
+model = 
+  { mdl = Material.model
+  , selectedTab = 0
+  , loading = False
+  , error = ""
+  , packages = []
   }
 
 
--- UPDATE
+-- ACTION, UPDATE
 
 type Msg
-  = App Ui.App.Msg
+  = Mdl (Material.Msg Msg)
+  | SelectTab Int
   | FetchPackages
   | ErrorOccurred String
   | PackagesFetched (List Package)
@@ -48,11 +71,11 @@ packagesDecoder =
     Json.object5 Package
         ("name" := Json.string)
         ("description" := Json.string)
-        ("owner" := Json.string)
+        ("owners" := Json.list Json.string)
         ("authors" := Json.list Json.string)
         ("tags" := Json.list Json.string)
   in
-    Json.list package
+    Json.at ["data"] ( Json.list package )
 
 lookupPackages : Cmd Msg
 lookupPackages =
@@ -61,62 +84,109 @@ lookupPackages =
     |> Task.perform ErrorOccurred PackagesFetched
 
 
-init : Model
-init =
-  { app = Ui.App.init
-  , error = ""
-  , packages = []
-  }
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    App act ->
+    Mdl msg' -> 
+      Material.update msg' model
+
+    SelectTab num ->
       let
-        ( app, eff ) =
-          Ui.App.update act model.app
+        newModel = { model | selectedTab = num }
       in
-        ( { model | app = app }, Cmd.map App eff )
+        if num == 0 then
+          update FetchPackages newModel
+        else
+          newModel ! []
 
     FetchPackages ->
-      model ! [lookupPackages]
+      { model | loading = True } ! [lookupPackages]
 
     ErrorOccurred message ->
-      { model | error = message } ! []
+      { model | error = message, loading = False } ! []
 
     PackagesFetched packages ->
-      { model | packages = packages } ! []
+      { model | packages = packages, loading = False } ! []
 
 
+-- VIEW
 
--- RENDER
+type alias Mdl = 
+  Material.Model 
 
-view : Model -> Html.Html Msg
+
+view : Model -> Html Msg
 view model =
-  let
-    showPackage package = div [] [ text package.name ]
-  in
-    Ui.App.view
-      App
-      model.app
-      [ Ui.Container.column []
-          [ Ui.title [] [ text "HEL Repository" ]
-          , text model.error
-          , Ui.Container.row [] [ Ui.Button.success "Update" FetchPackages ]
-          , div []
-              [ div [] (map showPackage model.packages)
-              , text "Packages total: "
-              , strong [] [ text (toString (length model.packages)) ]
-              ]
-          ]
+  Material.Scheme.topWithScheme Color.BlueGrey Color.Red <|
+  Layout.render Mdl model.mdl
+    [ Layout.fixedHeader
+    , Layout.onSelectTab SelectTab
+    , Layout.selectedTab model.selectedTab
+    ]
+    { header = [ h1 [style [ ( "padding", "2rem" ) ] ] [ text "HEL Repository" ] ]
+    , drawer = []
+    , tabs = ( [ text "New", text "Popular", text "All" ], [ Color.background (Color.color Color.BlueGrey Color.S400) ] )
+    , main = [ viewBody model ]
+    }
+
+
+white : Options.Property c m 
+white = 
+  Color.text Color.white
+
+viewPackage : Package -> Cell Msg
+viewPackage package =
+  cell [ size All 4 ]
+    [ Card.view 
+        [ Color.background (Color.color Color.BlueGrey Color.S400)
+        , Elevation.e2
+        ]
+        [ Card.title [ ] [ Card.head [ white ] [ text package.name ] ]
+        , Card.text [ white ] [ text package.description ] 
+        , Card.actions
+            [ Card.border, css "vertical-align" "center", css "text-align" "right", white ]
+            [ Button.render Mdl [8,1] model.mdl
+                [ Button.icon, Button.ripple ]
+                [ Icon.i "favorite_border" ]
+            , Button.render Mdl [0,0] model.mdl
+                [ Button.icon, Button.ripple, white ]
+                [ Icon.i "share" ]
+            ]
+        ]
+    ]
+
+
+viewBody : Model -> Html Msg
+viewBody model =
+  if model.loading then
+    Loading.spinner 
+      [ Loading.active True
+      , css "position" "absolute"
+      , css "top" "0"
+      , css "bottom" "0"
+      , css "left" "0"
+      , css "right" "0"
+      , css "margin" "auto"
       ]
+  else case model.selectedTab of
+    0 ->
+      div 
+        [ style [ ( "padding", "2rem" ) ] ]
+        [ grid [] ( map viewPackage model.packages )
+        ]
+    1 ->
+      text "Popular"
+    2 ->
+      text "All"
+    _ ->
+      text "404"
+  
 
-
+main : Program Never
 main =
-  Html.App.program
-    { init = ( init, Cmd.none )
+  App.program 
+    { init = ( model, Task.perform (always FetchPackages) (always FetchPackages) (Task.succeed ()) ) 
     , view = view
+    , subscriptions = always Sub.none 
     , update = update
-    , subscriptions = \_ -> Sub.none
     }
