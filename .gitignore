@@ -1,3 +1,6 @@
 # Project files
 .idea/
-elm-stuff/
+/elm-stuff/
+/index.html
+*.swp
+*.swo

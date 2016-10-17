@@ -31,12 +31,13 @@ import Material.Options as Options exposing (cs, css)
 type alias Package =
   { name : String
   , description : String
+  , short_description : String
   , owners : List String
   , authors : List String
   , tags : List String
   }
 
-type alias Model = 
+type alias Model =
   { mdl : Material.Model
   , selectedTab : Int
   , loading : Bool
@@ -45,8 +46,8 @@ type alias Model =
   }
 
 
-model : Model 
-model = 
+model : Model
+model =
   { mdl = Material.model
   , selectedTab = 0
   , loading = False
@@ -68,9 +69,10 @@ type Msg
 packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
   let package =
-    Json.object5 Package
+    Json.object6 Package
         ("name" := Json.string)
         ("description" := Json.string)
+        ("short_description" := Json.string)
         ("owners" := Json.list Json.string)
         ("authors" := Json.list Json.string)
         ("tags" := Json.list Json.string)
@@ -87,7 +89,7 @@ lookupPackages =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Mdl msg' -> 
+    Mdl msg' ->
       Material.update msg' model
 
     SelectTab num ->
@@ -111,8 +113,8 @@ update msg model =
 
 -- VIEW
 
-type alias Mdl = 
-  Material.Model 
+type alias Mdl =
+  Material.Model
 
 
 view : Model -> Html Msg
@@ -130,19 +132,19 @@ view model =
     }
 
 
-white : Options.Property c m 
-white = 
+white : Options.Property c m
+white =
   Color.text Color.white
 
 viewPackage : Package -> Cell Msg
 viewPackage package =
   cell [ size All 4 ]
-    [ Card.view 
+    [ Card.view
         [ Color.background (Color.color Color.BlueGrey Color.S400)
         , Elevation.e2
         ]
         [ Card.title [ ] [ Card.head [ white ] [ text package.name ] ]
-        , Card.text [ white ] [ text package.description ] 
+        , Card.text [ white ] [ text package.short_description ]
         , Card.actions
             [ Card.border, css "vertical-align" "center", css "text-align" "right", white ]
             [ Button.render Mdl [8,1] model.mdl
@@ -159,7 +161,7 @@ viewPackage package =
 viewBody : Model -> Html Msg
 viewBody model =
   if model.loading then
-    Loading.spinner 
+    Loading.spinner
       [ Loading.active True
       , css "position" "absolute"
       , css "top" "0"
@@ -170,7 +172,7 @@ viewBody model =
       ]
   else case model.selectedTab of
     0 ->
-      div 
+      div
         [ style [ ( "padding", "2rem" ) ] ]
         [ grid [] ( map viewPackage model.packages )
         ]
@@ -180,13 +182,13 @@ viewBody model =
       text "All"
     _ ->
       text "404"
-  
+
 
 main : Program Never
 main =
-  App.program 
-    { init = ( model, Task.perform (always FetchPackages) (always FetchPackages) (Task.succeed ()) ) 
+  App.program
+    { init = ( model, Task.perform (always FetchPackages) (always FetchPackages) (Task.succeed ()) )
     , view = view
-    , subscriptions = always Sub.none 
+    , subscriptions = always Sub.none
     , update = update
     }
