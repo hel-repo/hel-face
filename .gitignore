@@ -1,6 +1,10 @@
 # Project files
 .idea/
-/elm-stuff/
-/index.html
 *.swp
 *.swo
+
+# Elm generated files
+elm-stuff/
+
+# Build
+dist/
