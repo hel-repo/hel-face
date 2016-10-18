@@ -122,6 +122,7 @@ view model =
     [ Layout.fixedHeader
     , Layout.onSelectTab SelectTab
     , Layout.selectedTab model.selectedTab
+    , Layout.waterfall True
     ]
     { header = [ div [ class "header" ] [ h1 [] [ text "HEL Repository" ] ] ]
     , drawer = []
