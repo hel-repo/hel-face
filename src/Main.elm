@@ -123,9 +123,9 @@ view model =
     , Layout.onSelectTab SelectTab
     , Layout.selectedTab model.selectedTab
     ]
-    { header = [ h1 [style [ ( "padding", "2rem" ) ] ] [ text "HEL Repository" ] ]
+    { header = [ div [ class "header" ] [ h1 [] [ text "HEL Repository" ] ] ]
     , drawer = []
-    , tabs = ( [ text "New", text "Popular", text "All" ], [ Color.background (Color.color Color.BlueGrey Color.S400) ] )
+    , tabs = ( [ text "New", text "Popular", text "All" ], [] )
     , main = [ viewBody model ]
     }
 
@@ -136,15 +136,16 @@ white =
 
 viewPackage : Package -> Cell Msg
 viewPackage package =
-  cell [ size All 4 ]
+  cell
+    [ size All 4
+    ]
     [ Card.view
-        [ Color.background (Color.color Color.BlueGrey Color.S400)
-        , Elevation.e2
+        [ Elevation.e2
         ]
         [ Card.title [ ] [ Card.head [ white ] [ text package.name ] ]
         , Card.text [ white ] [ text package.short_description ]
         , Card.actions
-            [ Card.border, css "vertical-align" "center", css "text-align" "right", white ]
+            [ Card.border, cs "card-actions", white ]
             [ Button.render Mdl [8,1] model.mdl
                 [ Button.icon, Button.ripple ]
                 [ Icon.i "favorite_border" ]
@@ -161,19 +162,11 @@ viewBody model =
   if model.loading then
     Loading.spinner
       [ Loading.active True
-      , css "position" "absolute"
-      , css "top" "0"
-      , css "bottom" "0"
-      , css "left" "0"
-      , css "right" "0"
-      , css "margin" "auto"
+      , cs "spinner"
       ]
   else case model.selectedTab of
     0 ->
-      div
-        [ style [ ( "padding", "2rem" ) ] ]
-        [ grid [] ( map viewPackage model.packages )
-        ]
+      div [] [ grid [] ( map viewPackage model.packages ) ]
     1 ->
       text "Popular"
     2 ->

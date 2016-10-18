@@ -1,0 +1,32 @@
+body {
+  background: #303030;
+}
+.header {
+  background: #212121;
+  padding: 2rem;
+}
+
+.spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.mdl-layout__tab-bar-container {
+    border-top: 2px solid #bb1f2f;
+}
+.mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
+  background: #424242;
+}
+
+.mdl-card {
+  background: #424242;
+  width: auto;
+}
+.card-actions {
+  vertical-align: center;
+  text-align: right;
+}

@@ -12,7 +12,7 @@ http://hel-roottree.rhcloud.com/
 ## Contributing
 You will need to install [Elm compiler](http://elm-lang.org/), and [create-elm-app](https://github.com/halfzebra/create-elm-app) bundler tool.
 
-Then you would be able run and build source code from project directory with following commands:
+Then you would be able to run and build source code from project directory with following commands:
 
 #### `elm-app start`
 Runs the app in the development mode.
