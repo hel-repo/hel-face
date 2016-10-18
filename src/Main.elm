@@ -14,7 +14,6 @@ import Task exposing (Task)
 import List exposing (length, map)
 
 import Material
-import Material.Scheme
 import Material.Button as Button
 import Material.Card as Card
 import Material.Color as Color
@@ -119,7 +118,6 @@ type alias Mdl =
 
 view : Model -> Html Msg
 view model =
-  Material.Scheme.topWithScheme Color.BlueGrey Color.Red <|
   Layout.render Mdl model.mdl
     [ Layout.fixedHeader
     , Layout.onSelectTab SelectTab
