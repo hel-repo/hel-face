@@ -1,7 +1,7 @@
 module Messages exposing (..)
 
 import Material
-import Models exposing (Package)
+import Package.Models exposing (Package)
 
 type Msg
   = Mdl (Material.Msg Msg)

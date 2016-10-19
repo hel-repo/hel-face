@@ -1,18 +1,9 @@
 module Models exposing (..)
 
-import List exposing (length, map)
-
 import Material
 
+import Package.Models exposing (Package)
 
-type alias Package =
-  { name : String
-  , description : String
-  , short_description : String
-  , owners : List String
-  , authors : List String
-  , tags : List String
-  }
 
 type alias Model =
   { mdl: Material.Model

@@ -8,6 +8,7 @@ import Material
 
 import Messages exposing (Msg(..))
 import Models exposing (..)
+import Package.Models exposing(Package)
 
 
 packagesDecoder : Json.Decoder (List Package)

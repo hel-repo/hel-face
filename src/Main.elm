@@ -6,8 +6,6 @@
 import Html.App as App
 import Task exposing (Task)
 
-import Material
-
 import Messages exposing (Msg(..))
 import Models exposing (..)
 import View exposing (view)
