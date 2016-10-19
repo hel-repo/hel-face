@@ -9,6 +9,7 @@ import Material
 import Messages exposing (Msg(..))
 import Models exposing (..)
 import Package.Models exposing(Package)
+import Package.Update
 
 
 packagesDecoder : Json.Decoder (List Package)
@@ -36,6 +37,13 @@ update msg model =
   case msg of
     Mdl msg' ->
       Material.update msg' model
+
+    PackageMsg subMsg ->
+      let
+        ( updatedPackages, cmd ) =
+          Package.Update.update subMsg model.packages
+      in
+        ( { model | packages = updatedPackages }, Cmd.map PackageMsg cmd )
 
     SelectTab num ->
       let

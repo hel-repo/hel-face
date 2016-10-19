@@ -37,7 +37,7 @@ viewBody model =
       ]
   else case model.selectedTab of
     0 ->
-      Package.list model
+      Package.list model.packages
     1 ->
       text "Popular"
     2 ->

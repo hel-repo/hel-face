@@ -44,6 +44,6 @@ card package =
     ]
 
 
-list : Model -> Html Msg
-list model =
-    div [] [ grid [] ( map card model.packages ) ]
+list : List Package -> Html Msg
+list packages =
+    div [] [ grid [] ( map card packages ) ]
