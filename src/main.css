@@ -16,7 +16,7 @@ body {
 }
 
 .mdl-layout__tab-bar-container {
-    border-top: 2px solid #bb1f2f;
+  border-top: 2px solid #bb1f2f;
 }
 .mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
   background: #424242;

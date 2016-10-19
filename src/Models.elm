@@ -2,23 +2,19 @@ module Models exposing (..)
 
 import Material
 
-import Package.Models exposing (Package)
+import Package.Models exposing (PackageListData)
 
 
 type alias Model =
   { mdl: Material.Model
+  , list: PackageListData
   , selectedTab : Int
-  , loading : Bool
-  , error : String
-  , packages : List Package
   }
 
--- Initial data
-model : Model
-model =
+
+initialModel : Model
+initialModel =
   { mdl = Material.model
+  , list = { packages = [], loading = False, error = "" }
   , selectedTab = 0
-  , loading = False
-  , error = ""
-  , packages = []
   }

@@ -8,3 +8,9 @@ type alias Package =
   , authors : List String
   , tags : List String
   }
+
+type alias PackageListData =
+  { packages : List Package
+  , loading : Bool
+  , error : String
+  }

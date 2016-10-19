@@ -8,6 +8,3 @@ type Msg
   = Mdl (Material.Msg Msg)
   | PackageMsg Package.Messages.Msg
   | SelectTab Int
-  | FetchPackages
-  | ErrorOccurred String
-  | PackagesFetched (List Package)

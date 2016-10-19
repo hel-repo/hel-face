@@ -10,12 +10,19 @@ import Messages exposing (Msg(..))
 import Models exposing (..)
 import View exposing (view)
 import Update exposing (update)
+import Package.Messages as PMsg
 
 
 main : Program Never
 main =
   App.program
-    { init = ( model, Task.perform (always FetchPackages) (always FetchPackages) (Task.succeed ()) )
+    { init =
+      ( initialModel
+      , Task.perform
+          (always ( PackageMsg PMsg.FetchPackages ))
+          (always ( PackageMsg PMsg.FetchPackages ))
+          (Task.succeed())
+      )
     , view = view
     , subscriptions = always Sub.none
     , update = update

@@ -10,10 +10,11 @@ import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
 import Material.Options as Options exposing (cs, css)
+import Material.Spinner as Loading
 
 import Messages exposing (Msg(..))
-import Models exposing (Model, model)
-import Package.Models exposing (Package)
+import Models exposing (Model, initialModel)
+import Package.Models exposing (PackageListData, Package)
 
 
 white : Options.Property c m
@@ -33,10 +34,10 @@ card package =
         , Card.text [ white ] [ text package.short_description ]
         , Card.actions
             [ Card.border, cs "card-actions", white ]
-            [ Button.render Mdl [8,1] model.mdl
+            [ Button.render Mdl [8,1] initialModel.mdl
                 [ Button.icon, Button.ripple ]
                 [ Icon.i "favorite_border" ]
-            , Button.render Mdl [0,0] model.mdl
+            , Button.render Mdl [0,0] initialModel.mdl
                 [ Button.icon, Button.ripple, white ]
                 [ Icon.i "share" ]
             ]
@@ -44,6 +45,12 @@ card package =
     ]
 
 
-list : List Package -> Html Msg
-list packages =
-    div [] [ grid [] ( map card packages ) ]
+list : PackageListData -> Html Msg
+list data =
+    if data.loading then
+      Loading.spinner
+        [ Loading.active True
+        , cs "spinner"
+        ]
+    else
+      div [] [ grid [] ( map card data.packages ) ]
