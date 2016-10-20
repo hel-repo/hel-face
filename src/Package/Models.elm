@@ -1,5 +1,7 @@
 module Package.Models exposing (..)
 
+import Date exposing (Date)
+
 type alias Screenshot =
   { url : String
   , description : String
@@ -33,11 +35,22 @@ type alias PkgVersionData =
   , changes : String
   }
 
-type alias PkgVersion =
+type alias Version =
   { version : String
   , files : List PkgVersionFile
   , depends : List PkgVersionDependency
   , changes : String
+  }
+
+type alias PkgStatsDate =
+  { created : Date
+  , last_updated : Date
+  }
+
+type alias Stats =
+  { views : Int
+  , downloads : Int
+  , date : PkgStatsDate
   }
 
 type alias Package =
@@ -48,8 +61,9 @@ type alias Package =
   , authors : List String
   , license : String
   , tags : List String
-  , versions : List PkgVersion
+  , versions : List Version
   , screenshots : List Screenshot
+  , stats : Stats
   }
 
 type alias PackageListData =

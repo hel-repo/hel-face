@@ -14,8 +14,8 @@ pkgScreenshotList : List (String, String) -> Json.Decoder (List Screenshot)
 pkgScreenshotList list =
   Json.succeed (List.map (\(url, desc) -> Screenshot url desc) list)
 
-pkgScreenshots : Json.Decoder (List Screenshot)
-pkgScreenshots =
+screenshots : Json.Decoder (List Screenshot)
+screenshots =
   Json.keyValuePairs Json.string `Json.andThen` pkgScreenshotList
 
 pkgVersionFileData : Json.Decoder PkgVersionFileData
@@ -53,13 +53,26 @@ pkgVersionData =
     |: ("depends" := pkgVersionDependencies)
     |: ("changes" := Json.string)
 
-pkgVersionList : List (String, PkgVersionData) -> Json.Decoder (List PkgVersion)
+pkgVersionList : List (String, PkgVersionData) -> Json.Decoder (List Version)
 pkgVersionList list =
-  Json.succeed (List.map (\(version, data) -> PkgVersion version data.files data.depends data.changes) list)
+  Json.succeed (List.map (\(version, data) -> Version version data.files data.depends data.changes) list)
 
-pkgVersion : Json.Decoder (List PkgVersion)
-pkgVersion =
+version : Json.Decoder (List Version)
+version =
   Json.keyValuePairs pkgVersionData `Json.andThen` pkgVersionList
+
+pkgStatsDate : Json.Decoder PkgStatsDate
+pkgStatsDate =
+  Json.succeed PkgStatsDate
+    |: ("created" := Json.Decode.Extra.date)
+    |: ("last-updated" := Json.Decode.Extra.date)
+
+stats : Json.Decoder Stats
+stats =
+  Json.succeed Stats
+    |: ("views" := Json.int)
+    |: ("downloads" := Json.int)
+    |: ("date" := pkgStatsDate)
 
 packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
@@ -72,8 +85,9 @@ packagesDecoder =
       |: ("authors" := Json.list Json.string)
       |: ("license" := Json.string)
       |: ("tags" := Json.list Json.string)
-      |: ("versions" := pkgVersion)
-      |: ("screenshots" := pkgScreenshots)
+      |: ("versions" := version)
+      |: ("screenshots" := screenshots)
+      |: ("stats" := stats)
   in
     Json.at ["data"] ( Json.list package )
 
