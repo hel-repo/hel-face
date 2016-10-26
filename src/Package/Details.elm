@@ -5,6 +5,8 @@ import Html.Attributes exposing (class)
 import List exposing (head)
 import String exposing (join)
 
+import Markdown
+
 import Material.Card as Card
 import Material.Color as Color
 import Material.Options as Options exposing (cs)
@@ -37,7 +39,7 @@ view data =
              [ Card.head [ white ] [ text package.name ]
              , Card.subhead [ ] [ text ("by " ++ ( join ", " package.authors )) ]
              ]
-           , Card.text [ white ] [ text package.description ]
+           , Card.text [ white ] [ Markdown.toHtml [] package.description ]
            ]
          ]
       Nothing ->
