@@ -26,6 +26,7 @@ matchers : Parser (Route -> a) a
 matchers =
   oneOf
     [ format PackageListRoute (s "")
+    , format PackageListRoute (s "packages" </> s "")
     , format PackageRoute (s "packages" </> string)
     , format PackageListRoute (s "packages")
     ]
