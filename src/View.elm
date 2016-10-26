@@ -20,7 +20,13 @@ view model =
     [ Layout.fixedHeader
     , Layout.waterfall True
     ]
-    { header = [ div [ class "header" ] [ h1 [] [ text "HEL Repository" ], text model.list.error ] ]
+    { header =
+      [ div
+        [ class "header" ]
+        [ h1 [] [ text "HEL Repository" ]
+        , div [ class "error" ] [ text model.list.error ]
+        ]
+      ]
     , drawer = []
     , tabs = ( [], [] )
     , main = [ viewBody model ]
