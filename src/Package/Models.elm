@@ -2,6 +2,7 @@ module Package.Models exposing (..)
 
 import Date exposing (Date)
 
+
 type alias Screenshot =
   { url : String
   , description : String

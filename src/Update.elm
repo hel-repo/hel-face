@@ -1,9 +1,10 @@
 module Update exposing (..)
 
+import Navigation
 import Material
 
-import Messages exposing (Msg(..))
-import Models exposing (..)
+import Base.Messages exposing (Msg(..))
+import Base.Models exposing (..)
 import Package.Messages as PMsg
 import Package.Update
 
@@ -14,6 +15,13 @@ update msg model =
     Mdl msg' ->
       Material.update msg' model
 
+    -- Routing
+    RoutePackageList ->
+      ( model, Navigation.newUrl "#packages/" )
+
+    RoutePackageDetails name ->
+      ( model, Navigation.newUrl ("#packages/" ++ name) )
+
     -- Hook package messages up
     PackageMsg subMsg ->
       let
@@ -21,12 +29,3 @@ update msg model =
           Package.Update.update subMsg model.list
       in
         ( { model | list = updatedList }, Cmd.map PackageMsg cmd )
-
-    SelectTab num ->
-      let
-        newModel = { model | selectedTab = num }
-      in
-        if num == 0 then
-          update ( PackageMsg PMsg.FetchPackages ) newModel
-        else
-          newModel ! []

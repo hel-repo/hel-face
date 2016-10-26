@@ -4,6 +4,11 @@ body {
 .header {
   background: #212121;
   padding: 2rem;
+  border-bottom: 2px solid #bb1f2f;
+}
+
+.mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
+  background: #424242;
 }
 
 .spinner {
@@ -15,18 +20,22 @@ body {
   margin: auto;
 }
 
-.mdl-layout__tab-bar-container {
-  border-top: 2px solid #bb1f2f;
-}
-.mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
-  background: #424242;
-}
-
 .mdl-card {
   background: #424242;
   width: auto;
 }
+.mdl-card__subtitle-text {
+  color: rgba(256,256,256,.54);
+}
 .card-actions {
   vertical-align: center;
   text-align: right;
+}
+.card-title {
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.page {
+ padding: 1em;
 }

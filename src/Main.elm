@@ -3,27 +3,43 @@
   2016 (c) MoonlightOwl
 -}
 
-import Html.App as App
-import Task exposing (Task)
+import Navigation
 
-import Messages exposing (Msg(..))
-import Models exposing (..)
-import View exposing (view)
+import Base.Messages exposing (Msg(..))
+import Base.Models exposing (..)
+import Base.Tools exposing (batchMsg)
+
+import Routing exposing (routeMessage, Route(..))
 import Update exposing (update)
-import Package.Messages as PMsg
+import View exposing (view)
+
+
+init : Result String Route -> ( Model, Cmd Msg )
+init result =
+  let
+    currentRoute =
+      Routing.routeFromResult result
+  in
+    ( initialModel currentRoute
+    , batchMsg ( routeMessage currentRoute )
+    )
+
+
+urlUpdate : Result String Route -> Model -> ( Model, Cmd Msg )
+urlUpdate result model =
+  let
+    currentRoute =
+      Routing.routeFromResult result
+  in
+    ( { model | route = currentRoute }, batchMsg ( routeMessage currentRoute ) )
 
 
 main : Program Never
 main =
-  App.program
-    { init =
-      ( initialModel
-      , Task.perform
-          (always ( PackageMsg PMsg.FetchPackages ))
-          (always ( PackageMsg PMsg.FetchPackages ))
-          (Task.succeed())
-      )
+  Navigation.program Routing.parser
+    { init = init
     , view = view
     , subscriptions = always Sub.none
     , update = update
+    , urlUpdate = urlUpdate
     }

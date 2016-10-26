@@ -1,4 +1,5 @@
-require('./main.css');
+require('./Css/material.min.css');
+require('./Css/main.css');
 
 var Elm = require('./Main.elm');
 

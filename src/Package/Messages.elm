@@ -4,6 +4,12 @@ import Package.Models exposing (Package)
 
 type Msg
   = NoOp
-  | FetchPackages
   | ErrorOccurred String
+  -- Network
+  | FetchPackages
   | PackagesFetched (List Package)
+  | FetchPackage String
+  | PackageFetched Package
+  -- Navigation
+  | GoToPackageList
+  | GoToPackageDetails String

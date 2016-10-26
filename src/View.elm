@@ -7,34 +7,34 @@ import Material
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs)
 
-import Messages exposing (Msg(..))
-import Models exposing (..)
-import Package.List as Package
+import Base.Messages exposing (Msg(..))
+import Base.Models exposing (..)
+import Package.List
+import Package.Details
+import Routing exposing (Route(..))
 
 
 view : Model -> Html Msg
 view model =
   Layout.render Mdl model.mdl
     [ Layout.fixedHeader
-    , Layout.onSelectTab SelectTab
-    , Layout.selectedTab model.selectedTab
     , Layout.waterfall True
     ]
-    { header = [ div [ class "header" ] [ h1 [] [ text "HEL Repository" ] ] ]
+    { header = [ div [ class "header" ] [ h1 [] [ text "HEL Repository" ], text model.list.error ] ]
     , drawer = []
-    , tabs = ( [ text "New", text "Popular", text "My" ], [] )
+    , tabs = ( [], [] )
     , main = [ viewBody model ]
     }
 
 
 viewBody : Model -> Html Msg
 viewBody model =
-  case model.selectedTab of
-    0 ->
-      Package.list model.list
-    1 ->
-      text "Popular"
-    2 ->
-      text "My packages"
-    _ ->
-      text "404"
+  case model.route of
+    PackageListRoute ->
+      Package.List.view model.list
+
+    PackageRoute name ->
+      Package.Details.view model.list
+
+    NotFoundRoute ->
+      text "404: Page Not Found"
