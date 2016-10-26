@@ -31,18 +31,30 @@ update message data =
     NoOp ->
       ( data, Cmd.none )
     ErrorOccurred message ->
-      { data | error = message, loading = False } ! []
+      { data
+        | error = message
+        , loading = False
+        , packages = []
+      } ! []
 
     -- Network
     FetchPackages ->
       { data | loading = True } ! [lookupPackages]
     PackagesFetched packages ->
-      { data | packages = packages, loading = False } ! []
+      { data
+        | packages = packages
+        , loading = False
+        , error = ""
+      } ! []
 
     FetchPackage name ->
       { data | loading = True } ! [lookupPackage name]
     PackageFetched package ->
-      { data | packages = [ package ], loading = False } ! []
+      { data
+        | packages = [ package ]
+        , loading = False
+        , error = ""
+      } ! []
 
     -- Navigation
     GoToPackageList ->
