@@ -3,6 +3,7 @@ module Package.Update exposing (..)
 import Http
 import Task exposing (Task)
 
+import Base.Config as Config
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
 import Package.Decoders exposing (packageDecoder, packagesDecoder)
@@ -14,13 +15,13 @@ wrapMsg msg =
 
 lookupPackage : String -> Cmd Msg
 lookupPackage name =
-  Http.get packageDecoder ( "http://hel-roottree.rhcloud.com/packages/" ++ name )
+  Http.get packageDecoder (Config.apiHost ++ "packages/" ++ name)
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackageFetched
 
 lookupPackages : Cmd Msg
 lookupPackages =
-  Http.get packagesDecoder "http://hel-roottree.rhcloud.com/packages"
+  Http.get packagesDecoder (Config.apiHost ++ "packages")
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackagesFetched
 
