@@ -1,7 +1,5 @@
 module Package.Models exposing (..)
 
-import Date exposing (Date)
-
 
 type alias Screenshot =
   { url : String
@@ -44,8 +42,8 @@ type alias Version =
   }
 
 type alias PkgStatsDate =
-  { created : Date
-  , last_updated : Date
+  { created : String
+  , last_updated : String
   }
 
 type alias Stats =

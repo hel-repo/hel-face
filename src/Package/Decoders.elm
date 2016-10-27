@@ -60,8 +60,8 @@ version =
 pkgStatsDate : Json.Decoder PkgStatsDate
 pkgStatsDate =
   Json.succeed PkgStatsDate
-    |: ("created" := Json.Decode.Extra.date)
-    |: ("last-updated" := Json.Decode.Extra.date)
+    |: ("created" := Json.string)
+    |: ("last-updated" := Json.string)
 
 stats : Json.Decoder Stats
 stats =
