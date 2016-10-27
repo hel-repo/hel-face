@@ -1,0 +1,11 @@
+sudo: required
+language: node_js
+node_js:
+  - "6"
+install:
+  - npm install -g elm
+  - npm install -g create-elm-app
+before_script:
+  - elm-app package install -y
+  - elm-app build
+script: echo Done!
