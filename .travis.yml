@@ -1,16 +1,21 @@
 sudo: required
 language: node_js
 node_js:
-  - "6"
+- '6'
+addons:
+  ssh_known_hosts: fomalhaut.me
+before_install:
+- bash .travis/before-install.sh
 install:
-  - npm install -g elm
-  - npm install -g create-elm-app
+- npm install -g elm
+- npm install -g create-elm-app
 before_script:
-  - elm-app package install -y
+- elm-app package install -y
 script:
-  - elm-app build
+- elm-app build
 after_success:
-  - echo Done!
+- bash .travis/deploy.sh
+- echo Done!
 notifications:
   irc:
     channels:
