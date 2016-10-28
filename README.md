@@ -1,4 +1,4 @@
-# Hel Face
+# Hel Face · [![Build Status](https://travis-ci.org/hel-repo/hel-face.svg?branch=master)](https://travis-ci.org/hel-repo/hel-face)
 HEL Repository web interface. Allows one to search, view, create and edit packages.
 Easy way to distribute and deploy your OpenComputers application.
 
