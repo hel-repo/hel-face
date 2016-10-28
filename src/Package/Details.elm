@@ -1,7 +1,7 @@
 module Package.Details exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, href)
 import List exposing (head, map)
 import String exposing (join)
 
@@ -26,6 +26,18 @@ chip : String -> Html Msg
 chip str =
   Chip.span [] [ Chip.content [] [ text str ] ]
 
+license : String -> Html Msg
+license name =
+  case name of
+    "MIT" ->
+      a [ href "http://choosealicense.com/licenses/mit/" ] [ text name ]
+    "Apache 2.0" ->
+      a [ href "http://choosealicense.com/licenses/apache-2.0/" ] [ text name ]
+    "BSD" ->
+      a [ href "http://choosealicense.com/licenses/bsd-2-clause/" ] [ text name ]
+    name ->
+      text name
+
 view : PackageListData -> Html Msg
 view data =
   if data.loading then
@@ -40,13 +52,16 @@ view data =
           [ class "page" ]
           [ Card.view
             [ Elevation.e2 ]
-            [ Card.title
-              [ ]
+            [ Card.title [ ]
               [ Card.head [ white ] [ text package.name ]
-              , Card.subhead [ ] [ text ("by " ++ ( join ", " package.authors )) ]
+              , Card.subhead [ ]
+                [ text ("by " ++ ( join ", " package.authors ))
+                , span [ class "card-license" ] [ text "© " ]
+                , span [ ] [ license package.license ]
+                ]
               ]
-              , Card.text [ white ] [ Markdown.toHtml [] package.description ]
-              , Card.menu [ ] ( map chip package.tags )
+            , Card.text [ white ] [ Markdown.toHtml [] package.description ]
+            , Card.menu [ ] ( map chip package.tags )
             ]
           ]
       Nothing ->

@@ -48,6 +48,9 @@ body {
   flex-direction: column;
   cursor: pointer;
 }
+.card-license {
+  padding-left: 10px;
+}
 
 .page {
   padding: 1em;
