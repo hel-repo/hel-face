@@ -7,5 +7,16 @@ install:
   - npm install -g create-elm-app
 before_script:
   - elm-app package install -y
+script:
   - elm-app build
-script: echo Done!
+after_success:
+  - echo Done!
+notifications:
+  irc:
+    channels:
+    - irc.esper.net#cc.ru
+    use_notice: true
+    template:
+    - "\x02%{repository_name}#%{build_number}\x02 [\x1F%{branch}\x1F] \x1F%{message}"
+    - "\x02Elapsed time:\x02 %{elapsed_time} | \x02Total duration:\x02 %{duration}"
+    - "\x02Build details:\x02 %{build_url}"
