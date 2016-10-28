@@ -53,6 +53,7 @@ update message data =
     PackageFetched package ->
       { data
         | packages = [ package ]
+        , version = 0
         , loading = False
         , error = ""
       } ! []
@@ -62,3 +63,6 @@ update message data =
       data ! [ wrapMsg FetchPackages  ]
     GoToPackageDetails name ->
       data ! [ wrapMsg (FetchPackage name) ]
+
+    GoToVersion num ->
+      { data | version = num } ! []

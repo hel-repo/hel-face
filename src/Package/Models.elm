@@ -67,6 +67,7 @@ type alias Package =
 
 type alias PackageListData =
   { packages : List Package
+  , version : Int
   , loading : Bool
   , error : String
   }

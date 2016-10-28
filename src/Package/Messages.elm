@@ -13,3 +13,4 @@ type Msg
   -- Navigation
   | GoToPackageList
   | GoToPackageDetails String
+  | GoToVersion Int

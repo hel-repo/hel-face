@@ -52,6 +52,23 @@ body {
   padding-left: 10px;
 }
 
+.version-tabs .mdl-tabs__tab-bar {
+  padding: 0px 10px;
+  -webkit-justify-content:left;
+	-ms-flex-pack:left;
+	-webkit-box-pack:left;
+	justify-content:left;
+}
+.mdl-tabs__tab-bar {
+  border-bottom:1px solid rgba(0,0,0,.1)
+}
+.is-active.mdl-tabs__tab {
+  background: #626262;
+}
+.mdl-tabs__tab {
+  background: #525252;
+}
+
 .page {
   padding: 1em;
 }

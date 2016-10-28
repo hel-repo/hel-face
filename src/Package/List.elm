@@ -30,7 +30,7 @@ card package =
     ]
     [ Card.view
         [ Elevation.e2
-        , Options.attribute <| Html.Events.onClick ( RoutePackageDetails package.name)
+        , Options.attribute <| Html.Events.onClick (RoutePackageDetails package.name)
         ]
         [ Card.title [ cs "card-title" ] [ Card.head [ white ] [ text package.name ] ]
         , Card.text [ white ] [ text package.short_description ]
