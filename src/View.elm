@@ -12,7 +12,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Package.List
 import Package.Details
-import Routing exposing (routeMessage, Route(..))
+import Routing exposing (Route(..))
 
 
 view : Model -> Html Msg

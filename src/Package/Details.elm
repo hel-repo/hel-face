@@ -11,16 +11,16 @@ import Material.Card as Card
 import Material.Chip as Chip
 import Material.Color as Color
 import Material.Elevation as Elevation
+import Material.Icon as Icon
 import Material.List as Lists
 import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
-import Material.Icon as Icon
 
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (materialModel)
 import Package.Messages as PMsg
-import Package.Models exposing (PackageListData, Version, PkgVersionDependency)
+import Package.Models exposing (PackageListData, Version, PkgVersionFile, PkgVersionDependency)
 import Base.Tools exposing ((!!))
 
 
@@ -28,9 +28,11 @@ white : Options.Property c m
 white =
   Color.text Color.white
 
+
 chip : String -> Html Msg
 chip str =
   Chip.span [] [ Chip.content [] [ text str ] ]
+
 
 license : String -> Html Msg
 license name =
@@ -44,17 +46,6 @@ license name =
     name ->
       text name
 
-depDesc : PkgVersionDependency -> Html Msg
-depDesc dep =
-  Lists.li [ Lists.withBody ]
-    [ Lists.content []
-      [ span [ class "dep-name" ] [ text dep.name ]
-      , Lists.body []
-        [ span [ class "dep-item dep-item-spec" ] [ text dep.version ]
-        , span [ class "dep-item" ] [ text dep.deptype ]
-        ]
-      ]
-    ]
 
 versionLabel : Version -> Tabs.Label a
 versionLabel version =
@@ -62,10 +53,32 @@ versionLabel version =
 
 versionDesc : Version -> Html Msg
 versionDesc version =
-  div [ class "page" ]
-    [ span [ class "ver-changes" ] [ text version.changes ]
-    , div [ class "dependencies" ] [ Lists.ul [] ( map depDesc version.depends ) ]
+  p [ class "ver-changes" ] [ text version.changes ]
+
+
+row : PkgVersionFile -> Html Msg
+row file =
+  div [ class "file" ]
+    [ Icon.view "code" [Icon.size18]
+    , span [ class "cell align-top" ] [ text (file.dir ++ "/") ]
+    , a [ class "cell align-top", href file.url ] [ text file.name ]
     ]
+
+
+dependencies : Version -> Html Msg
+dependencies version =
+  p [ class "dependencies" ]
+    ( case version.depends of
+        x::_ ->
+          [ text "Depends on: "
+          , div [ ]
+              ( map
+                  (\d -> (a [ class "dependency", href ("#packages/" ++ d.name) ] [ text (d.name ++ " : " ++ d.version) ]))
+                  version.depends
+              )
+          ]
+        [ ] ->
+          [ text "No dependencies." ] )
 
 
 view : PackageListData -> Html Msg
@@ -85,9 +98,9 @@ view data =
             [ Card.title [ ]
               [ Card.head [ white ] [ text package.name ]
               , Card.subhead [ ]
-                [ span [ ] [ Icon.view "person" [ Icon.size18 ] ]
+                [ span [ class "card-subtitle-icon" ] [ Icon.view "person" [ Icon.size18 ] ]
                 , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
-                , span [ class "card-license" ] [ Icon.view "copyright" [ Icon.size18 ] ]
+                , span [ class "card-subtitle-icon card-license" ] [ Icon.view "copyright" [ Icon.size18 ] ]
                 , span [ class "align-top" ] [ license package.license ]
                 ]
               ]
@@ -101,7 +114,12 @@ view data =
                 ]
                 ( map versionLabel package.versions )
                 [ case package.versions !! data.version of
-                    Just version -> versionDesc version
+                    Just version ->
+                      div [ class "page" ]
+                        [ versionDesc version
+                        , div [ class "files" ] (map row version.files)
+                        , dependencies version
+                        ]
                     Nothing -> div [ class "error" ] [ text "Wrong version code!" ]
                 ]
               ]
