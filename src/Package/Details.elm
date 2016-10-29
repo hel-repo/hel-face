@@ -54,7 +54,7 @@ versionLabel version =
 
 versionDesc : Version -> Html Msg
 versionDesc version =
-  p [ class "ver-changes" ] [ text version.changes ]
+  div [ class "ver-changes" ] [ Markdown.toHtml [] version.changes ]
 
 
 row : PkgVersionFile -> Html Msg
