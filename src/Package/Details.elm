@@ -11,14 +11,16 @@ import Material.Card as Card
 import Material.Chip as Chip
 import Material.Color as Color
 import Material.Elevation as Elevation
+import Material.List as Lists
 import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
+import Material.Icon as Icon
 
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (materialModel)
 import Package.Messages as PMsg
-import Package.Models exposing (PackageListData, Version)
+import Package.Models exposing (PackageListData, Version, PkgVersionDependency)
 import Base.Tools exposing ((!!))
 
 
@@ -42,6 +44,18 @@ license name =
     name ->
       text name
 
+depDesc : PkgVersionDependency -> Html Msg
+depDesc dep =
+  Lists.li [ Lists.withBody ]
+    [ Lists.content []
+      [ span [ class "dep-name" ] [ text dep.name ]
+      , Lists.body []
+        [ span [ class "dep-item dep-item-spec" ] [ text dep.version ]
+        , span [ class "dep-item" ] [ text dep.deptype ]
+        ]
+      ]
+    ]
+
 versionLabel : Version -> Tabs.Label a
 versionLabel version =
   Tabs.label [] [ text version.version ]
@@ -49,8 +63,8 @@ versionLabel version =
 versionDesc : Version -> Html Msg
 versionDesc version =
   div [ class "page" ]
-    [ text version.changes
-    , text ""
+    [ span [ class "ver-changes" ] [ text version.changes ]
+    , div [ class "dependencies" ] [ Lists.ul [] ( map depDesc version.depends ) ]
     ]
 
 
@@ -71,9 +85,10 @@ view data =
             [ Card.title [ ]
               [ Card.head [ white ] [ text package.name ]
               , Card.subhead [ ]
-                [ text ("by " ++ ( join ", " package.authors ))
-                , span [ class "card-license" ] [ text "© " ]
-                , span [ ] [ license package.license ]
+                [ span [ ] [ Icon.view "person" [ Icon.size18 ] ]
+                , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
+                , span [ class "card-license" ] [ Icon.view "copyright" [ Icon.size18 ] ]
+                , span [ class "align-top" ] [ license package.license ]
                 ]
               ]
             , Card.text [ white ] [ Markdown.toHtml [] package.description ]

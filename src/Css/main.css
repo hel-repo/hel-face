@@ -14,6 +14,10 @@ body {
   display: none;
 }
 
+.align-top {
+  vertical-align: top;
+}
+
 .mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
   background: #424242;
 }
@@ -52,12 +56,29 @@ body {
   padding-left: 10px;
 }
 
+.dependencies {
+  float: right;
+}
+.ver-changes {
+  float: left;
+}
+.dep-item-spec {
+  font-weight: bold;
+}
+.dep-item {
+  padding-right: 25px;
+  color: rgba(256, 256, 256, .54);
+}
+.dep-name {
+  color: rgba(256, 256, 256, .87);
+}
+
 .version-tabs .mdl-tabs__tab-bar {
   padding: 0px 10px;
   -webkit-justify-content:left;
-	-ms-flex-pack:left;
-	-webkit-box-pack:left;
-	justify-content:left;
+  -ms-flex-pack:left;
+  -webkit-box-pack:left;
+  justify-content:left;
 }
 .mdl-tabs__tab-bar {
   border-bottom:1px solid rgba(0,0,0,.1)
