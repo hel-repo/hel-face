@@ -65,6 +65,13 @@ body {
   padding-right: 5px;
 }
 
+.screen-card {
+  margin-bottom: 1em;
+}
+.screen-desc {
+  padding-left: 10px;
+}
+
 .version-tabs .mdl-tabs__tab-bar {
   padding: 0px 10px;
   -webkit-justify-content:left;
@@ -73,13 +80,14 @@ body {
   justify-content:left;
 }
 .mdl-tabs__tab-bar {
-  border-bottom:1px solid rgba(0,0,0,.1)
+  border-bottom: 1px solid rgba(0,0,0,.1)
 }
 .is-active.mdl-tabs__tab {
-  background: #626262;
+  color: #ffffff !important;
+  background: rgba(0,0,0,.1);
 }
 .mdl-tabs__tab {
-  background: #525252;
+  background: inherit;
 }
 
 .files {
