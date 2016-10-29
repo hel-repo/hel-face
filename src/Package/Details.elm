@@ -126,4 +126,14 @@ view data =
             ]
           ]
       Nothing ->
-        text "404: Package not found!"
+        div
+          [ class "page" ]
+          [ Card.view
+            [ Elevation.e2 ]
+            [ Card.title [ ] [ Card.head [ white ] [ text "Nothing found!" ] ]
+            , Card.text [ white ]
+              [ div [ ] [ text "No packages with this name was found in repository." ]
+              , div [ ] [ text "Check the spelling, or try different name, please." ]
+              ]
+            ]
+          ]
