@@ -83,22 +83,24 @@ body {
 }
 
 .files {
+}
+.list-white {
+  color: rgba(256,256,256,.87);
+}
+.list-cell {
+  color: rgba(256,256,256,.54);
+}
+.list-icon i {
+  margin-right: 8px !important;
+}
+.list-of-cards > ul > li {
   background: rgba(0,0,0,.1);
-  padding: 6px;
-}
-.file {
-  padding: 6px;
-  margin: 2px 0px;
-}
-.file .cell {
-  padding: 2px 0px 2px 10px;
+  margin-bottom: 10px;
+  border-radius: 2px;
 }
 
-.dependencies {
-  padding-top: 20px;
-}
-.dependency {
-  padding: 2px 0px 2px 10px;
+.dep-version {
+  font-weight: bold;
 }
 
 .page {

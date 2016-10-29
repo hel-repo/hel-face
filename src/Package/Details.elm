@@ -11,6 +11,7 @@ import Material.Card as Card
 import Material.Chip as Chip
 import Material.Color as Color
 import Material.Elevation as Elevation
+import Material.Grid as Grid
 import Material.Icon as Icon
 import Material.List as Lists
 import Material.Options as Options exposing (cs)
@@ -58,27 +59,40 @@ versionDesc version =
 
 row : PkgVersionFile -> Html Msg
 row file =
-  div [ class "file" ]
-    [ Icon.view "code" [Icon.size18]
-    , span [ class "cell align-top" ] [ text (file.dir ++ "/") ]
-    , a [ class "cell align-top", href file.url ] [ text file.name ]
+  Lists.li []
+    [ Lists.content []
+      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18 ] ]
+      , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
+      , a [ class "cell align-top", href file.url ] [ text file.name ]
+      ]
     ]
 
 
 dependencies : Version -> Html Msg
 dependencies version =
-  p [ class "dependencies" ]
-    ( case version.depends of
-        x::_ ->
-          [ text "Depends on: "
-          , div [ ]
-              ( map
-                  (\d -> (a [ class "dependency", href ("#packages/" ++ d.name) ] [ text (d.name ++ " : " ++ d.version) ]))
-                  version.depends
-              )
-          ]
-        [ ] ->
-          [ text "No dependencies." ] )
+  case version.depends of
+    x::_ ->
+      div [ class "dep-block list-of-cards" ]
+        [ text "Depends on:"
+        , Lists.ul []
+            ( map
+                (\d ->
+                    (Lists.li
+                        [ Lists.withSubtitle ]
+                        [ Lists.content []
+                            [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18 ] ]
+                            , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
+                            , Lists.subtitle []
+                                [ span [ class "list-cell" ] [ text d.version ] ]
+                            ]
+                        ]
+                    )
+                )
+                version.depends
+            )
+        ]
+    [ ] ->
+      div [ class "dep-block" ] [ text "No dependencies." ]
 
 
 view : PackageListData -> Html Msg
@@ -117,8 +131,30 @@ view data =
                     Just version ->
                       div [ class "page" ]
                         [ versionDesc version
-                        , div [ class "files" ] (map row version.files)
-                        , dependencies version
+                        , Grid.grid []
+                            [ Grid.cell
+                                [ Grid.size Grid.Desktop 6
+                                , Grid.size Grid.Tablet 8
+                                , Grid.size Grid.Phone 4
+                                ]
+                                [ div [ class "files" ]
+                                    ( case version.files of
+                                        x::_ ->
+                                          [ text "Files:"
+                                          , div [ class "list-of-cards" ]
+                                              [ Lists.ul [] (map row version.files) ]
+                                          ]
+                                        [ ] ->
+                                          [ text "No files." ]
+                                    )
+                                ]
+                            , Grid.cell
+                                [ Grid.size Grid.Desktop 6
+                                , Grid.size Grid.Tablet 8
+                                , Grid.size Grid.Phone 4
+                                ]
+                                [ dependencies version ]
+                            ]
                         ]
                     Nothing -> div [ class "error" ] [ text "Wrong version code!" ]
                 ]
