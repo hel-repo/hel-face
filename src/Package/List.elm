@@ -1,6 +1,7 @@
 module Package.List exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (href)
 import Html.Events
 import List exposing (map)
 
@@ -32,7 +33,9 @@ card package =
         [ Elevation.e2
         , Options.attribute <| Html.Events.onClick (RoutePackageDetails package.name)
         ]
-        [ Card.title [ cs "card-title" ] [ Card.head [ white ] [ text package.name ] ]
+        [ Card.title
+          [ cs "card-title" ]
+          [ Card.head [ white ] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
         , Card.text [ white ] [ text package.short_description ]
         , Card.actions
             [ Card.border, cs "card-actions", white ]
