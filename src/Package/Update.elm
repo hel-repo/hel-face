@@ -1,6 +1,7 @@
 module Package.Update exposing (..)
 
 import Http
+import String exposing (isEmpty)
 import Task exposing (Task)
 
 import Base.Config as Config
@@ -19,9 +20,13 @@ lookupPackage name =
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackageFetched
 
-lookupPackages : Cmd Msg
-lookupPackages =
-  Http.get packagesDecoder (Config.apiHost ++ "packages")
+lookupPackages : SearchData -> Cmd Msg
+lookupPackages data =
+  Http.get packagesDecoder
+    ( Config.apiHost
+      ++ "packages"
+      ++ (if isEmpty data.name then "" else "?name=" ++ data.name)
+    )
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackagesFetched
 
@@ -39,8 +44,8 @@ update message data =
       } ! []
 
     -- Network
-    FetchPackages ->
-      { data | loading = True } ! [lookupPackages]
+    FetchPackages searchData ->
+      { data | loading = True } ! [lookupPackages searchData]
     PackagesFetched packages ->
       { data
         | packages = packages
@@ -59,8 +64,8 @@ update message data =
       } ! []
 
     -- Navigation
-    GoToPackageList ->
-      data ! [ wrapMsg FetchPackages  ]
+    GoToPackageList searchData ->
+      data ! [ wrapMsg (FetchPackages searchData) ]
     GoToPackageDetails name ->
       data ! [ wrapMsg (FetchPackage name) ]
 

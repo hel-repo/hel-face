@@ -1,17 +1,17 @@
 module Package.Messages exposing (..)
 
-import Package.Models exposing (Package)
+import Package.Models exposing (Package, SearchData)
 
 type Msg
   = NoOp
   | ErrorOccurred String
   -- Network
-  | FetchPackages
+  | FetchPackages SearchData
   | PackagesFetched (List Package)
   | FetchPackage String
   | PackageFetched Package
   -- Navigation
-  | GoToPackageList
+  | GoToPackageList SearchData
   | GoToPackageDetails String
   | GoToVersion Int
   -- Other

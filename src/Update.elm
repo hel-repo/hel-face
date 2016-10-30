@@ -1,5 +1,7 @@
 module Update exposing (..)
 
+import String exposing (isEmpty)
+
 import Navigation
 import Material
 
@@ -15,9 +17,15 @@ update msg model =
       Material.update msg' model
 
     -- Routing
-    RoutePackageList ->
+    RoutePackageList searchData ->
       let packageData = model.packageData
-      in ( { model | packageData = { packageData | share = "" } }, Navigation.newUrl "#packages/" )
+      in
+        ( { model | packageData = { packageData | share = "" } }
+        , Navigation.newUrl <|
+            if isEmpty searchData.name
+              then "#packages/"
+              else "#search/" ++ searchData.name
+        )
 
     RoutePackageDetails name ->
       ( model, Navigation.newUrl ("#packages/" ++ name) )

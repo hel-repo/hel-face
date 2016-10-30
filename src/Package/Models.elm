@@ -72,3 +72,19 @@ type alias PackageListData =
   , error : String
   , share : String
   }
+
+
+type alias SearchData =
+  { name : String
+  }
+
+searchAll : SearchData
+searchAll =
+  { name = ""
+  }
+
+searchByName : String -> SearchData
+searchByName str =
+  { searchAll
+  | name = str
+  }

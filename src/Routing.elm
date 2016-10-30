@@ -6,10 +6,11 @@ import UrlParser exposing (..)
 
 import Base.Messages exposing (Msg(..))
 import Package.Messages as PMsg
+import Package.Models exposing (SearchData, searchAll, searchByName)
 
 
 type Route
-  = PackageListRoute
+  = PackageListRoute SearchData
   | PackageRoute String
   | NotFoundRoute
 
@@ -17,18 +18,19 @@ type Route
 routeMessage : Route -> List Msg
 routeMessage route =
   case route of
-    PackageRoute name -> [ PackageMsg (PMsg.GoToPackageDetails name) ]
-    PackageListRoute -> [ PackageMsg PMsg.GoToPackageList ]
+    PackageRoute name -> [ PackageMsg <| PMsg.GoToPackageDetails name ]
+    PackageListRoute data -> [ PackageMsg <| PMsg.GoToPackageList data ]
     NotFoundRoute -> []
 
 
 matchers : Parser (Route -> a) a
 matchers =
   oneOf
-    [ format PackageListRoute (s "")
-    , format PackageListRoute (s "packages" </> s "")
+    [ format (PackageListRoute searchAll) (s "")
+    , format (PackageListRoute << searchByName) (s "search" </> string)
+    , format (PackageListRoute searchAll) (s "packages" </> s "")
     , format PackageRoute (s "packages" </> string)
-    , format PackageListRoute (s "packages")
+    , format (PackageListRoute searchAll) (s "packages")
     ]
 
 

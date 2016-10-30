@@ -18,6 +18,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Package.List
 import Package.Details
+import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 
 
@@ -33,17 +34,18 @@ view model =
     { header =
       [ div
           [ class "header" ]
-          [ div [ class "header-title", onClick RoutePackageList ] [ text "HEL Repository" ]
+          [ div [ class "header-title", onClick <| RoutePackageList searchAll ] [ text "HEL Repository" ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] materialModel
-                [ Textfield.style
-                    [ Options.attribute <| attribute "spellcheck" "false"
-                    , Options.attribute <| attribute "autocomplete" "off"
-                    , Options.attribute <| attribute "autocorrect" "off"
-                    , Options.attribute <| attribute "autocapitalize" "off"
-                    ]
-                ]
-              , Button.render Mdl [1] model.mdl
+                  [ Textfield.style
+                      [ Options.attribute <| attribute "spellcheck" "false"
+                      , Options.attribute <| attribute "autocomplete" "off"
+                      , Options.attribute <| attribute "autocorrect" "off"
+                      , Options.attribute <| attribute "autocapitalize" "off"
+                      ]
+                  , Textfield.onInput (searchByName >> RoutePackageList)
+                  ]
+              , Button.render Mdl [1] materialModel
                   [ Button.icon
                   , Button.ripple
                   , cs "search-icon"
@@ -72,7 +74,7 @@ viewBody model =
         [ class "error" ]
         ( if contains "404" model.packageData.error then [] else [ text model.packageData.error ] )
     , case model.route of
-        PackageListRoute ->
+        PackageListRoute searchData ->
           Package.List.view model.packageData
 
         PackageRoute name ->
