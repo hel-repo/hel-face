@@ -77,6 +77,22 @@ license name =
       a [ href "http://choosealicense.com/licenses/apache-2.0/" ] [ text name ]
     "BSD" ->
       a [ href "http://choosealicense.com/licenses/bsd-2-clause/" ] [ text name ]
+    "GPL v3" ->
+      a [ href "http://choosealicense.com/licenses/gpl-3.0/" ] [ text name ]
+    "AGPL v3" ->
+      a [ href "http://choosealicense.com/licenses/agpl-3.0/" ] [ text name ]
+    "LGPL v3" ->
+      a [ href "http://choosealicense.com/licenses/lgpl-3.0/" ] [ text name ]
+    "WTFPL" ->
+      a [ href "http://choosealicense.com/licenses/wtfpl/" ] [ text name ]
+    "GPL v2" ->
+      a [ href "http://choosealicense.com/licenses/gpl-2.0/" ] [ text name ]
+    "CC0" ->
+      a [ href "http://choosealicense.com/licenses/cc0-1.0/" ] [ text name ]
+    "zlib" ->
+      a [ href "http://choosealicense.com/licenses/zlib/" ] [ text name ]
+    "EPL" ->
+      a [ href "http://choosealicense.com/licenses/epl-1.0/" ] [ text name ]
     name ->
       text name
 
