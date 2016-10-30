@@ -42,7 +42,7 @@ screensCard package =
       Just screen ->
         Card.view
           [ Elevation.e2, cs "screen-card" ]
-          [ Card.text
+          [ Card.actions
               [ cs "screen-img" ]
               [ img [ src screen.url ] [ ] ]
           , Card.actions
@@ -68,31 +68,35 @@ chip str =
   Chip.span [] [ Chip.content [] [ text str ] ]
 
 
+licenseLink : String -> String -> Html Msg
+licenseLink url name =
+  a [ class "align-top", href url ] [ text name ]
+
 license : String -> Html Msg
 license name =
   case name of
     "MIT" ->
-      a [ href "http://choosealicense.com/licenses/mit/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/mit/" name
     "Apache 2.0" ->
-      a [ href "http://choosealicense.com/licenses/apache-2.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/apache-2.0/" name
     "BSD" ->
-      a [ href "http://choosealicense.com/licenses/bsd-2-clause/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/bsd-2-clause/" name
     "GPL v3" ->
-      a [ href "http://choosealicense.com/licenses/gpl-3.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/gpl-3.0/" name
     "AGPL v3" ->
-      a [ href "http://choosealicense.com/licenses/agpl-3.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/agpl-3.0/" name
     "LGPL v3" ->
-      a [ href "http://choosealicense.com/licenses/lgpl-3.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/lgpl-3.0/" name
     "WTFPL" ->
-      a [ href "http://choosealicense.com/licenses/wtfpl/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/wtfpl/" name
     "GPL v2" ->
-      a [ href "http://choosealicense.com/licenses/gpl-2.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/gpl-2.0/" name
     "CC0" ->
-      a [ href "http://choosealicense.com/licenses/cc0-1.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/cc0-1.0/" name
     "zlib" ->
-      a [ href "http://choosealicense.com/licenses/zlib/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/zlib/" name
     "EPL" ->
-      a [ href "http://choosealicense.com/licenses/epl-1.0/" ] [ text name ]
+      licenseLink "http://choosealicense.com/licenses/epl-1.0/" name
     name ->
       text name
 

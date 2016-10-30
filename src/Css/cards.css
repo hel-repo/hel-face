@@ -1,0 +1,87 @@
+/* MDL Tweaks */
+.mdl-chip {
+  background: #626262;
+  color: rgba(256,256,256,.54);
+  margin-left: 5px;
+  cursor: pointer;
+}
+.mdl-tabs__tab-bar {
+  border-bottom: 1px solid rgba(0,0,0,.1)
+}
+.is-active.mdl-tabs__tab {
+  color: #ffffff !important;
+  background: rgba(0,0,0,.1);
+}
+.mdl-tabs__tab {
+  background: inherit;
+}
+.mdl-tabs.is-upgraded .mdl-tabs__tab.is-active::after {
+  background: rgb(255, 82, 82);
+}
+
+.mdl-card {
+  background: #424242;
+  width: auto;
+}
+.mdl-card__subtitle-text, .subtitle {
+  color: rgba(256,256,256,.54);
+}
+
+
+/* Custom elements */
+.card-title {
+  flex-direction: column;
+  cursor: pointer;
+}
+.card-title a {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
+.card-license {
+  padding-left: 10px;
+}
+.card-subtitle-icon {
+  padding-right: 5px;
+}
+
+.card-actions {
+  vertical-align: center;
+  text-align: right;
+}
+
+
+.screen-card {
+  margin-bottom: 1em;
+}
+.screen-desc {
+  padding-left: 10px;
+}
+
+
+.version-tabs .mdl-tabs__tab-bar {
+  padding: 0px 10px;
+  justify-content: flex-start;
+}
+
+.files {
+}
+.list-white {
+  color: rgba(256,256,256,.87);
+}
+.list-cell {
+  color: rgba(256,256,256,.54);
+}
+.list-icon i {
+  margin-right: 8px !important;
+}
+.list-of-cards > ul > li {
+  background: rgba(0,0,0,.1);
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+.dep-version {
+  font-weight: bold;
+}

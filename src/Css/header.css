@@ -1,0 +1,64 @@
+.header {
+  background: #212121;
+  padding: 1rem;
+  border-bottom: 2px solid #bb1f2f;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header-title {
+  cursor: pointer;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+  font-weight: 300;
+  font-size: 52px;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+
+
+.search {
+  flex: 1;
+  padding: 5px 10px 0px 60px;
+}
+.search .mdl-textfield {
+  padding: 6px;
+  border-radius: 2px;
+  color: #aaa;
+  background: rgba(256,256,256,.1);
+  width: 100%;
+}
+.search .mdl-textfield__input {
+  font-size: 22px;
+}
+
+
+.login-button {
+  order: 2;
+}
+.login-button .mdl-button {
+  margin: 0px 10px;
+  color: #666;
+  height: 46px;
+  float: right;
+}
+
+
+@media (max-width: 700px) {
+  .header {
+    flex-wrap: wrap;
+  }
+  .header-title {
+    flex: 5;
+  }
+  .login-button {
+    flex: 1;
+    order: 1 !important;
+  }
+  .search {
+    flex: 0 1 auto;
+    order: 2 !important;
+    width: 100%;
+    padding: 10px 0px;
+  }
+}

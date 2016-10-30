@@ -1,124 +1,13 @@
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+html {
+  box-sizing: border-box;
+}
 body {
   background: #303030;
 }
-.header {
-  background: #212121;
-  padding: 2rem;
-  border-bottom: 2px solid #bb1f2f;
-  cursor: pointer;
-}
-.error {
-  background: #bb1f2f;
-  padding: 10px;
-}
-.error:empty {
-  display: none;
-}
 
-.align-top {
-  vertical-align: top;
-}
-
-.mdl-layout__tab-bar, .mdl-layout__tab-bar-button {
-  background: #424242;
-}
-
-.spinner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
-.mdl-card {
-  background: #424242;
-  width: auto;
-}
-.mdl-card__subtitle-text, .subtitle {
-  color: rgba(256,256,256,.54);
-}
-.mdl-chip {
-  background: #626262;
-  color: rgba(256,256,256,.54);
-  margin-left: 5px;
-  cursor: pointer;
-}
-.card-actions {
-  vertical-align: center;
-  text-align: right;
-}
-.card-title {
-  flex-direction: column;
-  cursor: pointer;
-}
-.card-title a {
-  color: inherit;
-  font-weight: inherit;
-  text-decoration: none;
-}
-.card-license {
-  padding-left: 10px;
-}
-.card-subtitle-icon {
-  padding-right: 5px;
-}
-
-.screen-card {
-  margin-bottom: 1em;
-}
-.screen-desc {
-  padding-left: 10px;
-}
-
-.version-tabs .mdl-tabs__tab-bar {
-  padding: 0px 10px;
-  -webkit-justify-content:left;
-  -ms-flex-pack:left;
-  -webkit-box-pack:left;
-  justify-content:left;
-}
-.mdl-tabs__tab-bar {
-  border-bottom: 1px solid rgba(0,0,0,.1)
-}
-.is-active.mdl-tabs__tab {
-  color: #ffffff !important;
-  background: rgba(0,0,0,.1);
-}
-.mdl-tabs__tab {
-  background: inherit;
-}
-.mdl-tabs.is-upgraded .mdl-tabs__tab.is-active::after {
-  background: rgb(255, 82, 82);
-}
-
-.files {
-}
-.list-white {
-  color: rgba(256,256,256,.87);
-}
-.list-cell {
-  color: rgba(256,256,256,.54);
-}
-.list-icon i {
-  margin-right: 8px !important;
-}
-.list-of-cards > ul > li {
-  background: rgba(0,0,0,.1);
-  margin-bottom: 10px;
-  border-radius: 2px;
-}
-
-.dep-version {
-  font-weight: bold;
-}
-.padding-bottom {
-  padding-bottom: 16px;
-}
-.no-padding-grid {
-  margin: -16px;
-}
 
 .page {
   padding: 1em;
@@ -132,4 +21,37 @@ body {
   border-radius: 2px;
   color: rgb(255, 82, 82);
   background: rgba(0,0,0,.1);
+}
+.spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.error {
+  background: #bb1f2f;
+  padding: 10px;
+  margin: 1em;
+}
+.error:empty {
+  display: none;
+}
+
+
+.align-top {
+  vertical-align: top;
+}
+.align-middle {
+  vertical-align: middle;
+}
+.align-bottom {
+  vertical-align: bottom;
+}
+.padding-bottom {
+  padding-bottom: 16px;
+}
+.no-padding-grid {
+  margin: -16px;
 }

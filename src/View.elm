@@ -1,15 +1,18 @@
 module View exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (attribute, class, href)
 import Html.Events exposing (onClick)
 import String exposing (contains)
 
+import Material.Button as Button
 import Material.Card as Card
 import Material.Color as Color
 import Material.Elevation as Elevation
+import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs)
+import Material.Textfield as Textfield
 
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
@@ -25,20 +28,28 @@ white =
 
 view : Model -> Html Msg
 view model =
-  Layout.render Mdl model.mdl
-    [ Layout.fixedHeader
-    , Layout.waterfall True
-    ]
+  Layout.render Mdl materialModel
+    [ Layout.fixedHeader ]
     { header =
       [ div
-        [ class "header"
-        , onClick (RoutePackageList)
-        ]
-        [ h1 [] [ text "HEL Repository" ]
-        , div
-          [ class "error" ]
-          ( if contains "404" model.packageData.error then [] else [ text model.packageData.error ] )
-        ]
+          [ class "header" ]
+          [ div [ class "header-title", onClick RoutePackageList ] [ text "HEL Repository" ]
+          , div [ class "search" ]
+              [ Textfield.render Mdl [0] materialModel
+                [ Textfield.style
+                    [ Options.attribute <| attribute "spellcheck" "false"
+                    , Options.attribute <| attribute "autocomplete" "off"
+                    , Options.attribute <| attribute "autocorrect" "off"
+                    , Options.attribute <| attribute "autocapitalize" "off"
+                    ]
+                ]
+              ]
+          , div [ class "login-button" ]
+              [ Button.render Mdl [0] materialModel
+                  [ Button.minifab, Button.ripple ]
+                  [ Icon.view "fingerprint" [ Icon.size48 ] ]
+              ]
+          ]
       ]
     , drawer = []
     , tabs = ( [], [] )
@@ -48,19 +59,24 @@ view model =
 
 viewBody : Model -> Html Msg
 viewBody model =
-  case model.route of
-    PackageListRoute ->
-      Package.List.view model.packageData
+  div [ ]
+    [ div
+        [ class "error" ]
+        ( if contains "404" model.packageData.error then [] else [ text model.packageData.error ] )
+    , case model.route of
+        PackageListRoute ->
+          Package.List.view model.packageData
 
-    PackageRoute name ->
-      Package.Details.view model.packageData
+        PackageRoute name ->
+          Package.Details.view model.packageData
 
-    NotFoundRoute ->
-      div
-        [ class "page" ]
-        [ Card.view
-          [ Elevation.e2 ]
-          [ Card.title [ ] [ Card.head [ white ] [ text "404: Page does not exists!" ] ]
-          , Card.text [ white ] [ text "Check the spelling, or try different address, please." ]
-          ]
-        ]
+        NotFoundRoute ->
+          div
+            [ class "page" ]
+            [ Card.view
+              [ Elevation.e2 ]
+              [ Card.title [ ] [ Card.head [ white ] [ text "404: Page does not exists!" ] ]
+              , Card.text [ white ] [ text "Check the spelling, or try different address, please." ]
+              ]
+            ]
+    ]
