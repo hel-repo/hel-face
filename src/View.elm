@@ -37,7 +37,7 @@ view model =
         [ h1 [] [ text "HEL Repository" ]
         , div
           [ class "error" ]
-          ( if contains "404" model.list.error then [] else [ text model.list.error ] )
+          ( if contains "404" model.packageData.error then [] else [ text model.packageData.error ] )
         ]
       ]
     , drawer = []
@@ -50,10 +50,10 @@ viewBody : Model -> Html Msg
 viewBody model =
   case model.route of
     PackageListRoute ->
-      Package.List.view model.list
+      Package.List.view model.packageData
 
     PackageRoute name ->
-      Package.Details.view model.list
+      Package.Details.view model.packageData
 
     NotFoundRoute ->
       div

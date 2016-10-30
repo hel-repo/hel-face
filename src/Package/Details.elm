@@ -85,9 +85,18 @@ versionLabel : Version -> Tabs.Label a
 versionLabel version =
   Tabs.label [] [ text version.version ]
 
-versionDesc : Version -> Html Msg
-versionDesc version =
-  div [ class "ver-changes" ] [ Markdown.toHtml [] version.changes ]
+subtitle : String -> Html Msg
+subtitle str =
+  Options.styled p [ Typo.button, cs "subtitle" ] [ text str ]
+
+versionDesc : String -> Version -> Html Msg
+versionDesc name version =
+  div [ ]
+    [ subtitle "Installation"
+    , div [ class "padding-bottom" ] [ div [ class "code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
+    , subtitle "Changelog"
+    , Markdown.toHtml [ class "padding-bottom" ] version.changes
+    ]
 
 
 file : PkgVersionFile -> Html Msg
@@ -106,12 +115,12 @@ files version =
     [ class "files" ]
     ( case version.files of
         x::_ ->
-          [ text "Files:"
+          [ subtitle "Files"
           , div [ class "list-of-cards" ]
               [ Lists.ul [ ] (map file version.files) ]
           ]
         [ ] ->
-          [ text "No files." ]
+          [ subtitle "No files" ]
     )
 
 
@@ -120,7 +129,7 @@ dependencies version =
   case version.depends of
     x::_ ->
       div [ class "dep-block list-of-cards" ]
-        [ text "Depends on:"
+        [ subtitle "Depends on"
         , Lists.ul [ ]
             ( map
                 ( \d ->
@@ -139,7 +148,7 @@ dependencies version =
             )
         ]
     [ ] ->
-      div [ class "dep-block" ] [ text "No dependencies." ]
+      div [ class "dep-block" ] [ subtitle "No dependencies" ]
 
 
 detailsCard : PackageListData -> Package -> Html Msg
@@ -168,8 +177,8 @@ detailsCard data package =
                 Just version ->
                   div
                     [ class "page" ]
-                    [ versionDesc version
-                    , Grid.grid [ ]
+                    [ versionDesc package.name version
+                    , Grid.grid [ cs "no-padding-grid" ]
                         [ Grid.cell
                             [ Grid.size Grid.Desktop 6
                             , Grid.size Grid.Tablet 8

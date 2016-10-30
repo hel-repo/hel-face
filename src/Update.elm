@@ -5,7 +5,6 @@ import Material
 
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
-import Package.Messages as PMsg
 import Package.Update
 
 
@@ -17,7 +16,8 @@ update msg model =
 
     -- Routing
     RoutePackageList ->
-      ( model, Navigation.newUrl "#packages/" )
+      let packageData = model.packageData
+      in ( { model | packageData = { packageData | share = "" } }, Navigation.newUrl "#packages/" )
 
     RoutePackageDetails name ->
       ( model, Navigation.newUrl ("#packages/" ++ name) )
@@ -25,7 +25,7 @@ update msg model =
     -- Hook package messages up
     PackageMsg subMsg ->
       let
-        ( updatedList, cmd ) =
-          Package.Update.update subMsg model.list
+        ( updatedData, cmd ) =
+          Package.Update.update subMsg model.packageData
       in
-        ( { model | list = updatedList }, Cmd.map PackageMsg cmd )
+        ( { model | packageData = updatedData }, Cmd.map PackageMsg cmd )

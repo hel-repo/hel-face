@@ -36,7 +36,7 @@ body {
   background: #424242;
   width: auto;
 }
-.mdl-card__subtitle-text {
+.mdl-card__subtitle-text, .subtitle {
   color: rgba(256,256,256,.54);
 }
 .mdl-chip {
@@ -89,6 +89,9 @@ body {
 .mdl-tabs__tab {
   background: inherit;
 }
+.mdl-tabs.is-upgraded .mdl-tabs__tab.is-active::after {
+  background: rgb(255, 82, 82);
+}
 
 .files {
 }
@@ -109,6 +112,12 @@ body {
 
 .dep-version {
   font-weight: bold;
+}
+.padding-bottom {
+  padding-bottom: 16px;
+}
+.no-padding-grid {
+  margin: -16px;
 }
 
 .page {

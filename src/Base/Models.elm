@@ -9,8 +9,7 @@ import Package.Models exposing (PackageListData)
 type alias Model =
   { mdl : Material.Model
   , route : Routing.Route
-  , list : PackageListData
-  , selectedTab : Int
+  , packageData : PackageListData
   }
 
 
@@ -22,6 +21,5 @@ initialModel : Routing.Route -> Model
 initialModel route =
   { mdl = materialModel
   , route = route
-  , list = { packages = [], loading = False, version = 0, error = "", share = "" }
-  , selectedTab = 0
+  , packageData = { packages = [], loading = False, version = 0, error = "", share = "" }
   }
