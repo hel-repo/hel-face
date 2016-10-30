@@ -3,6 +3,9 @@
 *.swp
 *.swo
 
+# Npm generated files
+node_modules/
+
 # Elm generated files
 elm-stuff/
 

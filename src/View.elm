@@ -5,7 +5,6 @@ import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 import String exposing (contains)
 
-import Material
 import Material.Card as Card
 import Material.Color as Color
 import Material.Elevation as Elevation

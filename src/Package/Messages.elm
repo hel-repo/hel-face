@@ -14,3 +14,5 @@ type Msg
   | GoToPackageList
   | GoToPackageDetails String
   | GoToVersion Int
+  -- Other
+  | SharePackage String

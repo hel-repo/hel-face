@@ -66,3 +66,7 @@ update message data =
 
     GoToVersion num ->
       { data | version = num } ! []
+
+    -- Other
+    SharePackage name ->
+      { data | share = (if name /= data.share then name else "") } ! []

@@ -70,4 +70,5 @@ type alias PackageListData =
   , version : Int
   , loading : Bool
   , error : String
+  , share : String
   }

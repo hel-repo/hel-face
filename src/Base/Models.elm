@@ -22,6 +22,6 @@ initialModel : Routing.Route -> Model
 initialModel route =
   { mdl = materialModel
   , route = route
-  , list = { packages = [], loading = False, version = 0, error = "" }
+  , list = { packages = [], loading = False, version = 0, error = "", share = "" }
   , selectedTab = 0
   }
