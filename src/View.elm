@@ -43,10 +43,18 @@ view model =
                     , Options.attribute <| attribute "autocapitalize" "off"
                     ]
                 ]
+              , Button.render Mdl [1] model.mdl
+                  [ Button.icon
+                  , Button.ripple
+                  , cs "search-icon"
+                  ]
+                  [ Icon.i "search"]
               ]
           , div [ class "login-button" ]
-              [ Button.render Mdl [0] materialModel
-                  [ Button.minifab, Button.ripple ]
+              [ Button.render Mdl [2] materialModel
+                  [ Button.minifab
+                  , Button.ripple
+                  ]
                   [ Icon.view "fingerprint" [ Icon.size48 ] ]
               ]
           ]

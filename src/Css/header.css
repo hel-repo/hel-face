@@ -19,17 +19,23 @@
 
 .search {
   flex: 1;
-  padding: 5px 10px 0px 60px;
+  padding: 5px 60px 0px 60px;
+}
+.search-icon {
+  position: absolute;
+  margin-top: 8px;
+  z-index: 1;
+  color: #666;
 }
 .search .mdl-textfield {
   padding: 6px;
-  border-radius: 2px;
   color: #aaa;
-  background: rgba(256,256,256,.1);
   width: 100%;
+  border-bottom: 2px solid rgba(256,256,256,.12);
 }
 .search .mdl-textfield__input {
   font-size: 22px;
+  border-bottom: none;
 }
 
 
@@ -59,6 +65,6 @@
     flex: 0 1 auto;
     order: 2 !important;
     width: 100%;
-    padding: 10px 0px;
+    padding: 10px 30px 10px 0px;
   }
 }
