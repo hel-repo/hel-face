@@ -7,6 +7,7 @@ import String exposing (join)
 
 import Markdown
 
+import Material
 import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
@@ -21,7 +22,6 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (materialModel)
 import Package.Messages as PMsg
 import Package.Models exposing
   ( PackageListData
@@ -35,8 +35,8 @@ white =
   Color.text Color.white
 
 
-screensCard : Package -> Html Msg
-screensCard package =
+screensCard : Material.Model -> Package -> Html Msg
+screensCard mdl package =
   if not (isEmpty package.screenshots) then
     case head package.screenshots of
       Just screen ->
@@ -47,10 +47,10 @@ screensCard package =
               [ img [ src screen.url ] [ ] ]
           , Card.actions
               [ Card.border ]
-              [ Button.render Mdl [1,0] materialModel
+              [ Button.render Mdl [1,0] mdl
                   [ Button.ripple, Button.accent ]
                   [ text "<" ]
-              , Button.render Mdl [1,1] materialModel
+              , Button.render Mdl [1,1] mdl
                   [ Button.ripple, Button.accent ]
                   [ text ">" ]
               , Options.styled span
@@ -187,7 +187,7 @@ detailsCard data package =
     , Card.text [ white ] [ Markdown.toHtml [] package.description ]
     , Card.menu [ ] ( map chip package.tags )
     , Card.actions [ white, cs "version-tabs" ]
-        [ Tabs.render Mdl [0] materialModel
+        [ Tabs.render Mdl [0] data.mdl
             [ Tabs.ripple
             , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
             , Tabs.activeTab data.version
@@ -244,7 +244,7 @@ view data =
       [ class "page" ]
       ( case head data.packages of
           Just package ->
-            [ screensCard package
+            [ screensCard data.mdl package
             , detailsCard data package
             ]
           Nothing ->

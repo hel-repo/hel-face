@@ -3,8 +3,9 @@ module Package.List exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events
-import List exposing (map)
+import List exposing (map2, length)
 
+import Material
 import Material.Button as Button
 import Material.Color as Color
 import Material.Card as Card
@@ -15,7 +16,6 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (materialModel)
 import Package.Models exposing (PackageListData, Package)
 import Package.Messages as PMsg
 
@@ -25,8 +25,8 @@ white =
   Color.text Color.white
 
 
-card : String -> Package -> Cell Msg
-card share package =
+card : Material.Model -> String -> Int -> Package -> Cell Msg
+card mdl share index package =
   cell
     [ size All 4
     ]
@@ -50,10 +50,10 @@ card share package =
             )
         , Card.actions
             [ Card.border, cs "card-actions", white ]
-            [ Button.render Mdl [8,1] materialModel
+            [ Button.render Mdl [10, index*2] mdl
                 [ Button.icon, Button.ripple ]
                 [ Icon.i "favorite_border" ]
-            , Button.render Mdl [0,0] materialModel
+            , Button.render Mdl [10, index*2+1] mdl
                 [ Button.icon
                 , Button.ripple
                 , Button.onClick <| PackageMsg (PMsg.SharePackage package.name)
@@ -73,4 +73,4 @@ view data =
         , cs "spinner"
         ]
     else
-      div [] [ grid [] ( map (card data.share) data.packages ) ]
+      div [] [ grid [] ( map2 (card data.mdl data.share) [1..(length data.packages)] data.packages ) ]

@@ -1,5 +1,7 @@
 module Package.Models exposing (..)
 
+import Material
+
 
 type alias Screenshot =
   { url : String
@@ -66,7 +68,8 @@ type alias Package =
   }
 
 type alias PackageListData =
-  { packages : List Package
+  { mdl : Material.Model
+  , packages : List Package
   , version : Int
   , loading : Bool
   , error : String

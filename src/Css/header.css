@@ -23,19 +23,35 @@
 }
 .search-icon {
   position: absolute;
-  margin-top: 8px;
+  margin-top: 18px;
   z-index: 1;
   color: #666;
 }
 .search .mdl-textfield {
-  padding: 6px;
-  color: #aaa;
   width: 100%;
-  border-bottom: 2px solid rgba(256,256,256,.12);
 }
 .search .mdl-textfield__input {
   font-size: 22px;
-  border-bottom: none;
+  border-bottom: 2px solid rgba(256,256,256,.12);
+}
+.search .mdl-textfield__label:after {
+  background: #666;
+}
+
+/* MDL tweaks */
+.mdl-textfield__label {
+  color: #fff;
+}
+.is-focused .mdl-textfield__label,
+.is-dirty .mdl-textfield__label {
+  color: #888 !important;
+}
+.mdl-textfield__label:after {
+  background: rgb(255, 82, 82);
+}
+.mdl-textfield__input {
+  color: #fff;
+  border-bottom: 1px solid rgba(256,256,256,.12);
 }
 
 
@@ -65,6 +81,6 @@
     flex: 0 1 auto;
     order: 2 !important;
     width: 100%;
-    padding: 10px 30px 10px 0px;
+    padding: 10px 40px 10px 0px;
   }
 }

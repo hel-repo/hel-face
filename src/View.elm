@@ -20,6 +20,7 @@ import Package.List
 import Package.Details
 import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
+import User.Auth
 
 
 white : Options.Property c m
@@ -29,14 +30,14 @@ white =
 
 view : Model -> Html Msg
 view model =
-  Layout.render Mdl materialModel
+  Layout.render Mdl model.mdl
     [ Layout.fixedHeader ]
     { header =
       [ div
           [ class "header" ]
           [ div [ class "header-title", onClick <| RoutePackageList searchAll ] [ text "HEL Repository" ]
           , div [ class "search" ]
-              [ Textfield.render Mdl [0] materialModel
+              [ Textfield.render Mdl [0] model.mdl
                   [ Textfield.style
                       [ Options.attribute <| attribute "spellcheck" "false"
                       , Options.attribute <| attribute "autocomplete" "off"
@@ -45,7 +46,7 @@ view model =
                       ]
                   , Textfield.onInput (searchByName >> RoutePackageList)
                   ]
-              , Button.render Mdl [1] materialModel
+              , Button.render Mdl [1] model.mdl
                   [ Button.icon
                   , Button.ripple
                   , cs "search-icon"
@@ -53,9 +54,10 @@ view model =
                   [ Icon.i "search"]
               ]
           , div [ class "login-button" ]
-              [ Button.render Mdl [2] materialModel
+              [ Button.render Mdl [2] model.mdl
                   [ Button.minifab
                   , Button.ripple
+                  , Button.onClick RouteAuth
                   ]
                   [ Icon.view "fingerprint" [ Icon.size48 ] ]
               ]
@@ -79,6 +81,9 @@ viewBody model =
 
         PackageRoute name ->
           Package.Details.view model.packageData
+
+        AuthRoute ->
+          User.Auth.view model.userData
 
         NotFoundRoute ->
           div
