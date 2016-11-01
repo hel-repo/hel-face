@@ -14,6 +14,7 @@ type Route
   = PackageListRoute SearchData
   | PackageRoute String
   | AuthRoute
+  | RegisterRoute
   | NotFoundRoute
 
 
@@ -23,6 +24,7 @@ routeMessage route =
     PackageRoute name -> [ PackageMsg <| PMsg.GoToPackageDetails name ]
     PackageListRoute data -> [ PackageMsg <| PMsg.GoToPackageList data ]
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
+    RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     _ -> []
 
 
@@ -36,6 +38,8 @@ matchers =
     , format (PackageListRoute searchAll) (s "packages")
     , format AuthRoute (s "auth")
     , format AuthRoute (s "auth" </> s "")
+    , format RegisterRoute (s "register")
+    , format RegisterRoute (s "register" </> s "")
     ]
 
 

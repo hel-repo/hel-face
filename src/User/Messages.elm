@@ -8,3 +8,4 @@ type Msg
   | LoggedIn
   -- Navigation
   | GoToAuth
+  | GoToRegister

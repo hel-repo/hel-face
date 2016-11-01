@@ -44,6 +44,9 @@ update msg model =
     RouteAuth ->
       ( model, Navigation.newUrl "#auth" )
 
+    RouteRegister ->
+      ( model, Navigation.newUrl "#register" )
+
     -- Hook module messages up
     PackageMsg subMsg ->
       let

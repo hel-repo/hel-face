@@ -21,6 +21,7 @@ import Package.Details
 import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 import User.Auth
+import User.Register
 
 
 white : Options.Property c m
@@ -84,6 +85,9 @@ viewBody model =
 
         AuthRoute ->
           User.Auth.view model.userData
+
+        RegisterRoute ->
+          User.Register.view model.userData
 
         NotFoundRoute ->
           div
