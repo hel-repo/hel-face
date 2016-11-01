@@ -90,8 +90,8 @@ viewBody model =
             [ class "page" ]
             [ Card.view
               [ Elevation.e2 ]
-              [ Card.title [ ] [ Card.head [ white ] [ text "404: Page does not exists!" ] ]
-              , Card.text [ white ] [ text "Check the spelling, or try different address, please." ]
+              [ Card.title [ ] [ Card.head [ white ] [ text "404: Page does not exist!" ] ]
+              , Card.text [ white ] [ text "Check the address for typing errors." ]
               ]
             ]
     ]
