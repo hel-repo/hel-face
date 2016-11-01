@@ -31,6 +31,7 @@ body {
   margin: auto;
 }
 .error {
+  color: #fff;
   background: #bb1f2f;
   padding: 10px;
   margin: 1em;

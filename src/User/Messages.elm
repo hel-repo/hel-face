@@ -9,3 +9,7 @@ type Msg
   -- Navigation
   | GoToAuth
   | GoToRegister
+  -- Other
+  | InputNickname String
+  | InputPassword String
+  | InputKey Int

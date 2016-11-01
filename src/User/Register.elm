@@ -18,6 +18,8 @@ import Base.Messages exposing (Msg(..))
 import User.Models exposing (UserData)
 
 
+-- TODO: add functionality
+
 white : Options.Property c m
 white =
   Color.text Color.white

@@ -33,8 +33,9 @@ initialModel route =
       }
   , userData =
       { mdl = materialModel
-      , login = ""
+      , nickname = ""
       , password = ""
+      , loggedin = False
       , error = ""
       , loading = False
       }

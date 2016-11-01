@@ -5,8 +5,9 @@ import Material
 
 type alias UserData =
   { mdl : Material.Model
-  , login : String
+  , nickname : String
   , password : String
+  , loggedin : Bool
   , error : String
   , loading : Bool
   }
