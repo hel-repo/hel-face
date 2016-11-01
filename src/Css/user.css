@@ -5,3 +5,21 @@
   display: inline-block;
   padding-left: 10px;
 }
+
+.avatar {
+  font-size: 128px;
+  color: rgb(255, 82, 82);
+  border: 2px solid #313131;
+  border-radius: 128px;
+}
+.profile-nickname {
+  color: #fff;
+  padding-top: 10px;
+}
+.profile-button {
+  margin: 10px;
+}
+.profile-button i {
+  vertical-align: top;
+  padding-right: 10px;
+}

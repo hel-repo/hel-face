@@ -11,5 +11,6 @@ type Msg
   | RoutePackageDetails String
   | RouteAuth
   | RouteRegister
+  | RouteProfile
   | PackageMsg PMsg.Msg
   | UserMsg UMsg.Msg

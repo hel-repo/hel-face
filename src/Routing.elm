@@ -15,6 +15,7 @@ type Route
   | PackageRoute String
   | AuthRoute
   | RegisterRoute
+  | ProfileRoute
   | NotFoundRoute
 
 
@@ -27,19 +28,23 @@ routeMessage route =
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     _ -> []
 
+tail : Parser a a
+tail = s ""
 
 matchers : Parser (Route -> a) a
 matchers =
   oneOf
-    [ format (PackageListRoute searchAll) (s "")
+    [ format (PackageListRoute searchAll) (tail)
     , format (PackageListRoute << searchByName) (s "search" </> string)
-    , format (PackageListRoute searchAll) (s "packages" </> s "")
+    , format (PackageListRoute searchAll) (s "packages" </> tail)
     , format PackageRoute (s "packages" </> string)
     , format (PackageListRoute searchAll) (s "packages")
     , format AuthRoute (s "auth")
-    , format AuthRoute (s "auth" </> s "")
+    , format AuthRoute (s "auth" </> tail)
     , format RegisterRoute (s "register")
-    , format RegisterRoute (s "register" </> s "")
+    , format RegisterRoute (s "register" </> tail)
+    , format ProfileRoute (s "profile")
+    , format ProfileRoute (s "profile" </> tail)
     ]
 
 

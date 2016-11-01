@@ -21,6 +21,7 @@ import Package.Details
 import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 import User.Auth
+import User.Profile
 import User.Register
 
 
@@ -54,14 +55,24 @@ view model =
                   ]
                   [ Icon.i "search"]
               ]
-          , div [ class "login-button" ]
-              [ Button.render Mdl [2] model.mdl
-                  [ Button.minifab
-                  , Button.ripple
-                  , Button.onClick RouteAuth
+          , if model.userData.loggedin then
+              div [ class "login-button" ]
+                  [ Button.render Mdl [2] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      , Button.onClick RouteProfile
+                      ]
+                      [ Icon.view "account_circle" [ Icon.size48 ] ]
                   ]
-                  [ Icon.view "fingerprint" [ Icon.size48 ] ]
-              ]
+            else
+              div [ class "login-button" ]
+                  [ Button.render Mdl [2] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      , Button.onClick RouteAuth
+                      ]
+                      [ Icon.view "fingerprint" [ Icon.size48 ] ]
+                  ]
           ]
       ]
     , drawer = []
@@ -88,6 +99,9 @@ viewBody model =
 
         RegisterRoute ->
           User.Register.view model.userData
+
+        ProfileRoute ->
+          User.Profile.view model.userData
 
         NotFoundRoute ->
           div

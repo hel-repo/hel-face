@@ -14,6 +14,7 @@ import User.Update
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
+    -- Transfer MDL events
     Mdl msg' ->
       -- TODO: make it prettier
       let
@@ -46,6 +47,9 @@ update msg model =
 
     RouteRegister ->
       ( model, Navigation.newUrl "#register" )
+
+    RouteProfile ->
+      ( model, Navigation.newUrl "#profile" )
 
     -- Hook module messages up
     PackageMsg subMsg ->
