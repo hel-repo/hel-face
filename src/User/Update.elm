@@ -27,3 +27,6 @@ update message data =
     -- Navigation
     GoToAuth ->
       data ! []
+
+    GoToRegister ->
+      data ! []
