@@ -12,5 +12,7 @@ type Msg
   | RouteAuth
   | RouteRegister
   | RouteProfile
+  | InputSearch String
+  | InputKey Int
   | PackageMsg PMsg.Msg
   | UserMsg UMsg.Msg

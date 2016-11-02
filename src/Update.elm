@@ -5,8 +5,11 @@ import String exposing (isEmpty)
 import Navigation
 import Material
 
+import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
+import Base.Tools exposing (wrapMsg)
+import Package.Models exposing (searchByName)
 import Package.Update
 import User.Update
 
@@ -50,6 +53,16 @@ update msg model =
 
     RouteProfile ->
       ( model, Navigation.newUrl "#profile" )
+
+    -- Other
+    InputSearch str ->
+      { model | search = str } ! []
+
+    InputKey key ->
+      model ! (
+        if key == Config.enterKey then [ wrapMsg <| RoutePackageList <| searchByName model.search ]
+        else []
+      )
 
     -- Hook module messages up
     PackageMsg subMsg ->

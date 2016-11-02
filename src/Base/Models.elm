@@ -10,6 +10,7 @@ import User.Models exposing (UserData)
 type alias Model =
   { mdl : Material.Model
   , route : Routing.Route
+  , search : String
   , packageData : PackageListData
   , userData : UserData
   }
@@ -23,6 +24,7 @@ initialModel : Routing.Route -> Model
 initialModel route =
   { mdl = materialModel
   , route = route
+  , search = ""
   , packageData =
       { mdl = materialModel
       , packages = []

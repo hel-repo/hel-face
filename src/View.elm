@@ -3,6 +3,7 @@ module View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, href)
 import Html.Events exposing (onClick)
+import Json.Decode as Decode exposing (Decoder, (:=))
 import String exposing (contains)
 
 import Material.Button as Button
@@ -14,6 +15,7 @@ import Material.Layout as Layout
 import Material.Options as Options exposing (cs)
 import Material.Textfield as Textfield
 
+import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Package.List
@@ -23,6 +25,17 @@ import Routing exposing (Route(..))
 import User.Auth
 import User.Profile
 import User.Register
+
+
+search : Msg
+search =
+  InputKey Config.enterKey
+
+keyDecoder : Decode.Decoder Msg
+keyDecoder =
+  Decode.map InputKey
+    <| Decode.object1 identity
+        (Decode.at ["keyCode"] Decode.int)
 
 
 white : Options.Property c m
@@ -46,12 +59,14 @@ view model =
                       , Options.attribute <| attribute "autocorrect" "off"
                       , Options.attribute <| attribute "autocapitalize" "off"
                       ]
-                  , Textfield.onInput (searchByName >> RoutePackageList)
+                  , Textfield.onInput InputSearch
+                  , Textfield.on "keyup" keyDecoder
                   ]
               , Button.render Mdl [1] model.mdl
                   [ Button.icon
                   , Button.ripple
                   , cs "search-icon"
+                  , Button.onClick search
                   ]
                   [ Icon.i "search"]
               ]

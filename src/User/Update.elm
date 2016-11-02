@@ -91,6 +91,6 @@ update message data =
 
     InputKey key ->
       data ! (
-        if key == 13 then [ wrapMsg <| LogIn data.nickname data.password ]
+        if key == Config.enterKey then [ wrapMsg <| LogIn data.nickname data.password ]
         else []
       )
