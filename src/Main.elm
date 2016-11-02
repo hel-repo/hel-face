@@ -9,6 +9,8 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Base.Tools exposing (batchMsg)
 
+import User.Messages as UMsg
+
 import Routing exposing (routeMessage, Route(..))
 import Update exposing (update)
 import View exposing (view)
@@ -21,7 +23,7 @@ init result =
       Routing.routeFromResult result
   in
     ( initialModel currentRoute
-    , batchMsg ( routeMessage currentRoute )
+    , batchMsg <| (UserMsg UMsg.CheckSession) :: (routeMessage currentRoute)
     )
 
 

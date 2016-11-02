@@ -4,7 +4,7 @@ import Material
 import Routing
 
 import Package.Models exposing (PackageListData)
-import User.Models exposing (UserData)
+import User.Models exposing (UserData, emptyUser)
 
 
 type alias Model =
@@ -35,11 +35,7 @@ initialModel route =
       }
   , userData =
       { mdl = materialModel
-      , user =
-          { nickname = ""
-          , password = ""
-          , groups = []
-          }
+      , user = emptyUser
       , loggedin = False
       , error = ""
       , loading = False

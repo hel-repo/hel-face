@@ -1,10 +1,17 @@
 module User.Decoders exposing (..)
 
-import Json.Decode as Json exposing ((:=), succeed)
+import Json.Decode as Json exposing ((:=), succeed, oneOf)
 import Json.Decode.Extra exposing ((|:))
 
 import User.Models exposing (..)
 
+
+profileDecoder : Json.Decoder Profile
+profileDecoder =
+  Json.succeed Profile
+    |: ("success" := Json.bool)
+    |: oneOf [ Json.at ["data"] ("nickname" := Json.string), succeed "" ]
+    |: oneOf [ "logged_in" := Json.bool, succeed False ]
 
 userDecoder : Json.Decoder User
 userDecoder =

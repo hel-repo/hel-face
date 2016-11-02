@@ -7,9 +7,9 @@ import Task exposing (Task)
 import Navigation
 
 import Base.Config as Config
-import User.Decoders exposing (userDecoder)
+import User.Decoders exposing (userDecoder, profileDecoder)
 import User.Messages exposing (Msg(..))
-import User.Models exposing (UserData)
+import User.Models exposing (UserData, emptyUser)
 
 
 wrapMsg : Msg -> Cmd Msg
@@ -68,6 +68,13 @@ fetchUser nickname =
     |> Task.perform ErrorOccurred UserFetched
 
 
+checkSession : Cmd Msg
+checkSession =
+  get' profileDecoder (Config.apiHost ++ "profile")
+    |> Task.mapError toString
+    |> Task.perform ErrorOccurred SessionChecked
+
+
 update : Msg -> UserData -> ( UserData, Cmd Msg )
 update message data =
   case message of
@@ -93,13 +100,19 @@ update message data =
     LogOut ->
       data ! [ logout ]
     LoggedOut ->
-      { data | loggedin = False } ! [ Navigation.newUrl "#auth" ]
+      { data | loggedin = False, user = emptyUser } ! [ Navigation.newUrl "#auth" ]
 
     FetchUser name ->
       data ! [ fetchUser name ]
-
     UserFetched user ->
       { data | user = user } ! []
+
+    CheckSession ->
+      data ! [ checkSession ]
+    SessionChecked profile ->
+      let user = data.user
+      in { data | user = { user | nickname = profile.nickname }, loggedin = profile.loggedin }
+         ! if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else []
 
     -- Navigation callbacks
     GoToAuth ->

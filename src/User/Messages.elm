@@ -1,6 +1,6 @@
 module User.Messages exposing (..)
 
-import User.Models exposing (User)
+import User.Models exposing (User, Profile)
 
 type Msg
   = NoOp
@@ -12,6 +12,8 @@ type Msg
   | LoggedOut
   | FetchUser String
   | UserFetched User
+  | CheckSession
+  | SessionChecked Profile
   -- Navigation
   | GoToAuth
   | GoToRegister
