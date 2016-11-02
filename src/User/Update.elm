@@ -116,10 +116,10 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      data ! []
+      { data | error = "" } ! []
 
     GoToRegister ->
-      data ! []
+      { data | error = "" } ! []
 
     -- Other
     InputNickname nickname ->
