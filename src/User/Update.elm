@@ -1,6 +1,6 @@
 module User.Update exposing (..)
 
-import Http exposing (RawError, Response)
+import Http exposing (RawError, Response, defaultSettings)
 import Task exposing (Task)
 
 import Navigation
@@ -17,7 +17,7 @@ wrapMsg msg =
 
 post' : String -> String -> Task RawError Response
 post' url data =
-    Http.send Http.defaultSettings
+  Http.send { defaultSettings | withCredentials = True }
     { verb = "POST"
     , headers = []
     , url = url
@@ -38,6 +38,14 @@ login nickname password =
       ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
     |> Task.mapError toString
     |> Task.perform ErrorOccurred parseResult
+
+logout : Cmd Msg
+logout =
+  post'
+      (Config.apiHost ++ "auth")
+      ("{ \"action\": \"log-out\" }")
+    |> Task.mapError toString
+    |> Task.perform (always LoggedOut) (always LoggedOut)
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg )
@@ -61,6 +69,11 @@ update message data =
         , loading = False
         , error = ""
       } ! [ Navigation.newUrl "#packages" ]
+
+    LogOut ->
+      data ! [ logout ]
+    LoggedOut ->
+      { data | loggedin = False } ! [ Navigation.newUrl "#auth" ]
 
     -- Navigation callbacks
     GoToAuth ->

@@ -13,6 +13,7 @@ import Material.Options as Options exposing (cs)
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
@@ -43,6 +44,7 @@ profile data =
                   [ Button.raised
                   , Button.ripple
                   , cs "profile-button"
+                  , Button.onClick <| UserMsg UMsg.LogOut
                   ]
                   [ Icon.i "close", text "Log Out"]
               ]

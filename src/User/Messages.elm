@@ -6,6 +6,8 @@ type Msg
   -- Network
   | LogIn String String
   | LoggedIn
+  | LogOut
+  | LoggedOut
   -- Navigation
   | GoToAuth
   | GoToRegister
