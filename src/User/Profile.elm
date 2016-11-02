@@ -2,9 +2,11 @@ module User.Profile exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
+import List exposing (map)
 
 import Material.Button as Button
 import Material.Card as Card
+import Material.Chip as Chip
 import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
@@ -21,6 +23,14 @@ white : Options.Property c m
 white =
   Color.text Color.white
 
+badge : String -> Html Msg
+badge group =
+  Chip.button
+    [ cs (if group == "admins" then "admin-badge" else "user-badge" ) ]
+    [ Chip.content []
+        [ text group ]
+    ]
+
 profile : UserData -> Html Msg
 profile data =
   div
@@ -30,17 +40,13 @@ profile data =
         [ Card.title [ Card.border ] [ Card.head [ white ] [ text "Profile" ] ]
         , Card.actions [ ]
           [ Icon.view "account_circle" [ cs "avatar" ]
+          , div [ class "badges" ]
+              ( map badge data.user.groups )
           , Options.styled p
               [ Typo.subhead, cs "profile-nickname" ]
-              [ text data.nickname ]
+              [ text data.user.nickname ]
           , div [ ]
-              [ Button.render Mdl [10] data.mdl
-                  [ Button.raised
-                  , Button.ripple
-                  , cs "profile-button"
-                  ]
-                  [ Icon.i "mode_edit", text "Edit"]
-              , Button.render Mdl [11] data.mdl
+              [ Button.render Mdl [11] data.mdl
                   [ Button.raised
                   , Button.ripple
                   , cs "profile-button"

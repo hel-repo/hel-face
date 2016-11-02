@@ -59,7 +59,7 @@ auth data =
           [ Button.render Mdl [5] data.mdl
               [ Button.raised
               , Button.ripple
-              , Button.onClick <| UserMsg (UMsg.LogIn data.nickname data.password)
+              , Button.onClick <| UserMsg (UMsg.LogIn data.user.nickname data.user.password)
               ]
               [ text "Log In"]
           , Options.styled p

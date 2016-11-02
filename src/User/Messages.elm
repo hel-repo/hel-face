@@ -1,5 +1,7 @@
 module User.Messages exposing (..)
 
+import User.Models exposing (User)
+
 type Msg
   = NoOp
   | ErrorOccurred String
@@ -8,6 +10,8 @@ type Msg
   | LoggedIn
   | LogOut
   | LoggedOut
+  | FetchUser String
+  | UserFetched User
   -- Navigation
   | GoToAuth
   | GoToRegister

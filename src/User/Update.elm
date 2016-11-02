@@ -1,11 +1,13 @@
 module User.Update exposing (..)
 
-import Http exposing (RawError, Response, defaultSettings)
+import Http exposing (Error, RawError, Response, defaultSettings)
+import Json.Decode as Json
 import Task exposing (Task)
 
 import Navigation
 
 import Base.Config as Config
+import User.Decoders exposing (userDecoder)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (UserData)
 
@@ -48,6 +50,24 @@ logout =
     |> Task.perform (always LoggedOut) (always LoggedOut)
 
 
+get' : Json.Decoder value -> String -> Task Error value
+get' decoder url =
+  let request =
+        { verb = "GET"
+        , headers = []
+        , url = url
+        , body = Http.empty
+        }
+  in Http.fromJson decoder
+        <| Http.send { defaultSettings | withCredentials = True } request
+
+fetchUser : String -> Cmd Msg
+fetchUser nickname =
+  get' userDecoder (Config.apiHost ++ "users/" ++ nickname)
+    |> Task.mapError toString
+    |> Task.perform ErrorOccurred UserFetched
+
+
 update : Msg -> UserData -> ( UserData, Cmd Msg )
 update message data =
   case message of
@@ -68,12 +88,18 @@ update message data =
         | loggedin = True
         , loading = False
         , error = ""
-      } ! [ Navigation.newUrl "#packages" ]
+      } ! [ Navigation.newUrl "#packages", wrapMsg <| FetchUser data.user.nickname ]
 
     LogOut ->
       data ! [ logout ]
     LoggedOut ->
       { data | loggedin = False } ! [ Navigation.newUrl "#auth" ]
+
+    FetchUser name ->
+      data ! [ fetchUser name ]
+
+    UserFetched user ->
+      { data | user = user } ! []
 
     -- Navigation callbacks
     GoToAuth ->
@@ -84,13 +110,15 @@ update message data =
 
     -- Other
     InputNickname nickname ->
-      { data | nickname = nickname } ! []
+      let user = data.user
+      in { data | user = { user | nickname = nickname } } ! []
 
     InputPassword password ->
-      { data | password = password } ! []
+      let user = data.user
+      in { data | user = { user | password = password } } ! []
 
     InputKey key ->
       data ! (
-        if key == Config.enterKey then [ wrapMsg <| LogIn data.nickname data.password ]
+        if key == Config.enterKey then [ wrapMsg <| LogIn data.user.nickname data.user.password ]
         else []
       )
