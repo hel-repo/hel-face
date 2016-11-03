@@ -20,4 +20,6 @@ type Msg
   -- Other
   | InputNickname String
   | InputPassword String
+  | InputRetryPassword String
+  | InputEmail String
   | InputKey Int

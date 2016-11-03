@@ -125,10 +125,15 @@ update message data =
     InputNickname nickname ->
       let user = data.user
       in { data | user = { user | nickname = nickname } } ! []
-
     InputPassword password ->
       let user = data.user
       in { data | user = { user | password = password } } ! []
+    InputRetryPassword password ->
+      let user = data.user
+      in { data | user = { user | retryPassword = password } } ! []
+    InputEmail email ->
+      let user = data.user
+      in { data | user = { user | email = email } } ! []
 
     InputKey key ->
       data ! (

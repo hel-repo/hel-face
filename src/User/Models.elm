@@ -14,12 +14,13 @@ type alias Profile =
 type alias User =
   { nickname : String
   , password : String
+  , retryPassword : String
   , email : String
   , groups : List String
   }
 
 emptyUser : User
-emptyUser = { nickname = "", password = "", email = "", groups = [] }
+emptyUser = { nickname = "", password = "", retryPassword = "", email = "", groups = [] }
 
 -- User interface state
 type alias UserData =

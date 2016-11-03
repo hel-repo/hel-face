@@ -16,6 +16,9 @@
   color: #fff;
   padding-top: 10px;
 }
+.profile-panel {
+  padding-top: 10px;
+}
 .profile-button {
   margin: 10px;
 }
@@ -34,4 +37,9 @@
 }
 .user-badge {
   background: #bbb;
+}
+
+/* MDL tweaks */
+.mdl-textfield__error {
+  color: rgb(255, 82, 82);
 }

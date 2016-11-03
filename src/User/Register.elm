@@ -3,6 +3,7 @@ module User.Register exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
+import String exposing (isEmpty)
 
 import Material.Button as Button
 import Material.Card as Card
@@ -15,6 +16,7 @@ import Material.Textfield as Textfield
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
@@ -35,6 +37,7 @@ register data =
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
               , Textfield.text'
+              , Textfield.onInput <| UMsg.InputNickname >> UserMsg
               ]
           ]
       , div [ ]
@@ -42,6 +45,7 @@ register data =
               [ Textfield.label "E-mail"
               , Textfield.floatingLabel
               , Textfield.text'
+              , Textfield.onInput <| UMsg.InputEmail >> UserMsg
               ]
           ]
       , div [ ]
@@ -49,6 +53,7 @@ register data =
             [ Textfield.label "Password"
             , Textfield.floatingLabel
             , Textfield.password
+            , Textfield.onInput <| UMsg.InputPassword >> UserMsg
             ]
           ]
       , div [ ]
@@ -56,9 +61,15 @@ register data =
             [ Textfield.label "Retype the password"
             , Textfield.floatingLabel
             , Textfield.password
+            , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
+            , if (not <| data.user.password == data.user.retryPassword)
+              && (not <| isEmpty data.user.retryPassword) then
+                Textfield.error <| "Doesn't match password!"
+              else
+                Options.nop
             ]
           ]
-      , div [ ]
+      , div [ class "profile-panel" ]
           [ Button.render Mdl [14] data.mdl
               [ Button.raised
               , Button.ripple

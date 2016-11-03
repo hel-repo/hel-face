@@ -55,7 +55,7 @@ auth data =
             , Textfield.on "keyup" keyDecoder
             ]
           ]
-      , div [ ]
+      , div [ class "profile-panel" ]
           [ Button.render Mdl [5] data.mdl
               [ Button.raised
               , Button.ripple
