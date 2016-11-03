@@ -18,6 +18,7 @@ userDecoder =
   Json.succeed User
     |: ("nickname" := Json.string)
     |: succeed "" -- We do not need this password field anymore, so we can erase it
+    |: succeed "" -- Same for email
     |: ("groups" := Json.list Json.string)
 
 singleUserDecoder : Json.Decoder User

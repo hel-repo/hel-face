@@ -3,7 +3,7 @@ module User.Models exposing (..)
 import Material
 
 
--- Auxiliary model, used for checking session
+-- Auxiliary model, used for checking a session
 type alias Profile =
   { success : Bool
   , nickname : String
@@ -14,11 +14,12 @@ type alias Profile =
 type alias User =
   { nickname : String
   , password : String
+  , email : String
   , groups : List String
   }
 
 emptyUser : User
-emptyUser = { nickname = "", password = "", groups = [] }
+emptyUser = { nickname = "", password = "", email = "", groups = [] }
 
 -- User interface state
 type alias UserData =
