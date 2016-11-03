@@ -50,7 +50,6 @@ type alias PkgStatsDate =
 
 type alias Stats =
   { views : Int
-  , downloads : Int
   , date : PkgStatsDate
   }
 

@@ -7,7 +7,7 @@ import Task exposing (Task)
 import Base.Config as Config
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
-import Package.Decoders exposing (packageDecoder, packagesDecoder)
+import Package.Decoders exposing (singlePackageDecoder, packagesDecoder)
 
 
 wrapMsg : Msg -> Cmd Msg
@@ -16,7 +16,7 @@ wrapMsg msg =
 
 lookupPackage : String -> Cmd Msg
 lookupPackage name =
-  Http.get packageDecoder (Config.apiHost ++ "packages/" ++ name)
+  Http.get singlePackageDecoder (Config.apiHost ++ "packages/" ++ name)
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackageFetched
 

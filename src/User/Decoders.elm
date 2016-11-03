@@ -19,3 +19,7 @@ userDecoder =
     |: ("nickname" := Json.string)
     |: succeed "" -- We do not need this password field anymore, so we can erase it
     |: ("groups" := Json.list Json.string)
+
+singleUserDecoder : Json.Decoder User
+singleUserDecoder =
+  Json.at ["data"] userDecoder

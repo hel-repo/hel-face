@@ -7,7 +7,7 @@ import Task exposing (Task)
 import Navigation
 
 import Base.Config as Config
-import User.Decoders exposing (userDecoder, profileDecoder)
+import User.Decoders exposing (singleUserDecoder, profileDecoder)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (UserData, emptyUser)
 
@@ -21,7 +21,7 @@ post' : String -> String -> Task RawError Response
 post' url data =
   Http.send { defaultSettings | withCredentials = True }
     { verb = "POST"
-    , headers = []
+    , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
     , url = url
     , body = Http.string data
     }
@@ -63,7 +63,7 @@ get' decoder url =
 
 fetchUser : String -> Cmd Msg
 fetchUser nickname =
-  get' userDecoder (Config.apiHost ++ "users/" ++ nickname)
+  get' singleUserDecoder (Config.apiHost ++ "users/" ++ nickname)
     |> Task.mapError toString
     |> Task.perform ErrorOccurred UserFetched
 

@@ -67,7 +67,6 @@ stats : Json.Decoder Stats
 stats =
   Json.succeed Stats
     |: ("views" := Json.int)
-    |: ("downloads" := Json.int)
     |: ("date" := pkgStatsDate)
 
 packageDecoder : Json.Decoder Package
@@ -86,4 +85,8 @@ packageDecoder =
 
 packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
-  Json.at ["data"] ( Json.list packageDecoder )
+  Json.at ["data", "list"] ( Json.list packageDecoder )
+
+singlePackageDecoder : Json.Decoder Package
+singlePackageDecoder =
+  Json.at ["data"] packageDecoder
