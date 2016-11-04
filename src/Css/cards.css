@@ -31,7 +31,6 @@
 /* Custom elements */
 .card-title {
   flex-direction: column;
-  cursor: pointer;
 }
 .card-title a {
   color: inherit;

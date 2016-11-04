@@ -33,9 +33,7 @@ card mdl share index package =
     [ Card.view
         [ Elevation.e2 ]
         [ Card.title
-          [ cs "card-title"
-          , Options.attribute <| Html.Events.onClick (RoutePackageDetails package.name)
-          ]
+          [ cs "card-title" ]
           [ Card.head [ white ] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
         , Card.text
             [ white ]
