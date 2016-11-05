@@ -12,6 +12,7 @@ import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
 import Material.Options as Options exposing (cs)
+import Material.Spinner as Loading
 import Material.Textfield as Textfield
 import Material.Typography as Typo
 
@@ -19,8 +20,6 @@ import Base.Messages exposing (Msg(..))
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
-
--- TODO: add functionality
 
 white : Options.Property c m
 white =
@@ -73,6 +72,7 @@ register data =
           [ Button.render Mdl [14] data.mdl
               [ Button.raised
               , Button.ripple
+              , Button.onClick <| UserMsg (UMsg.Register data.user)
               ]
               [ text "Register"]
           , Options.styled p
@@ -88,11 +88,20 @@ register data =
 
 view : UserData -> Html Msg
 view data =
-  div
-    [ class "page auth-card" ]
-    [ grid [ ]
-      [ cell [ size All 3, size Tablet 0 ] [ ]
-      , cell [ size All 6, size Tablet 8 ] [ register data ]
-      , cell [ size All 3, size Tablet 0 ] [ ]
+  if data.loading then
+    Loading.spinner
+      [ Loading.active True
+      , cs "spinner"
       ]
-    ]
+  else
+    div
+      [ class "page auth-card" ]
+      [ div
+          [ class "error" ]
+          [ text data.error ]
+      , grid [ ]
+          [ cell [ size All 3, size Tablet 0 ] [ ]
+          , cell [ size All 6, size Tablet 8 ] [ register data ]
+          , cell [ size All 3, size Tablet 0 ] [ ]
+          ]
+      ]

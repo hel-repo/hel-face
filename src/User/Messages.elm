@@ -14,6 +14,8 @@ type Msg
   | UserFetched User
   | CheckSession
   | SessionChecked Profile
+  | Register User
+  | Registered
   -- Navigation
   | GoToAuth
   | GoToRegister

@@ -1,7 +1,8 @@
 module User.Update exposing (..)
 
 import Http exposing (Error, RawError, Response, defaultSettings)
-import Json.Decode as Json
+import Json.Decode as Json exposing ((:=))
+import String exposing (isEmpty)
 import Task exposing (Task)
 
 import Navigation
@@ -9,7 +10,7 @@ import Navigation
 import Base.Config as Config
 import User.Decoders exposing (singleUserDecoder, profileDecoder)
 import User.Messages exposing (Msg(..))
-import User.Models exposing (UserData, emptyUser)
+import User.Models exposing (User, UserData, emptyUser)
 
 
 wrapMsg : Msg -> Cmd Msg
@@ -26,11 +27,53 @@ post' url data =
     , body = Http.string data
     }
 
-parseResult : Response -> Msg
-parseResult response =
+parseAuthResult : Response -> Msg
+parseAuthResult response =
   case response.status of
     200 -> LoggedIn
     _ -> ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?"
+
+
+-- TODO: simplify this
+fromJson' : Json.Decoder String -> Task RawError Response -> Task Error String
+fromJson' decoder response =
+  let decode str =
+        case Json.decodeString decoder str of
+          Ok v -> Task.succeed v
+          Err msg -> Task.fail (Http.UnexpectedPayload msg)
+  in
+    Task.mapError promoteError response
+      `Task.andThen` handleResponse decode
+
+handleResponse : (String -> Task Error String) -> Response -> Task Error String
+handleResponse handle response =
+  case response.status of
+    200 ->
+      Task.succeed ""
+    _ ->
+      case response.value of
+        Http.Text str ->
+            handle str
+        _ ->
+            Task.fail (Http.UnexpectedPayload "Response body is a blob, expecting a string.")
+
+promoteError : RawError -> Error
+promoteError rawError =
+  case rawError of
+    Http.RawTimeout -> Http.Timeout
+    Http.RawNetworkError -> Http.NetworkError
+
+registerResponseDecoder : Json.Decoder String
+registerResponseDecoder =
+  "message" := Json.string
+
+parseRegisterResult : String -> Msg
+parseRegisterResult response =
+  if isEmpty response then
+    Registered
+  else
+    ErrorOccurred <| "Sorry! " ++ response ++ " Wanna try again?"
+--
 
 
 login : String -> String -> Cmd Msg
@@ -39,7 +82,7 @@ login nickname password =
       (Config.apiHost ++ "auth")
       ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
     |> Task.mapError toString
-    |> Task.perform ErrorOccurred parseResult
+    |> Task.perform ErrorOccurred parseAuthResult
 
 logout : Cmd Msg
 logout =
@@ -73,6 +116,18 @@ checkSession =
   get' profileDecoder (Config.apiHost ++ "profile")
     |> Task.mapError toString
     |> Task.perform ErrorOccurred SessionChecked
+
+register : User -> Cmd Msg
+register user =
+  fromJson' registerResponseDecoder
+    ( post'
+        (Config.apiHost ++ "auth")
+        ("{ \"action\": \"register\",
+            \"nickname\": \"" ++ user.nickname ++ "\",
+            \"email\": \"" ++ user.email ++ "\",
+            \"password\": \"" ++ user.password ++ "\" }") )
+    |> Task.mapError toString
+    |> Task.perform ErrorOccurred parseRegisterResult
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg )
@@ -113,6 +168,11 @@ update message data =
       let user = data.user
       in { data | user = { user | nickname = profile.nickname }, loggedin = profile.loggedin }
          ! if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else []
+
+    Register user ->
+      data ! [ register user ]
+    Registered ->
+      data ! [ Navigation.newUrl "#auth" ]
 
     -- Navigation callbacks
     GoToAuth ->
