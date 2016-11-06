@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (attribute, class, href)
 import Html.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder, (:=))
-import String exposing (contains)
+import String exposing (contains, isEmpty)
 
 import Material.Button as Button
 import Material.Card as Card
@@ -100,8 +100,25 @@ viewBody : Model -> Html Msg
 viewBody model =
   div [ ]
     [ div
-        [ class "error" ]
-        ( if contains "404" model.packageData.error then [] else [ text model.packageData.error ] )
+        [ class "error"
+        , onClick DismissNotification
+        ]
+        ( if isEmpty model.error || contains "404" model.error then []
+          else
+            [ Icon.view "error_outline" [ cs "align-middle" ]
+            , span [ class "align-middle notification-text" ] [ text model.error ]
+            ]
+        )
+    , div
+        [ class "notify"
+        , onClick DismissNotification
+        ]
+        ( if isEmpty model.notification then []
+          else
+            [ Icon.view "info_outline" [ cs "align-middle" ]
+            , span [ class "align-middle notification-text" ] [ text model.notification ]
+            ]
+        )
     , case model.route of
         PackageListRoute searchData ->
           Package.List.view model.packageData

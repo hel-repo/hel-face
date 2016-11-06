@@ -16,7 +16,7 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
-import Package.Models exposing (PackageListData, Package)
+import Package.Models exposing (PackageData, Package)
 import Package.Messages as PMsg
 
 
@@ -63,7 +63,7 @@ card mdl share index package =
     ]
 
 
-view : PackageListData -> Html Msg
+view : PackageData -> Html Msg
 view data =
     if data.loading then
       Loading.spinner

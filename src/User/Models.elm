@@ -27,6 +27,13 @@ type alias UserData =
   { mdl : Material.Model
   , user : User
   , loggedin : Bool
-  , error : String
   , loading : Bool
+  }
+
+emptyUserData : Material.Model -> UserData
+emptyUserData materialModel =
+  { mdl = materialModel
+  , user = emptyUser
+  , loggedin = False
+  , loading = False
   }

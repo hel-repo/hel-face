@@ -24,7 +24,7 @@ import Material.Typography as Typo
 import Base.Messages exposing (Msg(..))
 import Package.Messages as PMsg
 import Package.Models exposing
-  ( PackageListData
+  ( PackageData
   , Package, Version, PkgVersionFile, PkgVersionDependency
   )
 import Base.Tools exposing ((!!))
@@ -171,7 +171,7 @@ dependencies version =
       div [ class "dep-block" ] [ subtitle "No dependencies" ]
 
 
-detailsCard : PackageListData -> Package -> Html Msg
+detailsCard : PackageData -> Package -> Html Msg
 detailsCard data package =
   Card.view
     [ Elevation.e2 ]
@@ -234,7 +234,7 @@ notFoundCard =
     ]
 
 
-view : PackageListData -> Html Msg
+view : PackageData -> Html Msg
 view data =
   if data.loading then
     Loading.spinner

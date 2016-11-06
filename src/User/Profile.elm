@@ -62,10 +62,7 @@ view : UserData -> Html Msg
 view data =
   div
     [ class "page auth-card" ]
-    [ div
-        [ class "error" ]
-        [ text data.error ]
-    , grid [ ]
+    [ grid [ ]
         [ cell [ size All 3, size Tablet 0 ] [ ]
         , cell [ size All 6, size Tablet 8 ] [ profile data ]
         , cell [ size All 3, size Tablet 0 ] [ ]

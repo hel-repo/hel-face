@@ -66,13 +66,22 @@ type alias Package =
   , stats : Stats
   }
 
-type alias PackageListData =
+
+type alias PackageData =
   { mdl : Material.Model
   , packages : List Package
   , version : Int
   , loading : Bool
-  , error : String
   , share : String
+  }
+
+emptyPackageData : Material.Model -> PackageData
+emptyPackageData materialModel =
+  { mdl = materialModel
+  , packages = []
+  , loading = False
+  , version = 0
+  , share = ""
   }
 
 

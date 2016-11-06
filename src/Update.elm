@@ -8,7 +8,7 @@ import Material
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
-import Base.Tools exposing (wrapMsg)
+import Base.Tools exposing (wrapMsg, batchMsg)
 import Package.Models exposing (searchByName)
 import Package.Update
 import User.Update
@@ -54,6 +54,16 @@ update msg model =
     RouteProfile ->
       ( model, Navigation.newUrl "#profile" )
 
+    -- Notifications handling
+    ErrorOccurred str ->
+      { model | error = str } ! []
+
+    SomethingOccurred str ->
+      { model | notification = str } ! []
+
+    DismissNotification ->
+      { model | error = "", notification = "" } ! []
+
     -- Other
     InputSearch str ->
       { model | search = str } ! []
@@ -67,13 +77,14 @@ update msg model =
     -- Hook module messages up
     PackageMsg subMsg ->
       let
-        ( updatedData, cmd ) =
+        ( updatedData, cmd, transferred ) =
           Package.Update.update subMsg model.packageData
       in
-        ( { model | packageData = updatedData }, Cmd.map PackageMsg cmd )
+        { model | packageData = updatedData } ! [ Cmd.map PackageMsg cmd, batchMsg transferred ]
+
     UserMsg subMsg ->
       let
-        ( updatedData, cmd ) =
+        ( updatedData, cmd, transferred ) =
           User.Update.update subMsg model.userData
       in
-        ( { model | userData = updatedData }, Cmd.map UserMsg cmd )
+        { model | userData = updatedData } ! [ Cmd.map UserMsg cmd, batchMsg transferred ]

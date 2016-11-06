@@ -7,6 +7,9 @@ import User.Messages as UMsg
 
 type Msg
   = Mdl (Material.Msg Msg)
+  | ErrorOccurred String
+  | SomethingOccurred String
+  | DismissNotification
   | RoutePackageList SearchData
   | RoutePackageDetails String
   | RouteAuth

@@ -34,10 +34,30 @@ body {
   color: #fff;
   background: #bb1f2f;
   padding: 10px;
-  margin: 1em;
+  margin: 1.1em;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 2px;
+  cursor: pointer;
+  vertical-align: middle;
 }
 .error:empty {
   display: none;
+}
+.notify {
+  color: #fff;
+  background: #1fbb85;
+  padding: 10px;
+  margin: 1.1em;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 2px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.notify:empty {
+  display: none;
+}
+.notification-text {
+  padding-left: 10px;
 }
 
 

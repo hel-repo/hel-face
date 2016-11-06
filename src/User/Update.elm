@@ -8,6 +8,8 @@ import Task exposing (Task)
 import Navigation
 
 import Base.Config as Config
+import Base.Messages as Outer
+import Base.Tools as Tools exposing ((~))
 import User.Decoders exposing (singleUserDecoder, profileDecoder)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (User, UserData, emptyUser)
@@ -130,73 +132,73 @@ register user =
     |> Task.perform ErrorOccurred parseRegisterResult
 
 
-update : Msg -> UserData -> ( UserData, Cmd Msg )
+update : Msg -> UserData -> ( UserData, Cmd Msg, List Outer.Msg )
 update message data =
   case message of
     NoOp ->
-      ( data, Cmd.none )
+      ( data, Cmd.none, [] )
     ErrorOccurred message ->
       { data
         | loggedin = False
-        , error = message
         , loading = False
-      } ! []
+      } ! [] ~ [ Outer.ErrorOccurred message ]
 
     -- Network
     LogIn nickname password ->
-      { data | loading = True } ! [ login nickname password ]
+      { data | loading = True } ! [ login nickname password ] ~ []
     LoggedIn ->
       { data
         | loggedin = True
         , loading = False
-        , error = ""
-      } ! [ Navigation.newUrl "#packages", wrapMsg <| FetchUser data.user.nickname ]
+      } ! [ Navigation.newUrl "#packages", wrapMsg <| FetchUser data.user.nickname ] ~ []
 
     LogOut ->
-      data ! [ logout ]
+      { data | loading = True } ! [ logout ] ~ []
     LoggedOut ->
-      { data | loggedin = False, user = emptyUser } ! [ Navigation.newUrl "#auth" ]
+      { data | loading = False, loggedin = False, user = emptyUser } ! [ Navigation.newUrl "#auth" ] ~ []
 
     FetchUser name ->
-      data ! [ fetchUser name ]
+      data ! [ fetchUser name ] ~ []
     UserFetched user ->
-      { data | user = user } ! []
+      { data | user = user } ! [] ~ []
 
     CheckSession ->
-      data ! [ checkSession ]
+      data ! [ checkSession ] ~ []
     SessionChecked profile ->
       let user = data.user
       in { data | user = { user | nickname = profile.nickname }, loggedin = profile.loggedin }
-         ! if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else []
+         ! ( if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else [] ) ~ []
 
     Register user ->
-      data ! [ register user ]
+      { data | loading = True } ! [ register user ] ~ []
     Registered ->
-      data ! [ Navigation.newUrl "#auth" ]
+      { data | loading = False }
+      ! [ Navigation.newUrl "#auth" ]
+      ~ [ Outer.SomethingOccurred "You have registered successfully!" ]
 
     -- Navigation callbacks
     GoToAuth ->
-      { data | error = "" } ! []
+      data ! [] ~ []
 
     GoToRegister ->
-      { data | error = "" } ! []
+      data ! [] ~ []
 
     -- Other
     InputNickname nickname ->
       let user = data.user
-      in { data | user = { user | nickname = nickname } } ! []
+      in { data | user = { user | nickname = nickname } } ! [] ~ []
     InputPassword password ->
       let user = data.user
-      in { data | user = { user | password = password } } ! []
+      in { data | user = { user | password = password } } ! [] ~ []
     InputRetryPassword password ->
       let user = data.user
-      in { data | user = { user | retryPassword = password } } ! []
+      in { data | user = { user | retryPassword = password } } ! [] ~ []
     InputEmail email ->
       let user = data.user
-      in { data | user = { user | email = email } } ! []
+      in { data | user = { user | email = email } } ! [] ~ []
 
     InputKey key ->
       data ! (
         if key == Config.enterKey then [ wrapMsg <| LogIn data.user.nickname data.user.password ]
         else []
-      )
+      ) ~ []

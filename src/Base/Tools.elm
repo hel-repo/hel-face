@@ -14,6 +14,12 @@ batchMsg : List Msg -> Cmd Msg
 batchMsg list =
   Cmd.batch ( map wrapMsg list )
 
+-- Get element by index
 infixl 9 !!
 (!!) : List a -> Int -> Maybe a
 (!!) xs n  = head (drop n xs)
+
+-- Batch inner messages
+(~) : (model, Cmd msg) -> List outer -> (model, Cmd msg, List outer)
+(~) (model, cmd) outerMessages =
+  (model, cmd, outerMessages)

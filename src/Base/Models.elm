@@ -3,15 +3,17 @@ module Base.Models exposing (..)
 import Material
 import Routing
 
-import Package.Models exposing (PackageListData)
-import User.Models exposing (UserData, emptyUser)
+import Package.Models exposing (PackageData, emptyPackageData)
+import User.Models exposing (UserData, emptyUserData)
 
 
 type alias Model =
   { mdl : Material.Model
   , route : Routing.Route
+  , error : String
+  , notification : String
   , search : String
-  , packageData : PackageListData
+  , packageData : PackageData
   , userData : UserData
   }
 
@@ -24,20 +26,11 @@ initialModel : Routing.Route -> Model
 initialModel route =
   { mdl = materialModel
   , route = route
+  , error = ""
+  , notification = ""
   , search = ""
   , packageData =
-      { mdl = materialModel
-      , packages = []
-      , loading = False
-      , version = 0
-      , error = ""
-      , share = ""
-      }
+      emptyPackageData materialModel
   , userData =
-      { mdl = materialModel
-      , user = emptyUser
-      , loggedin = False
-      , error = ""
-      , loading = False
-      }
+      emptyUserData materialModel
   }
