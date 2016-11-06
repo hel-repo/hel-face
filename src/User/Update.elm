@@ -5,8 +5,6 @@ import Json.Decode as Json exposing ((:=))
 import String exposing (isEmpty)
 import Task exposing (Task)
 
-import Navigation
-
 import Base.Config as Config
 import Base.Messages as Outer
 import Base.Tools as Tools exposing ((~))
@@ -150,12 +148,14 @@ update message data =
       { data
         | loggedin = True
         , loading = False
-      } ! [ Navigation.newUrl "#packages", wrapMsg <| FetchUser data.user.nickname ] ~ []
+      }
+      ! [ wrapMsg <| FetchUser data.user.nickname ]
+      ~ [ Outer.Navigate "#packages" ]
 
     LogOut ->
       { data | loading = True } ! [ logout ] ~ []
     LoggedOut ->
-      { data | loading = False, loggedin = False, user = emptyUser } ! [ Navigation.newUrl "#auth" ] ~ []
+      { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate "#auth" ]
 
     FetchUser name ->
       data ! [ fetchUser name ] ~ []
@@ -173,8 +173,8 @@ update message data =
       { data | loading = True } ! [ register user ] ~ []
     Registered ->
       { data | loading = False }
-      ! [ Navigation.newUrl "#auth" ]
-      ~ [ Outer.SomethingOccurred "You have registered successfully!" ]
+      ! []
+      ~ [ Outer.Navigate "#auth", Outer.SomethingOccurred "You have registered successfully!" ]
 
     -- Navigation callbacks
     GoToAuth ->

@@ -32,6 +32,9 @@ update msg model =
           } ! [ uCmd ]
 
     -- Routing
+    Navigate url ->
+      model ! [ Navigation.newUrl url ]
+
     RoutePackageList searchData ->
       let packageData = model.packageData
       in

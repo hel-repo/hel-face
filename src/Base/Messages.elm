@@ -10,6 +10,7 @@ type Msg
   | ErrorOccurred String
   | SomethingOccurred String
   | DismissNotification
+  | Navigate String
   | RoutePackageList SearchData
   | RoutePackageDetails String
   | RouteAuth
