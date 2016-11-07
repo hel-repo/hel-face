@@ -16,6 +16,7 @@ import Material.Elevation as Elevation
 import Material.Grid as Grid
 import Material.Icon as Icon
 import Material.List as Lists
+import Material.Menu as Menu
 import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
@@ -184,8 +185,24 @@ detailsCard data package =
             , span [ class "align-top" ] [ license package.license ]
             ]
         ]
+    , Card.menu [ white ]
+        [ Menu.render Mdl [20] data.mdl
+            [ Menu.ripple, Menu.bottomRight ]
+            [ Menu.item
+                [ Menu.disabled ]
+                [ text "Edit" ]
+            , Menu.item
+                [ Menu.disabled
+                , Menu.divider
+                ]
+                [ text "Delete" ]
+            , Menu.item
+                [ ]
+                [ text "Share" ]
+            ]
+        ]
     , Card.text [ white ] [ Markdown.toHtml [] package.description ]
-    , Card.menu [ ] ( map chip package.tags )
+    , Card.actions [ ] ( map chip package.tags )
     , Card.actions [ white, cs "version-tabs" ]
         [ let versions = reverse <| sortBy .version package.versions
           in
