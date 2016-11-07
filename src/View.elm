@@ -1,7 +1,7 @@
 module View exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (attribute, class, href)
+import Html.Attributes exposing (attribute, class, href, src)
 import Html.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder, (:=))
 import String exposing (contains, isEmpty)
@@ -23,6 +23,7 @@ import Package.Details
 import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 import User.Auth
+import User.Messages as UMsg
 import User.Profile
 import User.Register
 
@@ -50,7 +51,9 @@ view model =
     { header =
       [ div
           [ class "header" ]
-          [ div [ class "header-title noselect", onClick <| RoutePackageList searchAll ] [ text "HEL Repository" ]
+          [ div
+              [ class "header-title noselect", onClick <| RoutePackageList searchAll ]
+              [ img [ src "static/media/logo.7c5853e0.png", class "header-image" ] [] ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl
                   [ Textfield.style
@@ -71,22 +74,33 @@ view model =
                   [ Icon.i "search"]
               ]
           , if model.userData.loggedin then
-              div [ class "login-button noselect" ]
-                  [ Button.render Mdl [2] model.mdl
+              div [ class "buttons noselect" ]
+                  [ Button.render Mdl [4] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      ]
+                      [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
+                  , Button.render Mdl [3] model.mdl
                       [ Button.minifab
                       , Button.ripple
                       , Button.onClick RouteProfile
                       ]
-                      [ Icon.view "account_circle" [ Icon.size48 ] ]
+                      [ Icon.view "account_circle" [ Icon.size36 ] ]
+                  , Button.render Mdl [2] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      , Button.onClick <| UserMsg UMsg.LogOut
+                      ]
+                      [ Icon.view "exit_to_app" [ Icon.size36 ] ]
                   ]
             else
-              div [ class "login-button noselect" ]
+              div [ class "buttons noselect" ]
                   [ Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
                       , Button.onClick RouteAuth
                       ]
-                      [ Icon.view "fingerprint" [ Icon.size48 ] ]
+                      [ Icon.view "fingerprint" [ Icon.size36 ] ]
                   ]
           ]
       ]

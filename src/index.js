@@ -4,6 +4,8 @@ require('./Css/header.css');
 require('./Css/cards.css');
 require('./Css/user.css');
 
+require('./Images/logo.png');
+
 var Elm = require('./Main.elm');
 
 var root = document.getElementById('root');
