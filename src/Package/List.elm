@@ -49,12 +49,13 @@ card mdl share index package =
         , Card.actions
             [ Card.border, cs "card-actions", white ]
             [ Button.render Mdl [10, index*2] mdl
-                [ Button.icon, Button.ripple ]
+                [ Button.icon, Button.ripple, cs "noselect" ]
                 [ Icon.i "favorite_border" ]
             , Button.render Mdl [10, index*2+1] mdl
                 [ Button.icon
                 , Button.ripple
                 , Button.onClick <| PackageMsg (PMsg.SharePackage package.name)
+                , cs "noselect"
                 , white
                 ]
                 [ Icon.i "share" ]

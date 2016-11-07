@@ -65,7 +65,7 @@ screensCard mdl package =
 
 chip : String -> Html Msg
 chip str =
-  Chip.span [] [ Chip.content [] [ text str ] ]
+  Chip.span [ cs "noselect" ] [ Chip.content [] [ text str ] ]
 
 
 licenseLink : String -> String -> Html Msg
@@ -123,7 +123,7 @@ file : PkgVersionFile -> Html Msg
 file file =
   Lists.li []
     [ Lists.content []
-      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18 ] ]
+      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
       , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
       , a [ class "cell align-top", href file.url ] [ text file.name ]
       ]
@@ -156,7 +156,7 @@ dependencies version =
                   ( Lists.li
                       [ Lists.withSubtitle ]
                       [ Lists.content [ ]
-                          [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18 ] ]
+                          [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
                           , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
                           , Lists.subtitle [ ]
                               [ span [ class "list-cell" ] [ text d.version ] ]
@@ -178,9 +178,9 @@ detailsCard data package =
     [ Card.title [ Card.border ]
         [ Card.head [ white ] [ text package.name ]
         , Card.subhead [ ]
-            [ span [ class "card-subtitle-icon" ] [ Icon.view "person" [ Icon.size18 ] ]
+            [ span [ class "card-subtitle-icon noselect" ] [ Icon.view "person" [ Icon.size18 ] ]
             , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
-            , span [ class "card-subtitle-icon card-license" ] [ Icon.view "copyright" [ Icon.size18 ] ]
+            , span [ class "card-subtitle-icon card-license noselect" ] [ Icon.view "copyright" [ Icon.size18 ] ]
             , span [ class "align-top" ] [ license package.license ]
             ]
         ]

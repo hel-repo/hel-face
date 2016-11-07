@@ -5,6 +5,9 @@
   margin-left: 5px;
   cursor: pointer;
 }
+.mdl-chip:active {
+  background-color: #727272;
+}
 .mdl-tabs__tab-bar {
   border-bottom: 1px solid rgba(0,0,0,.1)
 }

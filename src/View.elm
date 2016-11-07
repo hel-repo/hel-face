@@ -50,7 +50,7 @@ view model =
     { header =
       [ div
           [ class "header" ]
-          [ div [ class "header-title", onClick <| RoutePackageList searchAll ] [ text "HEL Repository" ]
+          [ div [ class "header-title noselect", onClick <| RoutePackageList searchAll ] [ text "HEL Repository" ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl
                   [ Textfield.style
@@ -65,13 +65,13 @@ view model =
               , Button.render Mdl [1] model.mdl
                   [ Button.icon
                   , Button.ripple
-                  , cs "search-icon"
+                  , cs "search-icon noselect"
                   , Button.onClick search
                   ]
                   [ Icon.i "search"]
               ]
           , if model.userData.loggedin then
-              div [ class "login-button" ]
+              div [ class "login-button noselect" ]
                   [ Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
@@ -80,7 +80,7 @@ view model =
                       [ Icon.view "account_circle" [ Icon.size48 ] ]
                   ]
             else
-              div [ class "login-button" ]
+              div [ class "login-button noselect" ]
                   [ Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
