@@ -3,7 +3,7 @@ module Package.List exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events
-import List exposing (map2, length)
+import List exposing (map2, length, isEmpty)
 
 import Material
 import Material.Button as Button
@@ -16,6 +16,7 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
+import Package.Details exposing (notFoundCard)
 import Package.Models exposing (PackageData, Package)
 import Package.Messages as PMsg
 
@@ -72,4 +73,5 @@ view data =
         , cs "spinner"
         ]
     else
-      div [] [ grid [] ( map2 (card data.mdl data.share) [1..(length data.packages)] data.packages ) ]
+      if isEmpty data.packages then div [ class "page" ] [ notFoundCard ]
+      else grid [] ( map2 (card data.mdl data.share) [1..(length data.packages)] data.packages )
