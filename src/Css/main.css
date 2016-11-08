@@ -86,3 +86,7 @@ body {
             user-select: none; /* Non-prefixed version, currently
                                   not supported by any browser */
 }
+
+.menu-icon {
+  padding-right: 10px;
+}

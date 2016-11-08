@@ -50,7 +50,11 @@ card mdl share index package =
         , Card.actions
             [ Card.border, cs "card-actions", white ]
             [ Button.render Mdl [10, index*2] mdl
-                [ Button.icon, Button.ripple, cs "noselect" ]
+                [ Button.icon
+                , Button.ripple
+                , Button.onClick <| SomethingOccurred "Thank you!"
+                , cs "noselect"
+                ]
                 [ Icon.i "favorite_border" ]
             , Button.render Mdl [10, index*2+1] mdl
                 [ Button.icon

@@ -73,6 +73,7 @@ type alias PackageData =
   , version : Int
   , loading : Bool
   , share : String
+  , username : String
   }
 
 emptyPackageData : Material.Model -> PackageData
@@ -82,6 +83,7 @@ emptyPackageData materialModel =
   , loading = False
   , version = 0
   , share = ""
+  , username = ""
   }
 
 

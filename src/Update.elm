@@ -89,5 +89,7 @@ update msg model =
       let
         ( updatedData, cmd, transferred ) =
           User.Update.update subMsg model.userData
+        packageData = model.packageData
       in
-        { model | userData = updatedData } ! [ Cmd.map UserMsg cmd, batchMsg transferred ]
+        { model | userData = updatedData, packageData = { packageData | username = updatedData.user.nickname } }
+        ! [ Cmd.map UserMsg cmd, batchMsg transferred ]

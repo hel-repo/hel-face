@@ -2,7 +2,7 @@ module Package.Details exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src)
-import List exposing (head, isEmpty, map, reverse, sortBy)
+import List exposing (head, isEmpty, map, reverse, sortBy, member)
 import String exposing (join)
 
 import Markdown
@@ -186,21 +186,31 @@ detailsCard data package =
             ]
         ]
     , Card.menu [ white ]
-        [ Menu.render Mdl [20] data.mdl
-            [ Menu.ripple, Menu.bottomRight ]
-            [ Menu.item
-                [ Menu.disabled ]
-                [ text "Edit" ]
-            , Menu.item
-                [ Menu.disabled
-                , Menu.divider
+        ( if member data.username package.owners then
+            [ Menu.render Mdl [20] data.mdl
+                [ Menu.ripple, Menu.bottomRight ]
+                [ Menu.item
+                    [ Menu.disabled ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                , Menu.item
+                    [ Menu.disabled
+                    , Menu.divider
+                    ]
+                    [ Icon.view "delete" [ cs "menu-icon" ], text "Delete" ]
+                , Menu.item
+                    [ Menu.onSelect <| SomethingOccurred "Thanks!" ]
+                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
                 ]
-                [ text "Delete" ]
-            , Menu.item
-                [ ]
-                [ text "Share" ]
             ]
-        ]
+          else
+            [ Menu.render Mdl [20] data.mdl
+                [ Menu.ripple, Menu.bottomRight ]
+                [ Menu.item
+                    [ Menu.onSelect <| SomethingOccurred "Thank you!" ]
+                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
+                ]
+            ]
+        )
     , Card.text [ white ] [ Markdown.toHtml [] package.description ]
     , Card.actions [ ] ( map chip package.tags )
     , Card.actions [ white, cs "version-tabs" ]
