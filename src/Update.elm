@@ -48,6 +48,9 @@ update msg model =
     RoutePackageDetails name ->
       ( model, Navigation.newUrl ("#packages/" ++ name) )
 
+    RoutePackageEdit name ->
+      ( model, Navigation.newUrl ("#packages/edit/" ++ name) )
+
     RouteAuth ->
       ( model, Navigation.newUrl "#auth" )
 

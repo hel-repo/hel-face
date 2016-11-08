@@ -13,6 +13,7 @@ import User.Messages as UMsg
 type Route
   = PackageListRoute SearchData
   | PackageRoute String
+  | PackageEditRoute String
   | AuthRoute
   | RegisterRoute
   | ProfileRoute
@@ -23,6 +24,7 @@ routeMessage : Route -> List Msg
 routeMessage route =
   case route of
     PackageRoute name -> [ PackageMsg <| PMsg.GoToPackageDetails name ]
+    PackageEditRoute name -> [ PackageMsg <| PMsg.GoToPackageEdit name ]
     PackageListRoute data -> [ PackageMsg <| PMsg.GoToPackageList data ]
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
@@ -35,16 +37,16 @@ matchers : Parser (Route -> a) a
 matchers =
   oneOf
     [ format (PackageListRoute searchAll) (tail)
-    , format (PackageListRoute << searchByName) (s "search" </> string)
+    , format (PackageEditRoute "") (s "packages" </> s "edit" </> tail)
+    , format PackageEditRoute (s "packages" </> s "edit" </> string)
+    , format (PackageEditRoute "") (s "packages" </> s "edit")
     , format (PackageListRoute searchAll) (s "packages" </> tail)
+    , format (PackageListRoute << searchByName) (s "search" </> string)
     , format PackageRoute (s "packages" </> string)
     , format (PackageListRoute searchAll) (s "packages")
     , format AuthRoute (s "auth")
-    , format AuthRoute (s "auth" </> tail)
     , format RegisterRoute (s "register")
-    , format RegisterRoute (s "register" </> tail)
     , format ProfileRoute (s "profile")
-    , format ProfileRoute (s "profile" </> tail)
     ]
 
 

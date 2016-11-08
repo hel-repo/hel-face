@@ -20,6 +20,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Package.List
 import Package.Details
+import Package.Edit
 import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 import User.Auth
@@ -78,6 +79,7 @@ view model =
                   [ Button.render Mdl [4] model.mdl
                       [ Button.minifab
                       , Button.ripple
+                      , Button.onClick <| RoutePackageEdit ""
                       ]
                       [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
                   , Button.render Mdl [3] model.mdl
@@ -139,6 +141,9 @@ viewBody model =
 
         PackageRoute name ->
           Package.Details.view model.packageData
+
+        PackageEditRoute name ->
+          Package.Edit.view model.packageData
 
         AuthRoute ->
           User.Auth.view model.userData

@@ -90,3 +90,6 @@ body {
 .menu-icon {
   padding-right: 10px;
 }
+.danger {
+  color: rgb(255, 82, 82);
+}

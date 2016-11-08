@@ -17,7 +17,7 @@ import Material.Grid as Grid
 import Material.Icon as Icon
 import Material.List as Lists
 import Material.Menu as Menu
-import Material.Options as Options exposing (cs, css)
+import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
 import Material.Typography as Typo
@@ -185,21 +185,20 @@ detailsCard data package =
             , span [ class "align-top" ] [ license package.license ]
             ]
         ]
-    , Card.menu [ white ]
+    , Card.menu [ white, cs "noselect" ]
         ( if member data.username package.owners then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
-                    [ Menu.disabled ]
+                    [ Menu.onSelect <| SomethingOccurred "Thanks!"
+                    , Menu.divider ]
+                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
+                , Menu.item
+                    [ Menu.onSelect <| RoutePackageEdit package.name ]
                     [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
                 , Menu.item
-                    [ Menu.disabled
-                    , Menu.divider
-                    ]
-                    [ Icon.view "delete" [ cs "menu-icon" ], text "Delete" ]
-                , Menu.item
-                    [ Menu.onSelect <| SomethingOccurred "Thanks!" ]
-                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
+                    [ Menu.disabled ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
                 ]
             ]
           else

@@ -3,7 +3,7 @@ module Package.List exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events
-import List exposing (map2, length, isEmpty)
+import List exposing (map2, length, isEmpty, member)
 
 import Material
 import Material.Button as Button
@@ -12,6 +12,7 @@ import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
+import Material.Menu as Menu
 import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
@@ -26,8 +27,8 @@ white =
   Color.text Color.white
 
 
-card : Material.Model -> String -> Int -> Package -> Cell Msg
-card mdl share index package =
+card : PackageData -> Int -> Package -> Cell Msg
+card data index package =
   cell
     [ size All 4
     ]
@@ -36,9 +37,24 @@ card mdl share index package =
         [ Card.title
           [ cs "card-title" ]
           [ Card.head [ white ] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
+        , Card.menu
+            [ white, cs "noselect" ]
+            ( if member data.username package.owners then
+                [ Menu.render Mdl [index*3] data.mdl
+                    [ Menu.ripple, Menu.bottomRight ]
+                    [ Menu.item
+                        [ Menu.onSelect <| RoutePackageEdit package.name ]
+                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    , Menu.item
+                        [ Menu.disabled ]
+                        [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    ]
+                ]
+              else []
+            )
         , Card.text
             [ white ]
-            ( if package.name /= share then
+            ( if package.name /= data.share then
                 [ text package.short_description ]
               else
                 [ div [ ] [ text "Direct link:" ]
@@ -49,14 +65,14 @@ card mdl share index package =
             )
         , Card.actions
             [ Card.border, cs "card-actions", white ]
-            [ Button.render Mdl [10, index*2] mdl
+            [ Button.render Mdl [10, index*3+1] data.mdl
                 [ Button.icon
                 , Button.ripple
                 , Button.onClick <| SomethingOccurred "Thank you!"
                 , cs "noselect"
                 ]
                 [ Icon.i "favorite_border" ]
-            , Button.render Mdl [10, index*2+1] mdl
+            , Button.render Mdl [10, index*3+2] data.mdl
                 [ Button.icon
                 , Button.ripple
                 , Button.onClick <| PackageMsg (PMsg.SharePackage package.name)
@@ -78,4 +94,4 @@ view data =
         ]
     else
       if isEmpty data.packages then div [ class "page" ] [ notFoundCard ]
-      else grid [] ( map2 (card data.mdl data.share) [1..(length data.packages)] data.packages )
+      else grid [] ( map2 (card data) [1..(length data.packages)] data.packages )

@@ -13,6 +13,7 @@ type Msg
   -- Navigation
   | GoToPackageList SearchData
   | GoToPackageDetails String
+  | GoToPackageEdit String
   | GoToVersion Int
   -- Other
   | SharePackage String

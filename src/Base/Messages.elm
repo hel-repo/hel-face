@@ -13,6 +13,7 @@ type Msg
   | Navigate String
   | RoutePackageList SearchData
   | RoutePackageDetails String
+  | RoutePackageEdit String
   | RouteAuth
   | RouteRegister
   | RouteProfile

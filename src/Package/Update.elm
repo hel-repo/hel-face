@@ -67,6 +67,8 @@ update message data =
       data ! [ wrapMsg (FetchPackages searchData) ] ~ []
     GoToPackageDetails name ->
       data ! [ wrapMsg (FetchPackage name) ] ~ []
+    GoToPackageEdit name ->
+      data ! ( if not <| isEmpty name then [ wrapMsg (FetchPackage name) ] else [] ) ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []
