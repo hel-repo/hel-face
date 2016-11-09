@@ -37,13 +37,13 @@ matchers : Parser (Route -> a) a
 matchers =
   oneOf
     [ format (PackageListRoute searchAll) (tail)
-    , format (PackageEditRoute "") (s "packages" </> s "edit" </> tail)
-    , format PackageEditRoute (s "packages" </> s "edit" </> string)
-    , format (PackageEditRoute "") (s "packages" </> s "edit")
     , format (PackageListRoute searchAll) (s "packages" </> tail)
     , format (PackageListRoute << searchByName) (s "search" </> string)
     , format PackageRoute (s "packages" </> string)
     , format (PackageListRoute searchAll) (s "packages")
+    , format (PackageEditRoute "") (s "edit" </> tail)
+    , format PackageEditRoute (s "edit" </> string)
+    , format (PackageEditRoute "") (s "edit")
     , format AuthRoute (s "auth")
     , format RegisterRoute (s "register")
     , format ProfileRoute (s "profile")
