@@ -22,11 +22,6 @@ import Package.Models exposing (PackageData, Package)
 import Package.Messages as PMsg
 
 
-white : Options.Property c m
-white =
-  Color.text Color.white
-
-
 card : PackageData -> Int -> Package -> Cell Msg
 card data index package =
   cell
@@ -36,9 +31,9 @@ card data index package =
         [ Elevation.e2 ]
         [ Card.title
           [ cs "card-title" ]
-          [ Card.head [ white ] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
+          [ Card.head [] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
         , Card.menu
-            [ white, cs "noselect" ]
+            [ cs "noselect" ]
             ( if member data.username package.owners then
                 [ Menu.render Mdl [index*3] data.mdl
                     [ Menu.ripple, Menu.bottomRight ]
@@ -53,7 +48,7 @@ card data index package =
               else []
             )
         , Card.text
-            [ white ]
+            []
             ( if package.name /= data.share then
                 [ text package.short_description ]
               else
@@ -64,7 +59,7 @@ card data index package =
                 ]
             )
         , Card.actions
-            [ Card.border, cs "card-actions", white ]
+            [ Card.border, cs "card-actions" ]
             [ Button.render Mdl [10, index*3+1] data.mdl
                 [ Button.icon
                 , Button.ripple
@@ -77,7 +72,6 @@ card data index package =
                 , Button.ripple
                 , Button.onClick <| PackageMsg (PMsg.SharePackage package.name)
                 , cs "noselect"
-                , white
                 ]
                 [ Icon.i "share" ]
             ]

@@ -21,15 +21,11 @@ import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
-white : Options.Property c m
-white =
-  Color.text Color.white
-
 register : UserData -> Html Msg
 register data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ Card.border ] [ Card.head [ white ] [ text "Registration" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text "Registration" ] ]
     , Card.text [ ]
       [ div [ ]
           [ Textfield.render Mdl [10] data.mdl
@@ -76,10 +72,10 @@ register data =
               ]
               [ text "Register"]
           , Options.styled p
-              [ Typo.subhead, white, cs "auth-alter" ]
+              [ Typo.subhead, cs "auth-alter" ]
               [ text "or" ]
           , Options.styled p
-              [ Typo.subhead, white, cs "auth-alter" ]
+              [ Typo.subhead, cs "auth-alter" ]
               [ a [ href "#auth" ] [ text "log in" ] ]
           ]
       ]

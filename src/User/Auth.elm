@@ -28,15 +28,11 @@ keyDecoder =
         (Decode.at ["keyCode"] Decode.int)
 
 
-white : Options.Property c m
-white =
-  Color.text Color.white
-
 auth : UserData -> Html Msg
 auth data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ Card.border ] [ Card.head [ white ] [ text "Authorization" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text "Authorization" ] ]
     , Card.text [ ]
       [ div [ ]
           [ Textfield.render Mdl [3] data.mdl
@@ -63,10 +59,10 @@ auth data =
               ]
               [ text "Log In"]
           , Options.styled p
-              [ Typo.subhead, white, cs "auth-alter" ]
+              [ Typo.subhead, cs "auth-alter" ]
               [ text "or" ]
           , Options.styled p
-              [ Typo.subhead, white, cs "auth-alter" ]
+              [ Typo.subhead, cs "auth-alter" ]
               [ a [ href "#register" ] [ text "register" ] ]
           ]
       ]

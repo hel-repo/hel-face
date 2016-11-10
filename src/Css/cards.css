@@ -29,6 +29,12 @@
 .mdl-card__subtitle-text, .subtitle {
   color: rgba(256,256,256,.54);
 }
+.mdl-card__supporting-text {
+  color: rgba(255,255,255,.54);
+}
+.mdl-card__title {
+  color: #fff;
+}
 
 
 /* Custom elements */
@@ -52,7 +58,9 @@
   vertical-align: center;
   text-align: right;
 }
-
+.install-code {
+  font-size: 11pt;
+}
 
 .screen-card {
   margin-bottom: 1em;
@@ -86,4 +94,15 @@
 
 .dep-version {
   font-weight: bold;
+}
+
+
+.edit-card-title .mdl-textfield__input {
+  font-size: 18pt;
+}
+.edit-card-desc {
+  margin-right: 20px;
+}
+.edit-card-desc-box {
+  width: 100%;
 }

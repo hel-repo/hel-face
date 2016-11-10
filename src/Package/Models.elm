@@ -53,6 +53,9 @@ type alias Stats =
   , date : PkgStatsDate
   }
 
+emptyStats: Stats
+emptyStats = { views = 0, date = { created = "", last_updated = "" } }
+
 type alias Package =
   { name : String
   , description : String
@@ -64,6 +67,20 @@ type alias Package =
   , versions : List Version
   , screenshots : List Screenshot
   , stats : Stats
+  }
+
+emptyPackage : Package
+emptyPackage =
+  { name = ""
+  , description = ""
+  , short_description = ""
+  , owners = []
+  , authors = []
+  , license = "MIT"
+  , tags = []
+  , versions = []
+  , screenshots = []
+  , stats = emptyStats
   }
 
 

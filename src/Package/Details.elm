@@ -31,11 +31,6 @@ import Package.Models exposing
 import Base.Tools exposing ((!!))
 
 
-white : Options.Property c m
-white =
-  Color.text Color.white
-
-
 screensCard : Material.Model -> Package -> Html Msg
 screensCard mdl package =
   if not (isEmpty package.screenshots) then
@@ -55,7 +50,7 @@ screensCard mdl package =
                   [ Button.ripple, Button.accent ]
                   [ text ">" ]
               , Options.styled span
-                  [ Typo.body1, white, cs "screen-desc" ]
+                  [ Typo.body1, cs "screen-desc" ]
                   [ text screen.description ]
               ]
           ]
@@ -114,7 +109,7 @@ versionDesc : String -> Version -> Html Msg
 versionDesc name version =
   div [ ]
     [ subtitle "Installation"
-    , div [ class "padding-bottom" ] [ div [ class "code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
+    , div [ class "padding-bottom" ] [ div [ class "code install-code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
     , subtitle "Changelog"
     , Markdown.toHtml [ class "padding-bottom" ] version.changes
     ]
@@ -143,7 +138,6 @@ files version =
         [ ] ->
           [ subtitle "No files" ]
     )
-
 
 dependencies : Version -> Html Msg
 dependencies version =
@@ -177,7 +171,7 @@ detailsCard data package =
   Card.view
     [ Elevation.e2 ]
     [ Card.title [ Card.border ]
-        [ Card.head [ white ] [ text package.name ]
+        [ Card.head [] [ text package.name ]
         , Card.subhead [ ]
             [ span [ class "card-subtitle-icon noselect" ] [ Icon.view "person" [ Icon.size18 ] ]
             , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
@@ -185,7 +179,7 @@ detailsCard data package =
             , span [ class "align-top" ] [ license package.license ]
             ]
         ]
-    , Card.menu [ white, cs "noselect" ]
+    , Card.menu [ cs "noselect" ]
         ( if member data.username package.owners then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
@@ -210,9 +204,9 @@ detailsCard data package =
                 ]
             ]
         )
-    , Card.text [ white ] [ Markdown.toHtml [] package.description ]
-    , Card.actions [ ] ( map chip package.tags )
-    , Card.actions [ white, cs "version-tabs" ]
+    , Card.text [] [ Markdown.toHtml [] package.description ]
+    , Card.actions [] ( map chip package.tags )
+    , Card.actions [ cs "version-tabs" ]
         [ let versions = reverse <| sortBy .version package.versions
           in
             Tabs.render Mdl [0] data.mdl
@@ -252,10 +246,10 @@ notFoundCard : Html Msg
 notFoundCard =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ ] [ Card.head [ white ] [ text "Nothing found!" ] ]
-    , Card.text [ white ]
-        [ div [ ] [ text "No packages with this name was found in repository." ]
-        , div [ ] [ text "Check the spelling, or try different name, please." ]
+    [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
+    , Card.text []
+        [ div [] [ text "No packages with this name was found in repository." ]
+        , div [] [ text "Check the spelling, or try different name, please." ]
         ]
     ]
 

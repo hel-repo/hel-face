@@ -29,20 +29,11 @@ import User.Profile
 import User.Register
 
 
-search : Msg
-search =
-  InputKey Config.enterKey
-
 keyDecoder : Decode.Decoder Msg
 keyDecoder =
   Decode.map InputKey
     <| Decode.object1 identity
         (Decode.at ["keyCode"] Decode.int)
-
-
-white : Options.Property c m
-white =
-  Color.text Color.white
 
 
 view : Model -> Html Msg
@@ -70,7 +61,7 @@ view model =
                   [ Button.icon
                   , Button.ripple
                   , cs "search-icon noselect"
-                  , Button.onClick search
+                  , Button.onClick <| InputKey Config.enterKey
                   ]
                   [ Icon.i "search"]
               ]
@@ -159,8 +150,8 @@ viewBody model =
             [ class "page" ]
             [ Card.view
               [ Elevation.e2 ]
-              [ Card.title [ ] [ Card.head [ white ] [ text "404: Page does not exist!" ] ]
-              , Card.text [ white ] [ text "Check the address for typing errors." ]
+              [ Card.title [] [ Card.head [] [ text "404: Page does not exist!" ] ]
+              , Card.text [] [ text "Check the address for typing errors." ]
               ]
             ]
     ]

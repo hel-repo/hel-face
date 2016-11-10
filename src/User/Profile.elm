@@ -19,10 +19,6 @@ import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
-white : Options.Property c m
-white =
-  Color.text Color.white
-
 badge : String -> Html Msg
 badge group =
   Chip.button
@@ -37,7 +33,7 @@ profile data =
     [ class "page auth-card" ]
     [ Card.view
         [ Elevation.e2 ]
-        [ Card.title [ Card.border ] [ Card.head [ white ] [ text "Profile" ] ]
+        [ Card.title [ Card.border ] [ Card.head [] [ text "Profile" ] ]
         , Card.actions [ ]
           [ Icon.view "account_circle" [ cs "avatar" ]
           , div [ class "badges" ]
