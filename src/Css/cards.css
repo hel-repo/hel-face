@@ -106,3 +106,22 @@
 .edit-card-desc-box {
   width: 100%;
 }
+.edit-card-add-button {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+.edit-card-remove-button {
+  margin-bottom: 20px;
+}
+.edit-card-close {
+  position: absolute;
+  right: 10px;
+  z-index: 1;
+}
+.edit-card-item {
+  position: relative;
+  background: rgba(0,0,0,.1);
+  margin-bottom: 10px;
+  border-radius: 2px;
+  padding: 10px;
+}

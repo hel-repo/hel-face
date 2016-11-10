@@ -127,40 +127,37 @@ file file =
 
 files : Version -> Html Msg
 files version =
-  div
-    [ class "files" ]
-    ( case version.files of
-        x::_ ->
-          [ subtitle "Files"
-          , div [ class "list-of-cards" ]
-              [ Lists.ul [ ] (map file version.files) ]
-          ]
-        [ ] ->
-          [ subtitle "No files" ]
-    )
+  case version.files of
+    x::_ ->
+      div
+        [ class "files list-of-cards" ]
+        [ subtitle "Files"
+        , Lists.ul [] (map file version.files)
+        ]
+    [ ] ->
+      div [ class "files" ] [ subtitle "No files" ]
+
+
+dependency : PkgVersionDependency -> Html Msg
+dependency d =
+  Lists.li
+    [ Lists.withSubtitle ]
+    [ Lists.content [ ]
+        [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
+        , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
+        , Lists.subtitle [ ]
+            [ span [ class "list-cell" ] [ text d.version ] ]
+        ]
+    ]
 
 dependencies : Version -> Html Msg
 dependencies version =
   case version.depends of
     x::_ ->
-      div [ class "dep-block list-of-cards" ]
+      div
+        [ class "dep-block list-of-cards" ]
         [ subtitle "Depends on"
-        , Lists.ul [ ]
-            ( map
-                ( \d ->
-                  ( Lists.li
-                      [ Lists.withSubtitle ]
-                      [ Lists.content [ ]
-                          [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
-                          , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
-                          , Lists.subtitle [ ]
-                              [ span [ class "list-cell" ] [ text d.version ] ]
-                          ]
-                      ]
-                  )
-                )
-                version.depends
-            )
+        , Lists.ul [ ] ( map dependency version.depends )
         ]
     [ ] ->
       div [ class "dep-block" ] [ subtitle "No dependencies" ]
@@ -264,11 +261,6 @@ view data =
   else
     div
       [ class "page" ]
-      ( case head data.packages of
-          Just package ->
-            [ screensCard data.mdl package
-            , detailsCard data package
-            ]
-          Nothing ->
-            [ notFoundCard ]
-      )
+      [ screensCard data.mdl data.package
+      , detailsCard data data.package
+      ]

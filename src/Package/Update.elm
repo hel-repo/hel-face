@@ -57,7 +57,7 @@ update message data =
       { data | loading = True } ! [lookupPackage name] ~ []
     PackageFetched package ->
       { data
-        | packages = [ package ]
+        | package = package
         , version = 0
         , loading = False
       } ! [] ~ []
@@ -71,7 +71,7 @@ update message data =
       if not <| isEmpty name then
         data ! [ wrapMsg (FetchPackage name) ] ~ []
       else
-        { data | packages = [ emptyPackage ] } ! [] ~ []
+        { data | package = emptyPackage } ! [] ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []

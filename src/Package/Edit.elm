@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import List exposing (head, map, reverse, sortBy)
 
+import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
@@ -39,55 +40,101 @@ subtitle str =
   p [ class "subtitle" ] [ text str ]
 
 
-file : PkgVersionFile -> Html Msg
-file file =
-  Lists.li []
-    [ Lists.content []
-      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
-      , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
-      , a [ class "cell align-top", href file.url ] [ text file.name ]
-      ]
+file : PackageData -> PkgVersionFile -> Html Msg
+file data file =
+  div [ class "edit-card-item" ]
+    [ Button.render Mdl [41] data.mdl
+        [ Button.icon
+        , Button.ripple
+        , cs "edit-card-close noselect"
+        ]
+        [ Icon.i "close"]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [42] data.mdl
+            [ Textfield.label "Path"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value file.dir
+            ]
+        ]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [43] data.mdl
+            [ Textfield.label "File name"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value file.name
+            ]
+        ]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "link" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [44] data.mdl
+            [ Textfield.label "URL"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value file.url
+            ]
+        ]
     ]
 
-files : Version -> Html Msg
-files version =
+files : PackageData -> Version -> Html Msg
+files data version =
   div
     [ class "files" ]
-    ( case version.files of
-        x::_ ->
-          [ subtitle "Files"
-          , div [ class "list-of-cards" ]
-              [ Lists.ul [ ] (map file version.files) ]
-          ]
-        [ ] ->
-          [ subtitle "No files" ]
-    )
-
-dependencies : Version -> Html Msg
-dependencies version =
-  case version.depends of
-    x::_ ->
-      div [ class "dep-block list-of-cards" ]
-        [ subtitle "Depends on"
-        , Lists.ul [ ]
-            ( map
-                ( \d ->
-                  ( Lists.li
-                      [ Lists.withSubtitle ]
-                      [ Lists.content [ ]
-                          [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
-                          , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
-                          , Lists.subtitle [ ]
-                              [ span [ class "list-cell" ] [ text d.version ] ]
-                          ]
-                      ]
-                  )
-                )
-                version.depends
-            )
+    [ subtitle "Files"
+    , Button.render Mdl [40] data.mdl
+        [ Button.raised
+        , Button.ripple
+        , cs "edit-card-add-button"
         ]
-    [ ] ->
-      div [ class "dep-block" ] [ subtitle "No dependencies" ]
+        [ text "New file" ]
+    , div [] (map (file data) version.files)
+    ]
+
+
+dependency : PackageData -> PkgVersionDependency -> Html Msg
+dependency data d =
+  div [ class "edit-card-item" ]
+    [ Button.render Mdl [51] data.mdl
+        [ Button.icon
+        , Button.ripple
+        , cs "edit-card-close"
+        ]
+        [ Icon.i "close"]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "extension" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [52] data.mdl
+            [ Textfield.label "Package name"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value d.name
+            ]
+        ]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "dns" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [53] data.mdl
+            [ Textfield.label "Version"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value d.version
+            ]
+        ]
+    ]
+
+dependencies : PackageData -> Version -> Html Msg
+dependencies data version =
+  div
+    [ class "dep-block" ]
+    [ subtitle "Depends on"
+    , Button.render Mdl [50] data.mdl
+        [ Button.raised
+        , Button.ripple
+        , cs "edit-card-add-button"
+        ]
+        [ text "New dependency" ]
+    , div [] ( map (dependency data) version.depends )
+    ]
 
 
 columns : List (Html a) -> List (Html a) -> Html a
@@ -177,9 +224,21 @@ packageCard data package =
         ]
     , Card.text [ cs "version-tabs" ]
         [ subtitle "Add package versions and fill in version data"
+        , Button.render Mdl [20] data.mdl
+            [ Button.raised
+            , Button.ripple
+            , cs "edit-card-add-button"
+            ]
+            [ Icon.i "add", text "Add version" ]
+        , Button.render Mdl [21] data.mdl
+            [ Button.raised
+            , Button.ripple
+            , cs "edit-card-remove-button"
+            ]
+            [ Icon.i "delete", text "Remove version" ]
         , let versions = reverse <| sortBy .version package.versions
           in
-            Tabs.render Mdl [0] data.mdl
+            Tabs.render Mdl [25] data.mdl
               [ Tabs.ripple
               , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
               , Tabs.activeTab data.version
@@ -190,12 +249,12 @@ packageCard data package =
                     div
                       [ class "page" ]
                       [ columns
-                          [ Textfield.render Mdl [20] data.mdl
+                          [ Textfield.render Mdl [30] data.mdl
                               [ Textfield.label "Version number"
                               , Textfield.floatingLabel
                               , Textfield.value version.version
                               ] ]
-                          [ Textfield.render Mdl [21] data.mdl
+                          [ Textfield.render Mdl [31] data.mdl
                               [ Textfield.label "Version changes"
                               , Textfield.floatingLabel
                               , Textfield.textarea
@@ -203,21 +262,12 @@ packageCard data package =
                               , Textfield.value version.changes
                               , cs "edit-card-desc-box"
                               ] ]
-                      , columns [ files version ] [ dependencies version ]
+                      , columns [ files data version ] [ dependencies data version ]
                       ]
                   Nothing ->
-                    div [ class "error" ] [ text "Wrong version code!" ]
+                    p [] [ text "No versions added..." ]
               ]
         ]
-    ]
-
-
-noPackageCard : Html Msg
-noPackageCard =
-  Card.view
-    [ Elevation.e2 ]
-    [ Card.title [] [ Card.head [] [ text "Something went wrong..." ] ]
-    , Card.text [] [ div [] [ text "No package data was given, so there is nothing to edit. ;)" ] ]
     ]
 
 
@@ -231,9 +281,4 @@ view data =
   else
     div
       [ class "page" ]
-      ( case head data.packages of
-          Just package ->
-            [ packageCard data package ]
-          Nothing ->
-            [ noPackageCard ]
-      )
+      [ packageCard data data.package ]

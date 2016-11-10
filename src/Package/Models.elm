@@ -87,6 +87,7 @@ emptyPackage =
 type alias PackageData =
   { mdl : Material.Model
   , packages : List Package
+  , package : Package
   , version : Int
   , loading : Bool
   , share : String
@@ -97,6 +98,7 @@ emptyPackageData : Material.Model -> PackageData
 emptyPackageData materialModel =
   { mdl = materialModel
   , packages = []
+  , package = emptyPackage
   , loading = False
   , version = 0
   , share = ""
