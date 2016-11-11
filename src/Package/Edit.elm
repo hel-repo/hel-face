@@ -179,14 +179,6 @@ packageCard data package =
         [ div [ ]
             [ subtitle "You can use Markdown markup language in description fields"
             , columns
-                [ Textfield.render Mdl [13] data.mdl
-                    [ Textfield.label "Short description"
-                    , Textfield.floatingLabel
-                    , Textfield.textarea
-                    , Textfield.rows 2
-                    , Textfield.value package.short_description
-                    , cs "edit-card-desc edit-card-desc-box"
-                    ] ]
                 [ Textfield.render Mdl [14] data.mdl
                   [ Textfield.label "Full description"
                   , Textfield.floatingLabel
@@ -195,6 +187,14 @@ packageCard data package =
                   , Textfield.value package.description
                   , cs "edit-card-desc-box"
                   ] ]
+                [ Textfield.render Mdl [13] data.mdl
+                    [ Textfield.label "Short description"
+                    , Textfield.floatingLabel
+                    , Textfield.textarea
+                    , Textfield.rows 2
+                    , Textfield.value package.short_description
+                    , cs "edit-card-desc edit-card-desc-box"
+                    ] ]
             ]
         ]
     , Card.text
@@ -267,6 +267,21 @@ packageCard data package =
                   Nothing ->
                     p [] [ text "No versions added..." ]
               ]
+        ]
+    , Card.text
+        []
+        [ Button.render Mdl [60] data.mdl
+            [ Button.raised
+            , Button.colored
+            , Button.ripple
+            , cs "save-button"
+            ]
+            [ text "Save"]
+        , Button.render Mdl [61] data.mdl
+            [ Button.raised
+            , Button.ripple
+            ]
+            [ text "Cancel"]
         ]
     ]
 
