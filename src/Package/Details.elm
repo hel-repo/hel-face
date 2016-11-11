@@ -119,7 +119,7 @@ file : PkgVersionFile -> Html Msg
 file file =
   Lists.li []
     [ Lists.content []
-      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
+      [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18 ] ]
       , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
       , a [ class "cell align-top", href file.url ] [ text file.name ]
       ]
@@ -143,7 +143,7 @@ dependency d =
   Lists.li
     [ Lists.withSubtitle ]
     [ Lists.content [ ]
-        [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
+        [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18 ] ]
         , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
         , Lists.subtitle [ ]
             [ span [ class "list-cell" ] [ text d.version ] ]

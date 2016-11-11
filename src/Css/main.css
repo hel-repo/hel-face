@@ -78,7 +78,7 @@ body {
   margin: -16px;
 }
 
-.noselect {
+.noselect, i.material-icons {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
      -khtml-user-select: none; /* Konqueror */
@@ -86,6 +86,10 @@ body {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   not supported by any browser */
+}
+
+i.material-icons {
+  cursor: default !important;
 }
 
 .menu-icon {
