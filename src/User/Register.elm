@@ -2,15 +2,12 @@ module User.Register exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
 import String exposing (isEmpty)
 
 import Material.Button as Button
 import Material.Card as Card
-import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
-import Material.Icon as Icon
 import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 import Material.Textfield as Textfield

@@ -165,6 +165,7 @@ packageCard data package =
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value package.name
+            , Textfield.onInput <| PMsg.InputName >> PackageMsg
             , cs "edit-card-title"
             ]
         , Textfield.render Mdl [12] data.mdl
@@ -274,14 +275,16 @@ packageCard data package =
             [ Button.raised
             , Button.colored
             , Button.ripple
+            , Button.onClick <| PackageMsg ( PMsg.SavePackage package )
             , cs "save-button"
             ]
-            [ text "Save"]
+            [ text "Save" ]
         , Button.render Mdl [61] data.mdl
             [ Button.raised
             , Button.ripple
+            , Button.onClick <| RoutePackageDetails package.oldName
             ]
-            [ text "Cancel"]
+            [ text "Cancel" ]
         ]
     ]
 

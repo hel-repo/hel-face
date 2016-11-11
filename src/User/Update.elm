@@ -1,11 +1,12 @@
 module User.Update exposing (..)
 
-import Http exposing (Error, RawError, Response, defaultSettings)
+import Http exposing (Error, RawError, Response)
 import Json.Decode as Json exposing ((:=))
 import String exposing (isEmpty)
 import Task exposing (Task)
 
 import Base.Config as Config
+import Base.Http exposing (..)
 import Base.Messages as Outer
 import Base.Tools as Tools exposing ((~))
 import User.Decoders exposing (singleUserDecoder, profileDecoder)
@@ -17,15 +18,6 @@ wrapMsg : Msg -> Cmd Msg
 wrapMsg msg =
   Task.perform (always msg) (always msg) (Task.succeed ())
 
-
-post' : String -> String -> Task RawError Response
-post' url data =
-  Http.send { defaultSettings | withCredentials = True }
-    { verb = "POST"
-    , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
-    , url = url
-    , body = Http.string data
-    }
 
 parseAuthResult : Response -> Msg
 parseAuthResult response =
@@ -92,17 +84,6 @@ logout =
     |> Task.mapError toString
     |> Task.perform (always LoggedOut) (always LoggedOut)
 
-
-get' : Json.Decoder value -> String -> Task Error value
-get' decoder url =
-  let request =
-        { verb = "GET"
-        , headers = []
-        , url = url
-        , body = Http.empty
-        }
-  in Http.fromJson decoder
-        <| Http.send { defaultSettings | withCredentials = True } request
 
 fetchUser : String -> Cmd Msg
 fetchUser nickname =

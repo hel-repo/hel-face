@@ -1,6 +1,9 @@
 module Package.Messages exposing (..)
 
+import Http exposing (Response)
+
 import Package.Models exposing (Package, SearchData)
+
 
 type Msg
   = NoOp
@@ -10,10 +13,14 @@ type Msg
   | PackagesFetched (List Package)
   | FetchPackage String
   | PackageFetched Package
+  | SavePackage Package
+  | PackageSaved Response
   -- Navigation
   | GoToPackageList SearchData
   | GoToPackageDetails String
   | GoToPackageEdit String
   | GoToVersion Int
+  -- Input
+  | InputName String
   -- Other
   | SharePackage String

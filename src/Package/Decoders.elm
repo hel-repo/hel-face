@@ -73,6 +73,7 @@ packageDecoder : Json.Decoder Package
 packageDecoder =
   Json.succeed Package
     |: ("name" := Json.string)
+    |: ("name" := Json.string)  -- fill oldName field with the same data
     |: ("description" := Json.string)
     |: ("short_description" := Json.string)
     |: ("owners" := Json.list Json.string)

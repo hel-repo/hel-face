@@ -58,6 +58,7 @@ emptyStats = { views = 0, date = { created = "", last_updated = "" } }
 
 type alias Package =
   { name : String
+  , oldName : String
   , description : String
   , short_description : String
   , owners : List String
@@ -72,6 +73,7 @@ type alias Package =
 emptyPackage : Package
 emptyPackage =
   { name = ""
+  , oldName = ""
   , description = ""
   , short_description = ""
   , owners = []

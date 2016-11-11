@@ -2,14 +2,12 @@ module User.Auth exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder, (:=))
 
 import Material.Button as Button
 import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
-import Material.Icon as Icon
 import Material.Spinner as Loading
 import Material.Options as Options exposing (cs)
 import Material.Textfield as Textfield

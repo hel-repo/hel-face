@@ -8,7 +8,6 @@ import String exposing (contains, isEmpty)
 
 import Material.Button as Button
 import Material.Card as Card
-import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Icon as Icon
 import Material.Layout as Layout

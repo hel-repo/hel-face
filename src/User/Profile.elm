@@ -7,7 +7,6 @@ import List exposing (map)
 import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
-import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
