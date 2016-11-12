@@ -25,5 +25,12 @@ type Msg
   | InputLicense String
   | InputDescription String
   | InputShortDescription String
+  | InputOwner String
+  | RemoveOwner String
+  | InputAuthor String
+  | RemoveAuthor String
+  | InputContent String
+  | RemoveContent String
+  | InputKey Int
   -- Other
   | SharePackage String

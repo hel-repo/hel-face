@@ -2,7 +2,6 @@ module User.Auth exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Json.Decode as Decode exposing (Decoder, (:=))
 
 import Material.Button as Button
 import Material.Card as Card
@@ -13,16 +12,10 @@ import Material.Options as Options exposing (cs)
 import Material.Textfield as Textfield
 import Material.Typography as Typo
 
+import Base.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
 import User.Messages as UMsg
 import User.Models exposing (UserData)
-
-
-keyDecoder : Decode.Decoder Msg
-keyDecoder =
-  Decode.map (UMsg.InputKey >> UserMsg)
-    <| Decode.object1 identity
-        (Decode.at ["keyCode"] Decode.int)
 
 
 auth : UserData -> Html Msg
@@ -45,7 +38,7 @@ auth data =
             , Textfield.floatingLabel
             , Textfield.password
             , Textfield.onInput <| UMsg.InputPassword >> UserMsg
-            , Textfield.on "keyup" keyDecoder
+            , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
             ]
           ]
       , div [ class "profile-panel" ]

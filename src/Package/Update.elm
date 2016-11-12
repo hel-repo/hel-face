@@ -1,6 +1,7 @@
 module Package.Update exposing (..)
 
 import Http
+import List exposing (member, filter)
 import String exposing (isEmpty)
 import Task exposing (Task)
 
@@ -44,6 +45,18 @@ savePackage package =
       ( packageEncoder package )
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
+
+
+add : List a -> a -> List a
+add list item =
+  if member item list then
+    list
+  else
+    item :: list
+
+remove : List a -> a -> List a
+remove list item =
+  filter (\a -> a /= item) list
 
 
 update : Msg -> PackageData -> ( PackageData, Cmd Msg, List Outer.Msg )
@@ -107,6 +120,43 @@ update message data =
     InputShortDescription desc ->
       let package = data.package
       in { data | package = { package | shortDescription = desc } } ! [] ~ []
+    InputOwner owner ->
+      let tags = data.tags
+      in { data | tags = Tags Owner owner tags.author tags.content } ! [] ~ []
+    RemoveOwner owner ->
+      let package = data.package
+      in { data | package = { package | owners = remove package.owners owner } } ! [] ~ []
+    InputAuthor author ->
+      let tags = data.tags
+      in { data | tags = Tags Author tags.owner author tags.content } ! [] ~ []
+    RemoveAuthor author ->
+      let package = data.package
+      in { data | package = { package | authors = remove package.authors author } } ! [] ~ []
+    InputContent content ->
+      let tags = data.tags
+      in { data | tags = Tags Content tags.owner tags.author content } ! [] ~ []
+    RemoveContent content ->
+      let package = data.package
+      in { data | package = { package | tags = remove package.tags content } } ! [] ~ []
+
+    InputKey key ->
+      if key == Config.enterKey then
+        let
+          package = data.package
+        in
+          ( case data.tags.active of
+              Owner ->
+                let owners = add package.owners data.tags.owner
+                in { data | package = { package | owners = owners } } ! [ wrapMsg (InputOwner "") ]
+              Author ->
+                let authors = add package.authors data.tags.author
+                in { data | package = { package | authors = authors } } ! [ wrapMsg (InputAuthor "") ]
+              Content ->
+                let content = add package.tags data.tags.content
+                in { data | package = { package | tags = content } } ! [ wrapMsg (InputContent "") ]
+          ) ~ []
+      else
+        data ! [] ~ []
 
     -- Other
     SharePackage name ->

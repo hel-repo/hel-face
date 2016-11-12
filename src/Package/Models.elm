@@ -86,14 +86,31 @@ emptyPackage =
   }
 
 
+type TagType = Owner | Author | Content
+type alias Tags =
+  { active : TagType
+  , owner : String
+  , author : String
+  , content : String
+  }
+
+emptyTags =
+  { active = Owner
+  , owner = ""
+  , author = ""
+  , content = ""
+  }
+
+
 type alias PackageData =
   { mdl : Material.Model
   , packages : List Package
   , package : Package
-  , version : Int
+  , version : Int          -- currently selected version tab
   , loading : Bool
-  , share : String
-  , username : String
+  , share : String         -- which card was triggered to show sharing links
+  , username : String      -- current user nickname
+  , tags : Tags            -- tag textboxes state, for edit form
   }
 
 emptyPackageData : Material.Model -> PackageData
@@ -105,6 +122,7 @@ emptyPackageData materialModel =
   , version = 0
   , share = ""
   , username = ""
+  , tags = emptyTags
   }
 
 

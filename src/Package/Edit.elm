@@ -16,17 +16,19 @@ import Material.Spinner as Loading
 import Material.Tabs as Tabs
 import Material.Textfield as Textfield
 
+import Base.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
 import Base.Tools exposing ((!!))
 import Package.Messages as PMsg
 import Package.Models exposing (..)
 
 
-chip : String -> Html Msg
-chip str =
+chip : (String -> PMsg.Msg) -> String -> Html Msg
+chip msg str =
   Chip.span
-    [ Chip.deleteIcon "cancel",
-      cs "noselect"
+    [ Chip.deleteIcon "cancel"
+    , Chip.deleteClick <| PackageMsg (msg str)
+    , cs "noselect"
     ]
     [ Chip.content [] [ text str ] ]
 
@@ -208,23 +210,29 @@ packageCard data package =
             [ Textfield.label "Package owner"
             , Textfield.floatingLabel
             , Textfield.text'
-            , Textfield.value ""  -- clear this field after input
+            , Textfield.value data.tags.owner
+            , Textfield.onInput <| PMsg.InputOwner >> PackageMsg
+            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map chip package.owners )
+        , div [] ( map (chip PMsg.RemoveOwner) package.owners )
         , Textfield.render Mdl [16] data.mdl
             [ Textfield.label "Author of program"
             , Textfield.floatingLabel
             , Textfield.text'
-            , Textfield.value ""
+            , Textfield.value data.tags.author
+            , Textfield.onInput <| PMsg.InputAuthor >> PackageMsg
+            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map chip package.authors )
+        , div [] ( map (chip PMsg.RemoveAuthor) package.authors )
         , Textfield.render Mdl [17] data.mdl
             [ Textfield.label "Content tag"
             , Textfield.floatingLabel
             , Textfield.text'
-            , Textfield.value ""
+            , Textfield.value data.tags.content
+            , Textfield.onInput <| PMsg.InputContent >> PackageMsg
+            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map chip package.tags )
+        , div [] ( map (chip PMsg.RemoveContent) package.tags )
         ]
     , Card.text [ cs "version-tabs" ]
         [ subtitle "Add package versions and fill in version data"
