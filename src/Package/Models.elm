@@ -45,7 +45,7 @@ type alias Version =
 
 type alias PkgStatsDate =
   { created : String
-  , last_updated : String
+  , lastUpdated : String
   }
 
 type alias Stats =
@@ -54,13 +54,13 @@ type alias Stats =
   }
 
 emptyStats: Stats
-emptyStats = { views = 0, date = { created = "", last_updated = "" } }
+emptyStats = { views = 0, date = { created = "", lastUpdated = "" } }
 
 type alias Package =
   { name : String
   , oldName : String
   , description : String
-  , short_description : String
+  , shortDescription : String
   , owners : List String
   , authors : List String
   , license : String
@@ -75,7 +75,7 @@ emptyPackage =
   { name = ""
   , oldName = ""
   , description = ""
-  , short_description = ""
+  , shortDescription = ""
   , owners = []
   , authors = []
   , license = "MIT"

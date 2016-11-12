@@ -173,6 +173,7 @@ packageCard data package =
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value package.license
+            , Textfield.onInput <| PMsg.InputLicense >> PackageMsg
             ]
         ]
     , Card.text
@@ -181,19 +182,21 @@ packageCard data package =
             [ subtitle "You can use Markdown markup language in description fields"
             , columns
                 [ Textfield.render Mdl [14] data.mdl
-                  [ Textfield.label "Full description"
-                  , Textfield.floatingLabel
-                  , Textfield.textarea
-                  , Textfield.rows 6
-                  , Textfield.value package.description
-                  , cs "edit-card-desc-box"
-                  ] ]
+                    [ Textfield.label "Full description"
+                    , Textfield.floatingLabel
+                    , Textfield.textarea
+                    , Textfield.rows 6
+                    , Textfield.value package.description
+                    , Textfield.onInput <| PMsg.InputDescription >> PackageMsg
+                    , cs "edit-card-desc-box"
+                    ] ]
                 [ Textfield.render Mdl [13] data.mdl
                     [ Textfield.label "Short description"
                     , Textfield.floatingLabel
                     , Textfield.textarea
                     , Textfield.rows 2
-                    , Textfield.value package.short_description
+                    , Textfield.value package.shortDescription
+                    , Textfield.onInput <| PMsg.InputShortDescription >> PackageMsg
                     , cs "edit-card-desc edit-card-desc-box"
                     ] ]
             ]

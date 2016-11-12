@@ -50,7 +50,7 @@ card data index package =
         , Card.text
             []
             ( if package.name /= data.share then
-                [ text package.short_description ]
+                [ text package.shortDescription ]
               else
                 [ div [ ] [ text "Direct link:" ]
                 , div [ class "code" ] [ text <| "hel.fomalhaut.me/#packages/" ++ package.name ]

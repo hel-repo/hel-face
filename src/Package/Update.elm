@@ -98,6 +98,15 @@ update message data =
     InputName name ->
       let package = data.package
       in { data | package = { package | name = name } } ! [] ~ []
+    InputLicense license ->
+      let package = data.package
+      in { data | package = { package | license = license } } ! [] ~ []
+    InputDescription desc ->
+      let package = data.package
+      in { data | package = { package | description = desc } } ! [] ~ []
+    InputShortDescription desc ->
+      let package = data.package
+      in { data | package = { package | shortDescription = desc } } ! [] ~ []
 
     -- Other
     SharePackage name ->

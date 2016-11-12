@@ -9,6 +9,9 @@ package : Package -> Value
 package pkg =
   object
     [ ("name", string pkg.name)
+    , ("license", string pkg.license)
+    , ("description", string pkg.description)
+    , ("short_description", string pkg.shortDescription)
     ]
 
 packageEncoder : Package -> String

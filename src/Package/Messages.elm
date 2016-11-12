@@ -22,5 +22,8 @@ type Msg
   | GoToVersion Int
   -- Input
   | InputName String
+  | InputLicense String
+  | InputDescription String
+  | InputShortDescription String
   -- Other
   | SharePackage String
