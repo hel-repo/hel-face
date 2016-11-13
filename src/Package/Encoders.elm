@@ -39,7 +39,8 @@ package pkg =
       , ("owners", array <| fromList <| map string pkg.owners)
       , ("authors", array <| fromList <| map string pkg.authors)
       , ("tags", array <| fromList <| map string pkg.tags)
-      , ("versions", object <| map (\v -> (v.version, version v)) pkg.versions )
+      , ("versions", object <| map (\v -> (v.version, version v)) pkg.versions)
+      , ("screenshots", object <| map (\s -> (s.url, string s.description)) pkg.screenshots)
       ]
   in
     object
