@@ -235,7 +235,7 @@ packageCard data package =
         , div [] ( map (chip PMsg.RemoveContent) package.tags )
         ]
     , Card.text [ cs "version-tabs" ]
-        [ subtitle "Add package versions and fill in version data"
+        [ subtitle "The package must contain at least one version to be downloadable."
         , Button.render Mdl [20] data.mdl
             [ Button.raised
             , Button.ripple
@@ -265,6 +265,7 @@ packageCard data package =
                             [ Textfield.label "Version number"
                             , Textfield.floatingLabel
                             , Textfield.value version.version
+                            , Textfield.onInput <| PMsg.InputVersion >> PackageMsg
                             ] ]
                         [ Textfield.render Mdl [31] data.mdl
                             [ Textfield.label "Version changes"
@@ -272,12 +273,13 @@ packageCard data package =
                             , Textfield.textarea
                             , Textfield.rows 5
                             , Textfield.value version.changes
+                            , Textfield.onInput <| PMsg.InputChanges >> PackageMsg
                             , cs "edit-card-desc-box"
                             ] ]
                     , columns [ files data version ] [ dependencies data version ]
                     ]
                 Nothing ->
-                  p [] [ text "No versions added..." ]
+                  p [] [ text "Select one of the versions, or add new version to edit." ]
             ]
         ]
     , Card.text

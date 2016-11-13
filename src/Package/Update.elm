@@ -1,7 +1,7 @@
 module Package.Update exposing (..)
 
 import Http
-import List exposing (member, filter, reverse, sortBy)
+import List exposing (filter, length, map2, member, reverse, sortBy)
 import String exposing (isEmpty)
 import Task exposing (Task)
 
@@ -57,6 +57,13 @@ add list item =
 remove : List a -> a -> List a
 remove list item =
   filter (\a -> a /= item) list
+
+updateItem : List a -> (a -> a) -> Int -> List a
+updateItem list processor index =
+  map2
+    ( \i item -> if i == index then processor item else item )
+    [0..(length list)]
+    list
 
 
 update : Msg -> PackageData -> ( PackageData, Cmd Msg, List Outer.Msg )
@@ -153,6 +160,16 @@ update message data =
             | package = { package | versions = filter (\v -> v.version /= selected.version) package.versions }
             } ! [] ~ []
           Nothing -> data ! [] ~ []
+    InputVersion num ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | version = num }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    InputChanges changes ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | changes = changes }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
 
     InputKey key ->
       if key == Config.enterKey then

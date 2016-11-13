@@ -33,6 +33,8 @@ type Msg
   | RemoveContent String
   | AddVersion
   | RemoveVersion
+  | InputVersion String
+  | InputChanges String
   | InputKey Int
   -- Other
   | SharePackage String
