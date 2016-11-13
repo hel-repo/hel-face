@@ -40,6 +40,10 @@ type Msg
   | InputFileUrl Int String
   | AddFile
   | RemoveFile Int
+  | InputDependencyName Int String
+  | InputDependencyVersion Int String
+  | AddDependency
+  | RemoveDependency Int
   | InputKey Int
   -- Other
   | SharePackage String

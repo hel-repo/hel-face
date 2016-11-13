@@ -207,6 +207,32 @@ update message data =
         package = data.package
         versions = updateItem package.versions (\v -> { v | files = removeByIndex index v.files }) data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
+    InputDependencyName index name ->
+      let
+        package = data.package
+        versions = updateItem
+          package.versions
+          (\v -> { v | depends = updateItem v.depends (\d -> { d | name = name } ) index })
+          data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    InputDependencyVersion index num ->
+      let
+        package = data.package
+        versions = updateItem
+          package.versions
+          (\v -> { v | depends = updateItem v.depends (\d -> { d | version = num } ) index })
+          data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    AddDependency ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | depends = emptyDependency :: v.depends }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    RemoveDependency index ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | depends = removeByIndex index v.depends }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
 
     InputKey key ->
       if key == Config.enterKey then

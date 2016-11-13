@@ -100,31 +100,34 @@ files data version =
     ]
 
 
-dependency : PackageData -> PkgVersionDependency -> Html Msg
-dependency data d =
+dependency : PackageData -> PkgVersionDependency -> Int -> Html Msg
+dependency data d index =
   div [ class "edit-card-item" ]
-    [ Button.render Mdl [51] data.mdl
+    [ Button.render Mdl [200 + index*3] data.mdl
         [ Button.icon
         , Button.ripple
+        , Button.onClick <| PackageMsg <| PMsg.RemoveDependency index
         , cs "edit-card-close"
         ]
         [ Icon.i "close"]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "extension" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [52] data.mdl
+        , Textfield.render Mdl [200 + index*3 + 1] data.mdl
             [ Textfield.label "Package name"
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value d.name
+            , Textfield.onInput <| (PMsg.InputDependencyName index) >> PackageMsg
             ]
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "dns" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [53] data.mdl
+        , Textfield.render Mdl [200 + index*3 + 2] data.mdl
             [ Textfield.label "Version"
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value d.version
+            , Textfield.onInput <| (PMsg.InputDependencyVersion index) >> PackageMsg
             ]
         ]
     ]
@@ -137,10 +140,11 @@ dependencies data version =
     , Button.render Mdl [50] data.mdl
         [ Button.raised
         , Button.ripple
+        , Button.onClick <| PackageMsg PMsg.AddDependency
         , cs "edit-card-add-button"
         ]
         [ text "New dependency" ]
-    , div [] ( map (dependency data) version.depends )
+    , div [] ( map2 (dependency data) version.depends [0..(length version.depends)] )
     ]
 
 

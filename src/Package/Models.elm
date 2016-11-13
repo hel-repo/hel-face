@@ -37,6 +37,13 @@ type alias PkgVersionDependency =
   , version : String
   }
 
+emptyDependency : PkgVersionDependency
+emptyDependency =
+  { name = ""
+  , deptype = "required"
+  , version = "*"
+  }
+
 type alias PkgVersionData =
   { files : List PkgVersionFile
   , depends : List PkgVersionDependency
