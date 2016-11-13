@@ -46,6 +46,14 @@ savePackage package =
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
 
+createPackage : Package -> Cmd Msg
+createPackage package =
+  post'
+      ( Config.apiHost ++ "packages/" )
+      ( packageEncoder package )
+      |> Task.mapError toString
+      |> Task.perform ErrorOccurred PackageSaved
+
 
 add : List a -> a -> List a
 add list item =
@@ -102,7 +110,7 @@ update message data =
         } ! [] ~ []
 
     SavePackage package ->
-      data ! [ savePackage package ] ~ []
+      data ! [ if not <| isEmpty package.oldName then savePackage package else createPackage package ] ~ []
     PackageSaved response ->
       data ! [] ~ [ Outer.SomethingOccurred "Package was succesfully saved!" ]
 
