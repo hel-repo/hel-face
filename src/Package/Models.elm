@@ -8,6 +8,12 @@ type alias Screenshot =
   , description : String
   }
 
+emptyScreenshot : Screenshot
+emptyScreenshot =
+  { url = ""
+  , description = ""
+  }
+
 type alias PkgVersionFileData =
   { dir : String
   , name : String

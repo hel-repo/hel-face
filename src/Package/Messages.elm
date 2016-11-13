@@ -44,6 +44,10 @@ type Msg
   | InputDependencyVersion Int String
   | AddDependency
   | RemoveDependency Int
+  | InputScreenshotUrl Int String
+  | InputScreenshotDescription Int String
+  | AddScreenshot
+  | RemoveScreenshot Int
   | InputKey Int
   -- Other
   | SharePackage String

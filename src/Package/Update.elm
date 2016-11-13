@@ -241,6 +241,22 @@ update message data =
         package = data.package
         versions = updateItem package.versions (\v -> { v | depends = removeByIndex index v.depends }) data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
+    InputScreenshotUrl index url ->
+      let
+        package = data.package
+        screenshots = updateItem package.screenshots (\s -> { s | url = url }) index
+      in { data | package = { package | screenshots = screenshots } } ! [] ~ []
+    InputScreenshotDescription index description ->
+      let
+        package = data.package
+        screenshots = updateItem package.screenshots (\s -> { s | description = description }) index
+      in { data | package = { package | screenshots = screenshots } } ! [] ~ []
+    AddScreenshot ->
+      let package = data.package
+      in { data | package = { package | screenshots = emptyScreenshot :: package.screenshots } } ! [] ~ []
+    RemoveScreenshot index ->
+      let package = data.package
+      in { data | package = { package | screenshots = removeByIndex index package.screenshots } } ! [] ~ []
 
     InputKey key ->
       if key == Config.enterKey then

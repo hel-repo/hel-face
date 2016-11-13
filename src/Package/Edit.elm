@@ -148,6 +148,54 @@ dependencies data version =
     ]
 
 
+screenshot : PackageData -> Screenshot -> Int -> Html Msg
+screenshot data screen index =
+  div [ class "edit-card-item" ]
+    [ Button.render Mdl [300 + index*3] data.mdl
+        [ Button.icon
+        , Button.ripple
+        , Button.onClick <| PackageMsg <| PMsg.RemoveScreenshot index
+        , cs "edit-card-close"
+        ]
+        [ Icon.i "close"]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "link" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [300 + index*3 + 1] data.mdl
+            [ Textfield.label "Direct link to an image"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value screen.url
+            , Textfield.onInput <| (PMsg.InputScreenshotUrl index) >> PackageMsg
+            ]
+        ]
+    , div [ class "edit-card-desc-box" ]
+        [ span [ class "list-icon" ] [ Lists.icon "description" [ Icon.size18, cs "noselect" ] ]
+        , Textfield.render Mdl [300 + index*3 + 2] data.mdl
+            [ Textfield.label "Description"
+            , Textfield.floatingLabel
+            , Textfield.text'
+            , Textfield.value screen.description
+            , Textfield.onInput <| (PMsg.InputScreenshotDescription index) >> PackageMsg
+            ]
+        ]
+    ]
+
+screenshots : PackageData -> Package -> Html Msg
+screenshots data package =
+  div
+    [ class "dep-block" ]
+    [ subtitle "Screenshots (optional)"
+    , Button.render Mdl [60] data.mdl
+        [ Button.raised
+        , Button.ripple
+        , Button.onClick <| PackageMsg PMsg.AddScreenshot
+        , cs "edit-card-add-button"
+        ]
+        [ text "Add screenshot" ]
+    , div [] ( map2 (screenshot data) package.screenshots [0..(length package.screenshots)] )
+    ]
+
+
 columns : List (Html a) -> List (Html a) -> Html a
 columns left right =
   Grid.grid [ cs "no-padding-grid" ]
@@ -243,6 +291,9 @@ packageCard data package =
             ]
         , div [] ( map (chip PMsg.RemoveContent) package.tags )
         ]
+    , Card.text
+        [ Card.border ]
+        [ screenshots data package ]
     , Card.text [ cs "version-tabs" ]
         [ subtitle "The package must contain at least one version to be downloadable."
         , Button.render Mdl [20] data.mdl
