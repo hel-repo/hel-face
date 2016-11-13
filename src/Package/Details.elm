@@ -258,6 +258,10 @@ view data =
   else
     div
       [ class "page" ]
-      [ screensCard data.mdl data.package
-      , detailsCard data data.package
-      ]
+      ( if String.isEmpty data.package.name then
+          [ notFoundCard ]
+        else
+          [ screensCard data.mdl data.package
+          , detailsCard data data.package
+          ]
+      )

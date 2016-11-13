@@ -86,6 +86,7 @@ update message data =
       { data
         | loading = False
         , packages = []
+        , package = emptyPackage
       } ! [] ~ [ Outer.ErrorOccurred message ]
 
     -- Network
