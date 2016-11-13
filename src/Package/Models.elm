@@ -43,6 +43,14 @@ type alias Version =
   , changes : String
   }
 
+emptyVersion : Version
+emptyVersion =
+  { version = "x.y.z"
+  , files = []
+  , depends = []
+  , changes = ""
+  }
+
 type alias PkgStatsDate =
   { created : String
   , lastUpdated : String

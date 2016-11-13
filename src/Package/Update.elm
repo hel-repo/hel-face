@@ -8,7 +8,7 @@ import Task exposing (Task)
 import Base.Config as Config
 import Base.Http exposing (..)
 import Base.Messages as Outer
-import Base.Tools as Tools exposing ((~))
+import Base.Tools as Tools exposing ((~), (!!))
 import Package.Encoders exposing (packageEncoder)
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
@@ -141,6 +141,18 @@ update message data =
     RemoveContent content ->
       let package = data.package
       in { data | package = { package | tags = remove package.tags content } } ! [] ~ []
+    AddVersion ->
+      let package = data.package
+      in { data | version = 0, package = { package | versions = emptyVersion :: package.versions } } ! [] ~ []
+    RemoveVersion ->
+      let package = data.package
+      in
+        case package.versions !! data.version of
+          Just selected ->
+            { data
+            | package = { package | versions = filter (\v -> v.version /= selected.version) package.versions }
+            } ! [] ~ []
+          Nothing -> data ! [] ~ []
 
     InputKey key ->
       if key == Config.enterKey then

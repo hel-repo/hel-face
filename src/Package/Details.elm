@@ -22,12 +22,12 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Tools exposing ((!!))
 import Package.Messages as PMsg
 import Package.Models exposing
   ( PackageData
   , Package, Version, PkgVersionFile, PkgVersionDependency
   )
-import Base.Tools exposing ((!!))
 
 
 screensCard : Material.Model -> Package -> Html Msg

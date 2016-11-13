@@ -31,6 +31,8 @@ type Msg
   | RemoveAuthor String
   | InputContent String
   | RemoveContent String
+  | AddVersion
+  | RemoveVersion
   | InputKey Int
   -- Other
   | SharePackage String

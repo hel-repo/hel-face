@@ -239,46 +239,46 @@ packageCard data package =
         , Button.render Mdl [20] data.mdl
             [ Button.raised
             , Button.ripple
+            , Button.onClick <| PackageMsg PMsg.AddVersion
             , cs "edit-card-add-button"
             ]
             [ Icon.i "add", text "Add version" ]
         , Button.render Mdl [21] data.mdl
             [ Button.raised
             , Button.ripple
+            , Button.onClick <| PackageMsg PMsg.RemoveVersion
             , cs "edit-card-remove-button"
             ]
             [ Icon.i "delete", text "Remove version" ]
-        , let versions = reverse <| sortBy .version package.versions
-          in
-            Tabs.render Mdl [25] data.mdl
-              [ Tabs.ripple
-              , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
-              , Tabs.activeTab data.version
-              ]
-              ( map versionLabel versions )
-              [ case versions !! data.version of
-                  Just version ->
-                    div
-                      [ class "page" ]
-                      [ columns
-                          [ Textfield.render Mdl [30] data.mdl
-                              [ Textfield.label "Version number"
-                              , Textfield.floatingLabel
-                              , Textfield.value version.version
-                              ] ]
-                          [ Textfield.render Mdl [31] data.mdl
-                              [ Textfield.label "Version changes"
-                              , Textfield.floatingLabel
-                              , Textfield.textarea
-                              , Textfield.rows 5
-                              , Textfield.value version.changes
-                              , cs "edit-card-desc-box"
-                              ] ]
-                      , columns [ files data version ] [ dependencies data version ]
-                      ]
-                  Nothing ->
-                    p [] [ text "No versions added..." ]
-              ]
+        , Tabs.render Mdl [25] data.mdl
+            [ Tabs.ripple
+            , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
+            , Tabs.activeTab data.version
+            ]
+            ( map versionLabel package.versions )
+            [ case package.versions !! data.version of
+                Just version ->
+                  div
+                    [ class "page" ]
+                    [ columns
+                        [ Textfield.render Mdl [30] data.mdl
+                            [ Textfield.label "Version number"
+                            , Textfield.floatingLabel
+                            , Textfield.value version.version
+                            ] ]
+                        [ Textfield.render Mdl [31] data.mdl
+                            [ Textfield.label "Version changes"
+                            , Textfield.floatingLabel
+                            , Textfield.textarea
+                            , Textfield.rows 5
+                            , Textfield.value version.changes
+                            , cs "edit-card-desc-box"
+                            ] ]
+                    , columns [ files data version ] [ dependencies data version ]
+                    ]
+                Nothing ->
+                  p [] [ text "No versions added..." ]
+            ]
         ]
     , Card.text
         []
