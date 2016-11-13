@@ -19,6 +19,13 @@ type alias PkgVersionFile =
   , name : String
   }
 
+emptyFile : PkgVersionFile
+emptyFile =
+  { url = ""
+  , dir = ""
+  , name = ""
+  }
+
 type alias PkgVersionDependencyData =
   { deptype : String
   , version : String

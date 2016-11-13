@@ -35,6 +35,11 @@ type Msg
   | RemoveVersion
   | InputVersion String
   | InputChanges String
+  | InputFilePath Int String
+  | InputFileName Int String
+  | InputFileUrl Int String
+  | AddFile
+  | RemoveFile Int
   | InputKey Int
   -- Other
   | SharePackage String

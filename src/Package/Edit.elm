@@ -2,7 +2,7 @@ module Package.Edit exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import List exposing (head, map, reverse, sortBy)
+import List exposing (head, length, map, map2, reverse, sortBy)
 
 import Material.Button as Button
 import Material.Card as Card
@@ -42,40 +42,44 @@ subtitle str =
   p [ class "subtitle" ] [ text str ]
 
 
-file : PackageData -> PkgVersionFile -> Html Msg
-file data file =
+file : PackageData -> PkgVersionFile -> Int -> Html Msg
+file data file index =
   div [ class "edit-card-item" ]
-    [ Button.render Mdl [41] data.mdl
+    [ Button.render Mdl [100 + index*4] data.mdl
         [ Button.icon
         , Button.ripple
+        , Button.onClick <| PackageMsg <| PMsg.RemoveFile index
         , cs "edit-card-close noselect"
         ]
         [ Icon.i "close"]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [42] data.mdl
+        , Textfield.render Mdl [100 + index*4 + 1] data.mdl
             [ Textfield.label "Path"
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value file.dir
+            , Textfield.onInput <| (PMsg.InputFilePath index) >> PackageMsg
             ]
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [43] data.mdl
+        , Textfield.render Mdl [100 + index*4 + 2] data.mdl
             [ Textfield.label "File name"
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value file.name
+            , Textfield.onInput <| (PMsg.InputFileName index) >> PackageMsg
             ]
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "link" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [44] data.mdl
+        , Textfield.render Mdl [100 + index*4 + 3] data.mdl
             [ Textfield.label "URL"
             , Textfield.floatingLabel
             , Textfield.text'
             , Textfield.value file.url
+            , Textfield.onInput <| (PMsg.InputFileUrl index) >> PackageMsg
             ]
         ]
     ]
@@ -88,10 +92,11 @@ files data version =
     , Button.render Mdl [40] data.mdl
         [ Button.raised
         , Button.ripple
+        , Button.onClick <| PackageMsg PMsg.AddFile
         , cs "edit-card-add-button"
         ]
         [ text "New file" ]
-    , div [] (map (file data) version.files)
+    , div [] ( map2 (file data) version.files [0..(length version.files)] )
     ]
 
 

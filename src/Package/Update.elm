@@ -1,7 +1,7 @@
 module Package.Update exposing (..)
 
 import Http
-import List exposing (filter, length, map2, member, reverse, sortBy)
+import List exposing (drop, filter, length, map2, member, reverse, sortBy, take)
 import String exposing (isEmpty)
 import Task exposing (Task)
 
@@ -57,6 +57,9 @@ add list item =
 remove : List a -> a -> List a
 remove list item =
   filter (\a -> a /= item) list
+
+removeByIndex i xs =
+  (take i xs) ++ (drop (i+1) xs)
 
 updateItem : List a -> (a -> a) -> Int -> List a
 updateItem list processor index =
@@ -169,6 +172,40 @@ update message data =
       let
         package = data.package
         versions = updateItem package.versions (\v -> { v | changes = changes }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    InputFilePath index path ->
+      let
+        package = data.package
+        versions = updateItem
+          package.versions
+          (\v -> { v | files = updateItem v.files (\f -> { f | dir = path } ) index })
+          data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    InputFileName index name ->
+      let
+        package = data.package
+        versions = updateItem
+          package.versions
+          (\v -> { v | files = updateItem v.files (\f -> { f | name = name } ) index })
+          data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    InputFileUrl index url ->
+      let
+        package = data.package
+        versions = updateItem
+          package.versions
+          (\v -> { v | files = updateItem v.files (\f -> { f | url = url } ) index })
+          data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    AddFile ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | files = emptyFile :: v.files }) data.version
+      in { data | package = { package | versions = versions } } ! [] ~ []
+    RemoveFile index ->
+      let
+        package = data.package
+        versions = updateItem package.versions (\v -> { v | files = removeByIndex index v.files }) data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
 
     InputKey key ->
