@@ -25,8 +25,7 @@ import Package.Messages as PMsg
 card : PackageData -> Int -> Package -> Cell Msg
 card data index package =
   cell
-    [ size All 4
-    ]
+    [ size All 4 ]
     [ Card.view
         [ Elevation.e2 ]
         [ Card.title
@@ -41,7 +40,7 @@ card data index package =
                         [ Menu.onSelect <| RoutePackageEdit package.name ]
                         [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
                     , Menu.item
-                        [ Menu.disabled ]
+                        [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
                         [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
                     ]
                 ]

@@ -187,7 +187,7 @@ detailsCard data package =
                     [ Menu.onSelect <| RoutePackageEdit package.name ]
                     [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
                 , Menu.item
-                    [ Menu.disabled ]
+                    [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
                     [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
                 ]
             ]

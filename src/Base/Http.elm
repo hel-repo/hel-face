@@ -26,10 +26,19 @@ post' url data =
 get' : Json.Decoder value -> String -> Task Error value
 get' decoder url =
   let request =
-        { verb = "GET"
-        , headers = []
-        , url = url
-        , body = Http.empty
-        }
+    { verb = "GET"
+    , headers = []
+    , url = url
+    , body = Http.empty
+    }
   in Http.fromJson decoder
-        <| Http.send { defaultSettings | withCredentials = True } request
+    <| Http.send { defaultSettings | withCredentials = True } request
+
+delete' : String -> Task RawError Response
+delete' url =
+  Http.send { defaultSettings | withCredentials = True }
+    { verb = "DELETE"
+    , headers = []
+    , url = url
+    , body = Http.empty
+    }

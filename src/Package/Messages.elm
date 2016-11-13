@@ -15,6 +15,8 @@ type Msg
   | PackageFetched Package
   | SavePackage Package
   | PackageSaved Response
+  | RemovePackage String
+  | PackageRemoved Response
   -- Navigation
   | GoToPackageList SearchData
   | GoToPackageDetails String

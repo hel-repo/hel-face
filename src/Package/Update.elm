@@ -54,6 +54,13 @@ createPackage package =
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
 
+removePackage : String -> Cmd Msg
+removePackage name =
+  delete'
+      ( Config.apiHost ++ "packages/" ++ name )
+      |> Task.mapError toString
+      |> Task.perform ErrorOccurred PackageRemoved
+
 
 add : List a -> a -> List a
 add list item =
@@ -111,9 +118,20 @@ update message data =
         } ! [] ~ []
 
     SavePackage package ->
-      data ! [ if not <| isEmpty package.oldName then savePackage package else createPackage package ] ~ []
+      { data | loading = True }
+      ! [ if not <| isEmpty package.oldName then savePackage package else createPackage package ]
+      ~ []
     PackageSaved response ->
-      data ! [] ~ [ Outer.SomethingOccurred "Package was succesfully saved!" ]
+      { data | loading = False }
+      ! []
+      ~ [ Outer.RoutePackageDetails data.package.name, Outer.SomethingOccurred "Package was succesfully saved!" ]
+
+    RemovePackage name ->
+      { data | loading = True } ! [ removePackage name ] ~ []
+    PackageRemoved response ->
+      { data | loading = False }
+      ! []
+      ~ [ Outer.RoutePackageList searchAll, Outer.SomethingOccurred "Package was succesfully removed!" ]
 
     -- Navigation
     GoToPackageList searchData ->
