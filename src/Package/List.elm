@@ -2,12 +2,9 @@ module Package.List exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Html.Events
 import List exposing (map2, length, isEmpty, member)
 
-import Material
 import Material.Button as Button
-import Material.Color as Color
 import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)

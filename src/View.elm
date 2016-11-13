@@ -95,6 +95,26 @@ view model =
                       [ Icon.view "fingerprint" [ Icon.size36 ] ]
                   ]
           ]
+      , div
+          [ class "error"
+          , onClick DismissNotification
+          ]
+          ( if isEmpty model.error || contains "404" model.error then []
+            else
+              [ Icon.view "error_outline" [ cs "align-middle" ]
+              , span [ class "align-middle notification-text" ] [ text model.error ]
+              ]
+          )
+      , div
+          [ class "notify"
+          , onClick DismissNotification
+          ]
+          ( if isEmpty model.notification then []
+            else
+              [ Icon.view "info_outline" [ cs "align-middle" ]
+              , span [ class "align-middle notification-text" ] [ text model.notification ]
+              ]
+          )
       ]
     , drawer = []
     , tabs = ( [], [] )
@@ -104,53 +124,31 @@ view model =
 
 viewBody : Model -> Html Msg
 viewBody model =
-  div [ ]
-    [ div
-        [ class "error"
-        , onClick DismissNotification
+  case model.route of
+    PackageListRoute searchData ->
+      Package.List.view model.packageData
+
+    PackageRoute name ->
+      Package.Details.view model.packageData
+
+    PackageEditRoute name ->
+      Package.Edit.view model.packageData
+
+    AuthRoute ->
+      User.Auth.view model.userData
+
+    RegisterRoute ->
+      User.Register.view model.userData
+
+    ProfileRoute ->
+      User.Profile.view model.userData
+
+    NotFoundRoute ->
+      div
+        [ class "page" ]
+        [ Card.view
+          [ Elevation.e2 ]
+          [ Card.title [] [ Card.head [] [ text "404: Page does not exist!" ] ]
+          , Card.text [] [ text "Check the address for typing errors." ]
+          ]
         ]
-        ( if isEmpty model.error || contains "404" model.error then []
-          else
-            [ Icon.view "error_outline" [ cs "align-middle" ]
-            , span [ class "align-middle notification-text" ] [ text model.error ]
-            ]
-        )
-    , div
-        [ class "notify"
-        , onClick DismissNotification
-        ]
-        ( if isEmpty model.notification then []
-          else
-            [ Icon.view "info_outline" [ cs "align-middle" ]
-            , span [ class "align-middle notification-text" ] [ text model.notification ]
-            ]
-        )
-    , case model.route of
-        PackageListRoute searchData ->
-          Package.List.view model.packageData
-
-        PackageRoute name ->
-          Package.Details.view model.packageData
-
-        PackageEditRoute name ->
-          Package.Edit.view model.packageData
-
-        AuthRoute ->
-          User.Auth.view model.userData
-
-        RegisterRoute ->
-          User.Register.view model.userData
-
-        ProfileRoute ->
-          User.Profile.view model.userData
-
-        NotFoundRoute ->
-          div
-            [ class "page" ]
-            [ Card.view
-              [ Elevation.e2 ]
-              [ Card.title [] [ Card.head [] [ text "404: Page does not exist!" ] ]
-              , Card.text [] [ text "Check the address for typing errors." ]
-              ]
-            ]
-    ]

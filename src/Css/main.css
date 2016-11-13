@@ -48,7 +48,7 @@ body {
   color: #fff;
   background: #1fbb85;
   padding: 10px;
-  margin: 1.1em;
+  margin: 0 1.1em 1.1em 1.1em;
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 2px;
   cursor: pointer;

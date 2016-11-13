@@ -1,10 +1,13 @@
 .header {
   background: #212121;
   padding: 0.1rem 1rem;
-  border-bottom: 2px solid #bb1f2f;
   display: flex;
   align-items: center;
   width: 100%;
+}
+.mdl-layout__header {
+  background: #212121;
+  border-bottom: 2px solid #bb1f2f;
 }
 
 .header-title {
