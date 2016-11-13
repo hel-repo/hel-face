@@ -2,7 +2,7 @@ module Package.Details exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src)
-import List exposing (head, isEmpty, map, reverse, sortBy, member)
+import List exposing (head, isEmpty, map, member)
 import String exposing (join)
 
 import Markdown
@@ -11,7 +11,6 @@ import Material
 import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
-import Material.Color as Color
 import Material.Elevation as Elevation
 import Material.Grid as Grid
 import Material.Icon as Icon
@@ -204,37 +203,35 @@ detailsCard data package =
     , Card.text [] [ Markdown.toHtml [] package.description ]
     , Card.actions [] ( map chip package.tags )
     , Card.actions [ cs "version-tabs" ]
-        [ let versions = reverse <| sortBy .version package.versions
-          in
-            Tabs.render Mdl [0] data.mdl
-              [ Tabs.ripple
-              , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
-              , Tabs.activeTab data.version
-              ]
-              ( map versionLabel versions )
-              [ case versions !! data.version of
-                  Just version ->
-                    div
-                      [ class "page" ]
-                      [ versionDesc package.name version
-                      , Grid.grid [ cs "no-padding-grid" ]
-                          [ Grid.cell
-                              [ Grid.size Grid.Desktop 6
-                              , Grid.size Grid.Tablet 8
-                              , Grid.size Grid.Phone 4
-                              ]
-                              [ files version ]
-                          , Grid.cell
-                              [ Grid.size Grid.Desktop 6
-                              , Grid.size Grid.Tablet 8
-                              , Grid.size Grid.Phone 4
-                              ]
-                              [ dependencies version ]
-                          ]
-                      ]
-                  Nothing ->
-                    div [ class "error" ] [ text "Wrong version code!" ]
-              ]
+        [ Tabs.render Mdl [0] data.mdl
+            [ Tabs.ripple
+            , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
+            , Tabs.activeTab data.version
+            ]
+            ( map versionLabel package.versions )
+            [ case package.versions !! data.version of
+                Just version ->
+                  div
+                    [ class "page" ]
+                    [ versionDesc package.name version
+                    , Grid.grid [ cs "no-padding-grid" ]
+                        [ Grid.cell
+                            [ Grid.size Grid.Desktop 6
+                            , Grid.size Grid.Tablet 8
+                            , Grid.size Grid.Phone 4
+                            ]
+                            [ files version ]
+                        , Grid.cell
+                            [ Grid.size Grid.Desktop 6
+                            , Grid.size Grid.Tablet 8
+                            , Grid.size Grid.Phone 4
+                            ]
+                            [ dependencies version ]
+                        ]
+                    ]
+                Nothing ->
+                  div [ class "error" ] [ text "Wrong version code!" ]
+            ]
         ]
     ]
 

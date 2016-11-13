@@ -1,7 +1,7 @@
 module Package.Update exposing (..)
 
 import Http
-import List exposing (member, filter)
+import List exposing (member, filter, reverse, sortBy)
 import String exposing (isEmpty)
 import Task exposing (Task)
 
@@ -82,11 +82,14 @@ update message data =
     FetchPackage name ->
       { data | loading = True } ! [ lookupPackage name ] ~ []
     PackageFetched package ->
-      { data
-        | package = package
-        , version = 0
-        , loading = False
-      } ! [] ~ []
+      let
+        versions = reverse <| sortBy .version package.versions
+      in
+        { data
+          | package = { package | versions = versions }
+          , version = 0
+          , loading = False
+        } ! [] ~ []
 
     SavePackage package ->
       data ! [ savePackage package ] ~ []
