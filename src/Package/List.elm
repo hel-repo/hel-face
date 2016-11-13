@@ -29,7 +29,7 @@ card data index package =
           [ cs "card-title" ]
           [ Card.head [] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
         , Card.menu
-            [ cs "noselect" ]
+            [ cs "noselect list-card-menu-button" ]
             ( if member data.username package.owners then
                 [ Menu.render Mdl [index*3] data.mdl
                     [ Menu.ripple, Menu.bottomRight ]
