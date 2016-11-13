@@ -142,7 +142,7 @@ update message data =
       if not <| isEmpty name then
         data ! [ wrapMsg (FetchPackage name) ] ~ []
       else
-        { data | package = emptyPackage } ! [] ~ []
+        { data | package = { emptyPackage | owners = [data.username] } } ! [] ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []
