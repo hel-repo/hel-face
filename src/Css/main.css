@@ -13,7 +13,7 @@ body {
 .page {
   padding: 1em;
 }
-.code {
+.code, pre {
   font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
   display: block;
   padding: 0.5em 1em;
@@ -21,6 +21,14 @@ body {
   border: 1px solid rgba(0,0,0,.1);
   border-radius: 2px;
   color: rgb(255, 82, 82);
+  background: rgba(0,0,0,.1);
+}
+code {
+  font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+  padding: 4px;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 2px;
+  color: #fff;
   background: rgba(0,0,0,.1);
 }
 .spinner {
