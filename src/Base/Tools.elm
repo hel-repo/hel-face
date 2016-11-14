@@ -1,6 +1,6 @@
 module Base.Tools exposing (..)
 
-import List exposing (map, head, drop)
+import List exposing (drop, head, map)
 import Task exposing (Task)
 
 import Base.Messages exposing (Msg)

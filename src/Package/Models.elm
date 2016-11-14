@@ -61,6 +61,7 @@ type alias Version =
   , files : List PkgVersionFile
   , depends : List PkgVersionDependency
   , changes : String
+  , remove : Bool
   }
 
 emptyVersion : Version
@@ -69,6 +70,7 @@ emptyVersion =
   , files = []
   , depends = []
   , changes = ""
+  , remove = False
   }
 
 type alias PkgStatsDate =
@@ -86,7 +88,6 @@ emptyStats = { views = 0, date = { created = "", lastUpdated = "" } }
 
 type alias Package =
   { name : String
-  , oldName : String
   , description : String
   , shortDescription : String
   , owners : List String
@@ -101,7 +102,6 @@ type alias Package =
 emptyPackage : Package
 emptyPackage =
   { name = ""
-  , oldName = ""
   , description = ""
   , shortDescription = ""
   , owners = []
@@ -122,6 +122,7 @@ type alias Tags =
   , content : String
   }
 
+emptyTags : Tags
 emptyTags =
   { active = Owner
   , owner = ""
@@ -134,6 +135,7 @@ type alias PackageData =
   { mdl : Material.Model
   , packages : List Package
   , package : Package
+  , oldPackage : Package   -- backup for changes resolver
   , version : Int          -- currently selected version tab
   , loading : Bool
   , share : String         -- which card was triggered to show sharing links
@@ -146,6 +148,7 @@ emptyPackageData materialModel =
   { mdl = materialModel
   , packages = []
   , package = emptyPackage
+  , oldPackage = emptyPackage
   , loading = False
   , version = 0
   , share = ""

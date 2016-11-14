@@ -35,14 +35,14 @@ lookupPackages data =
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackagesFetched
 
-savePackage : Package -> Cmd Msg
-savePackage package =
+savePackage : Package -> Package -> Cmd Msg
+savePackage package oldPackage =
   let
-    name = if isEmpty package.oldName then package.name else package.oldName
+    name = if isEmpty oldPackage.name then package.name else oldPackage.name
   in
     patch'
       ( Config.apiHost ++ "packages/" ++ name )
-      ( packageEncoder package )
+      ( packageEncoder package oldPackage )
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
 
@@ -50,7 +50,7 @@ createPackage : Package -> Cmd Msg
 createPackage package =
   post'
       ( Config.apiHost ++ "packages/" )
-      ( packageEncoder package )
+      ( packageEncoder package package )
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
 
@@ -109,17 +109,20 @@ update message data =
       { data | loading = True } ! [ lookupPackage name ] ~ []
     PackageFetched package ->
       let
-        versions = reverse <| sortBy .version package.versions
+        sorted = { package | versions = reverse <| sortBy .version package.versions }
       in
         { data
-          | package = { package | versions = versions }
+          | package = sorted
+          , oldPackage = sorted
           , version = 0
           , loading = False
         } ! [] ~ []
 
     SavePackage package ->
       { data | loading = True }
-      ! [ if not <| isEmpty package.oldName then savePackage package else createPackage package ]
+      ! [ if not <| isEmpty data.oldPackage.name then savePackage package data.oldPackage
+          else createPackage package
+        ]
       ~ []
     PackageSaved response ->
       { data | loading = False }
@@ -142,7 +145,8 @@ update message data =
       if not <| isEmpty name then
         data ! [ wrapMsg (FetchPackage name) ] ~ []
       else
-        { data | package = { emptyPackage | owners = [data.username] } } ! [] ~ []
+        let newPackage = { emptyPackage | owners = [data.username] }
+        in { data | package = newPackage, oldPackage = newPackage } ! [] ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []

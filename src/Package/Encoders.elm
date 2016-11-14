@@ -1,8 +1,9 @@
 module Package.Encoders exposing (packageEncoder)
 
 import Array exposing (fromList)
-import List exposing (map)
 import Json.Encode as Json exposing (..)
+import List exposing (map)
+import String exposing (isEmpty)
 
 import Package.Models exposing (Package, Version, PkgVersionDependency, PkgVersionFile)
 
@@ -39,18 +40,31 @@ package pkg =
       , ("owners", array <| fromList <| map string pkg.owners)
       , ("authors", array <| fromList <| map string pkg.authors)
       , ("tags", array <| fromList <| map string pkg.tags)
-      , ("versions", object <| map (\v -> (v.version, version v)) pkg.versions)
+      , ("versions", object <| map (\v -> (v.version, if v.remove then null else version v)) pkg.versions)
       , ("screenshots", object <| map (\s -> (s.url, string s.description)) pkg.screenshots)
       ]
   in
     object
-      ( if pkg.name /= pkg.oldName then
+      ( if not <| isEmpty pkg.name then
           ("name", string pkg.name) :: fields
         else
           fields
       )
 
 
-packageEncoder : Package -> String
-packageEncoder pkg =
-  encode 0 <| package pkg
+-- Nullify missing items and name field, to create valid 'patch' object
+resolved : Package -> Package -> Package
+resolved pkg oldPkg =
+  let
+    nullified = List.map ( \v -> { v | remove = True } )
+      <| List.filter ( \ov -> List.all ( \v -> v.version /= ov.version ) pkg.versions ) oldPkg.versions
+  in
+    { pkg
+      | versions = List.append nullified pkg.versions
+      , name = if pkg.name /= oldPkg.name then pkg.name else ""
+    }
+
+
+packageEncoder : Package -> Package -> String
+packageEncoder pkg oldPkg =
+  encode 0 <| package <| resolved pkg oldPkg

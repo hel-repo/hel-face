@@ -51,7 +51,7 @@ pkgVersionData =
 
 pkgVersionList : List (String, PkgVersionData) -> Json.Decoder (List Version)
 pkgVersionList list =
-  Json.succeed (List.map (\(version, data) -> Version version data.files data.depends data.changes) list)
+  Json.succeed (List.map (\(version, data) -> Version version data.files data.depends data.changes False) list)
 
 version : Json.Decoder (List Version)
 version =
@@ -73,7 +73,6 @@ packageDecoder : Json.Decoder Package
 packageDecoder =
   Json.succeed Package
     |: ("name" := Json.string)
-    |: ("name" := Json.string)  -- fill oldName field with the same data
     |: ("description" := Json.string)
     |: ("short_description" := Json.string)
     |: ("owners" := Json.list Json.string)
