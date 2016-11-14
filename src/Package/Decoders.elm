@@ -22,7 +22,7 @@ pkgVersionFileData =
 
 pkgVersionFilesList : List (String, PkgVersionFileData) -> Json.Decoder (List PkgVersionFile)
 pkgVersionFilesList list =
-  Json.succeed (List.map (\(url, data) -> PkgVersionFile url data.dir data.name) list)
+  Json.succeed (List.map (\(url, data) -> PkgVersionFile url data.dir data.name False) list)
 
 pkgVersionFiles : Json.Decoder (List PkgVersionFile)
 pkgVersionFiles =
@@ -36,7 +36,7 @@ pkgVersionDependencyData =
 
 pkgVersionDependencyList : List (String, PkgVersionDependencyData) -> Json.Decoder (List PkgVersionDependency)
 pkgVersionDependencyList list =
-  Json.succeed (List.map (\(name, data) -> PkgVersionDependency name data.deptype data.version) list)
+  Json.succeed (List.map (\(name, data) -> PkgVersionDependency name data.deptype data.version False) list)
 
 pkgVersionDependencies : Json.Decoder (List PkgVersionDependency)
 pkgVersionDependencies =

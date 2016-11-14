@@ -23,6 +23,7 @@ type alias PkgVersionFile =
   { url : String
   , dir : String
   , name : String
+  , remove : Bool
   }
 
 emptyFile : PkgVersionFile
@@ -30,6 +31,7 @@ emptyFile =
   { url = ""
   , dir = ""
   , name = ""
+  , remove = False
   }
 
 type alias PkgVersionDependencyData =
@@ -41,6 +43,7 @@ type alias PkgVersionDependency =
   { name: String
   , deptype : String
   , version : String
+  , remove : Bool
   }
 
 emptyDependency : PkgVersionDependency
@@ -48,6 +51,7 @@ emptyDependency =
   { name = ""
   , deptype = "required"
   , version = "*"
+  , remove = False
   }
 
 type alias PkgVersionData =
