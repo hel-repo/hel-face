@@ -3,14 +3,18 @@ HEL Repository web interface. Allows one to search, view, create and edit packag
 Easy way to distribute and deploy your OpenComputers application.
 
 ## Usage
-Just open one of these links in your favorite browser.
+Just open this link in your favorite browser:
 
 https://hel.fomalhaut.me/  (dev build, may be buggy)
 
-http://hel-roottree.rhcloud.com/  (stable version, may be a little bit outdated)
+If you are writing a custom Hel client, you can use Hel API by this address:
+
+https://hel-roottree.rhcloud.com/
+
+Please, refer to [wiki](https://github.com/hel-repo/hel/wiki) for details about API interaction.
 
 ## Contributing
-You will need to install [Elm compiler](http://elm-lang.org/), and [create-elm-app](https://github.com/halfzebra/create-elm-app) bundler tool.
+You will need to install a [create-elm-app](https://github.com/halfzebra/create-elm-app) bundler tool (which will install appropriate [Elm compiler](http://elm-lang.org/) version).
 
 Then you would be able to run and build source code from project directory with following commands:
 
