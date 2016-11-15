@@ -5,7 +5,7 @@ import Html.Attributes exposing (class, href, src)
 import List exposing (head, isEmpty, map, member)
 import String exposing (join)
 
-import Markdown
+import Markdown exposing (defaultOptions)
 
 import Material
 import Material.Button as Button
@@ -110,7 +110,7 @@ versionDesc name version =
     [ subtitle "Installation"
     , div [ class "padding-bottom" ] [ div [ class "code install-code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
     , subtitle "Changelog"
-    , Markdown.toHtml [ class "padding-bottom" ] version.changes
+    , Markdown.toHtmlWith { defaultOptions | sanitize = True } [ class "padding-bottom" ] version.changes
     ]
 
 
@@ -200,7 +200,7 @@ detailsCard data package =
                 ]
             ]
         )
-    , Card.text [] [ Markdown.toHtml [] package.description ]
+    , Card.text [] [ Markdown.toHtmlWith { defaultOptions | sanitize = True } [] package.description ]
     , Card.actions [] ( map chip package.tags )
     , Card.actions [ cs "version-tabs" ]
         [ Tabs.render Mdl [0] data.mdl
