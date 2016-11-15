@@ -17,10 +17,10 @@ import Material.Textfield as Textfield
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
+import Base.Search exposing (searchAll, searchByName)
 import Package.List
 import Package.Details
 import Package.Edit
-import Package.Models exposing (searchAll, searchByName)
 import Routing exposing (Route(..))
 import User.Auth
 import User.Messages as UMsg
@@ -53,6 +53,7 @@ view model =
                       , Options.attribute <| attribute "autocorrect" "off"
                       , Options.attribute <| attribute "autocapitalize" "off"
                       ]
+                  , Textfield.value model.search
                   , Textfield.onInput InputSearch
                   , Textfield.on "keyup" keyDecoder
                   ]

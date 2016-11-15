@@ -1,15 +1,13 @@
 module Update exposing (..)
 
-import String exposing (isEmpty)
-
 import Navigation
 import Material
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
+import Base.Search exposing (SearchData, searchByName, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
-import Package.Models exposing (searchByName)
 import Package.Update
 import User.Update
 
@@ -36,14 +34,15 @@ update msg model =
       model ! [ Navigation.newUrl url ]
 
     RoutePackageList searchData ->
-      let packageData = model.packageData
+      let
+        packageData = model.packageData
+        query = searchQuery searchData
       in
-        ( { model | packageData = { packageData | share = "" } }
-        , Navigation.newUrl <|
-            if isEmpty searchData.name
-              then "#packages/"
-              else "#search/" ++ searchData.name
-        )
+        { model
+          | packageData = { packageData | share = "" }
+          , search = query
+        }
+        ! [ Navigation.newUrl ( "#search/" ++ query ) ]
 
     RoutePackageDetails name ->
       ( model, Navigation.newUrl ("#packages/" ++ name) )

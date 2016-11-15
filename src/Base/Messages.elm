@@ -1,9 +1,11 @@
 module Base.Messages exposing (..)
 
 import Material
+
+import Base.Search exposing (SearchData)
 import Package.Messages as PMsg
-import Package.Models exposing (SearchData)
 import User.Messages as UMsg
+
 
 type Msg
   = Mdl (Material.Msg Msg)

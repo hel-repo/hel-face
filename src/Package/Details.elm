@@ -22,6 +22,7 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Search exposing (searchByTag)
 import Base.Tools exposing ((!!))
 import Package.Messages as PMsg
 import Package.Models exposing
@@ -60,7 +61,11 @@ screensCard mdl package =
 
 chip : String -> Html Msg
 chip str =
-  Chip.span [ cs "noselect" ] [ Chip.content [] [ text str ] ]
+  Chip.span
+    [ Chip.onClick <| RoutePackageList <| searchByTag str
+    , cs "noselect"
+    ]
+    [ Chip.content [] [ text str ] ]
 
 
 licenseLink : String -> String -> Html Msg

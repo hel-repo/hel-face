@@ -5,8 +5,8 @@ import Navigation
 import UrlParser exposing (..)
 
 import Base.Messages exposing (Msg(..))
+import Base.Search exposing (SearchData, searchAll, searchData)
 import Package.Messages as PMsg
-import Package.Models exposing (SearchData, searchAll, searchByName)
 import User.Messages as UMsg
 
 
@@ -38,7 +38,8 @@ matchers =
   oneOf
     [ format (PackageListRoute searchAll) (tail)
     , format (PackageListRoute searchAll) (s "packages" </> tail)
-    , format (PackageListRoute << searchByName) (s "search" </> string)
+    , format (PackageListRoute << searchData) (s "search" </> string)
+    , format (PackageListRoute searchAll) (s "search")
     , format PackageRoute (s "packages" </> string)
     , format (PackageListRoute searchAll) (s "packages")
     , format (PackageEditRoute "") (s "edit" </> tail)

@@ -8,6 +8,7 @@ import Task exposing (Task)
 import Base.Config as Config
 import Base.Http exposing (..)
 import Base.Messages as Outer
+import Base.Search exposing (SearchData, searchAll, searchApiPath)
 import Base.Tools as Tools exposing ((~), (!!))
 import Package.Encoders exposing (packageEncoder)
 import Package.Messages exposing (Msg(..))
@@ -30,7 +31,7 @@ lookupPackages data =
   Http.get packagesDecoder
     ( Config.apiHost
       ++ "packages"
-      ++ (if isEmpty data.name then "" else "?name=" ++ data.name)
+      ++ (searchApiPath data)
     )
     |> Task.mapError toString
     |> Task.perform ErrorOccurred PackagesFetched
@@ -73,6 +74,7 @@ remove : List a -> a -> List a
 remove list item =
   filter (\a -> a /= item) list
 
+removeByIndex : Int -> List a -> List a
 removeByIndex i xs =
   (take i xs) ++ (drop (i+1) xs)
 

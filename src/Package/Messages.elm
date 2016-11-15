@@ -2,7 +2,8 @@ module Package.Messages exposing (..)
 
 import Http exposing (Response)
 
-import Package.Models exposing (Package, SearchData)
+import Base.Search exposing (SearchData)
+import Package.Models exposing (Package)
 
 
 type Msg
