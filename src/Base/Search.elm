@@ -2,7 +2,10 @@ module Base.Search exposing (..)
 
 import List exposing (append, filter, foldl, map)
 import Regex
-import String exposing (contains, dropLeft, isEmpty, join, left)
+import String exposing
+  ( contains, dropLeft, dropRight, endsWith
+  , isEmpty, join, left, startsWith, words
+  )
 
 
 type alias SearchData =
@@ -68,13 +71,34 @@ searchApiPath data =
 searchData : String -> SearchData
 searchData query =
   let
-    tokens = Regex.split Regex.All ( Regex.regex "\\s+" ) query
+    tokens = words query
   in
     foldl
-      ( \token data -> case left 1 token of
-          "#" -> { data | tags = (dropLeft 1 token) :: data.tags }
-          "@" -> data
-          _ -> { data | name = token }
+      ( \token (data, cache) ->
+        if isEmpty cache then
+          case left 1 token of
+            "#" ->
+              let
+                part = dropLeft 1 token
+              in
+                if startsWith "\"" part then
+                  let
+                    part2 = dropLeft 1 part
+                  in
+                    if endsWith "\"" part2 then
+                      ( { data | tags = (cache ++ " " ++ (dropRight 1 part2)) :: data.tags }, "")
+                    else
+                      ( data, part2 )
+                else
+                  ( { data | tags = part :: data.tags }, "" )
+            "@" -> ( data, "" )  -- TODO: add search by author
+            _ -> ( { data | name = token }, "" )
+        else
+          if endsWith "\"" token then
+            ( { data | tags = (cache ++ " " ++ (dropRight 1 token)) :: data.tags }, "")
+          else
+            ( data, cache ++ " " ++ token )
       )
-      searchAll
+      (searchAll, "")
       tokens
+      |> fst

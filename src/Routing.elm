@@ -4,6 +4,8 @@ import String
 import Navigation
 import UrlParser exposing (..)
 
+import Http exposing (uriDecode)
+
 import Base.Messages exposing (Msg(..))
 import Base.Search exposing (SearchData, searchAll, searchData)
 import Package.Messages as PMsg
@@ -38,7 +40,7 @@ matchers =
   oneOf
     [ format (PackageListRoute searchAll) (tail)
     , format (PackageListRoute searchAll) (s "packages" </> tail)
-    , format (PackageListRoute << searchData) (s "search" </> string)
+    , format (PackageListRoute << searchData << uriDecode) (s "search" </> string)
     , format (PackageListRoute searchAll) (s "search")
     , format PackageRoute (s "packages" </> string)
     , format (PackageListRoute searchAll) (s "packages")
