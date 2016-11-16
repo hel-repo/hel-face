@@ -1,28 +1,28 @@
 module Base.Search exposing (..)
 
-import List exposing (append, filter, foldl, map)
-import Regex
-import String exposing
-  ( contains, dropLeft, dropRight, endsWith
-  , isEmpty, join, left, startsWith, words
-  )
+import List
+import String exposing ( contains, dropLeft, dropRight, isEmpty, join )
+
+import Combine exposing (..)
 
 
 type alias SearchData =
-  { name : String
+  { names : List String
   , tags : List String
+  , authors : List String
   }
 
 searchAll : SearchData
 searchAll =
-  { name = ""
+  { names = []
   , tags = []
+  , authors = []
   }
 
 searchByName : String -> SearchData
 searchByName str =
   { searchAll
-  | name = str
+  | names = [ str ]
   }
 
 searchByTag : String -> SearchData
@@ -36,69 +36,91 @@ searchByTags tags =
   | tags = tags
   }
 
+searchByAuthor : String -> SearchData
+searchByAuthor author =
+  { searchAll
+  | authors = [ author ]
+  }
+searchByAuthors : List String -> SearchData
+searchByAuthors authors =
+  { searchAll
+  | authors = authors
+  }
 
-tagToken : String -> String
-tagToken tag =
-  if isEmpty tag then ""
-  else "#" ++ ( if contains " " tag then "\"" ++ tag ++ "\"" else tag )
 
 -- Serialize search query to local URL
+token : String -> String
+token str =
+  if contains " " str then "\"" ++ str ++ "\"" else str
+
+prefixedToken : String -> String -> String
+prefixedToken prefix str =
+  if isEmpty str then ""
+  else prefix ++ (token str)
+
 searchQuery : SearchData -> String
 searchQuery data =
   let
-    tags = map tagToken data.tags
-    tokens = data.name :: tags
+    names = List.map token data.names
+    tags = List.map (prefixedToken "#") data.tags
+    authors = List.map (prefixedToken "@") data.authors
+    tokens = names `List.append` tags `List.append` authors
   in
-    join " " ( filter (not << isEmpty) tokens )
+    join " " ( List.filter (not << isEmpty) tokens )
 
 
-prefix : String -> String -> String
-prefix token prefix =
+-- Generate API search query
+prefixedPart : String -> String -> String
+prefixedPart prefix token =
   if isEmpty token then "" else prefix ++ token
 
 searchApiPath : SearchData -> String
 searchApiPath data =
   let
-    tags = map ( \tag -> prefix tag "tags=" ) data.tags
-    name = prefix data.name "name="
-    tokens = name :: tags
-    query = join "&" (filter (not << isEmpty) tokens)
+    names = List.map ( prefixedPart "name=" ) data.names
+    tags = List.map ( prefixedPart "tags=" ) data.tags
+    authors = List.map ( prefixedPart "authors=" ) data.authors
+    tokens = names `List.append` tags `List.append` authors
+    query = join "&" (List.filter (not << isEmpty) tokens)
   in
     if isEmpty query then "" else "?" ++ query
 
 
 -- Parse local search URL back to search data
+type Token = Name String | Tag String | Author String
+
+word : Parser String
+word = regex "\\S+"
+
+quoted : Parser String
+quoted = regex "\"[^\"]*\""
+
+value : Parser String
+value = (map (dropLeft 1 << dropRight 1) quoted) `or` word
+
+prefixed : String -> Parser String
+prefixed prefix = (string prefix) `andThen` (always value)
+
+separator : Parser String
+separator = regex "\\s+"
+
 searchData : String -> SearchData
 searchData query =
   let
-    tokens = words query
+    (tokens, _) = parse
+      ( sepBy separator ( choice
+        [ Tag `map` (prefixed "#")
+        , Author `map` (prefixed "@")
+        , Name `map` value
+        ] ) )
+      query
   in
-    foldl
-      ( \token (data, cache) ->
-        if isEmpty cache then
-          case left 1 token of
-            "#" ->
-              let
-                part = dropLeft 1 token
-              in
-                if startsWith "\"" part then
-                  let
-                    part2 = dropLeft 1 part
-                  in
-                    if endsWith "\"" part2 then
-                      ( { data | tags = (cache ++ " " ++ (dropRight 1 part2)) :: data.tags }, "")
-                    else
-                      ( data, part2 )
-                else
-                  ( { data | tags = part :: data.tags }, "" )
-            "@" -> ( data, "" )  -- TODO: add search by author
-            _ -> ( { data | name = token }, "" )
-        else
-          if endsWith "\"" token then
-            ( { data | tags = (cache ++ " " ++ (dropRight 1 token)) :: data.tags }, "")
-          else
-            ( data, cache ++ " " ++ token )
+    List.foldl
+      ( \token data ->
+          case token of
+            Tag tag -> { data | tags = tag :: data.tags }
+            Author author -> { data | authors = author :: data.authors }
+            Name name -> { data | names = name :: data.names }
       )
-      (searchAll, "")
-      tokens
-      |> fst
+      searchAll
+      <| Result.withDefault [] tokens

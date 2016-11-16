@@ -6,7 +6,7 @@ import Material
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
-import Base.Search exposing (SearchData, searchByName, searchQuery)
+import Base.Search exposing (SearchData, searchData, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
 import Package.Update
 import User.Update
@@ -75,7 +75,7 @@ update msg model =
 
     InputKey key ->
       model ! (
-        if key == Config.enterKey then [ wrapMsg <| RoutePackageList <| searchByName model.search ]
+        if key == Config.enterKey then [ wrapMsg <| RoutePackageList <| searchData model.search ]
         else []
       )
 
