@@ -29,6 +29,17 @@ update msg model =
           , userData = { userData | mdl = uModel.mdl }
           } ! [ uCmd ]
 
+    Tick time ->
+      if model.notification.delay > 0 then
+        let
+          notification = model.notification
+        in
+          { model
+            | notification = { notification | delay = max 0 (notification.delay - Config.tickDelay) }
+          } ! []
+      else
+        model ! []
+
     -- Routing
     Navigate url ->
       model ! [ Navigation.newUrl url ]
@@ -61,13 +72,13 @@ update msg model =
 
     -- Notifications handling
     ErrorOccurred str ->
-      { model | error = str } ! []
+      { model | notification = error str } ! []
 
     SomethingOccurred str ->
-      { model | notification = str } ! []
+      { model | notification = info str } ! []
 
     DismissNotification ->
-      { model | error = "", notification = "" } ! []
+      { model | notification = emptyNotification } ! []
 
     -- Other
     InputSearch str ->

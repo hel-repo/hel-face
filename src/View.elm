@@ -35,6 +35,29 @@ keyDecoder =
         (Decode.at ["keyCode"] Decode.int)
 
 
+notification : Notification -> Html Msg
+notification data =
+  div
+    [ class
+        ( case data.ntype of
+            Error -> "error"
+            _ -> "info"
+        )
+    , onClick DismissNotification
+    ]
+    ( if (isEmpty data.message) || (data.delay <= 0) then []
+      else
+        [ Icon.view
+            ( case data.ntype of
+                Error -> "error_outline"
+                _ -> "info_outline"
+            )
+            [ cs "align-middle" ]
+        , span [ class "align-middle notification-text" ] [ text data.message ]
+        ]
+    )
+
+
 view : Model -> Html Msg
 view model =
   Layout.render Mdl model.mdl
@@ -96,26 +119,7 @@ view model =
                       [ Icon.view "fingerprint" [ Icon.size36 ] ]
                   ]
           ]
-      , div
-          [ class "error"
-          , onClick DismissNotification
-          ]
-          ( if isEmpty model.error || contains "404" model.error then []
-            else
-              [ Icon.view "error_outline" [ cs "align-middle" ]
-              , span [ class "align-middle notification-text" ] [ text model.error ]
-              ]
-          )
-      , div
-          [ class "notify"
-          , onClick DismissNotification
-          ]
-          ( if isEmpty model.notification then []
-            else
-              [ Icon.view "info_outline" [ cs "align-middle" ]
-              , span [ class "align-middle notification-text" ] [ text model.notification ]
-              ]
-          )
+      , notification model.notification
       ]
     , drawer = []
     , tabs = ( [], [] )

@@ -57,7 +57,7 @@ pre code {
 .error:empty {
   display: none;
 }
-.notify {
+.info {
   color: #fff;
   background: #1fbb85;
   padding: 10px;
@@ -67,7 +67,7 @@ pre code {
   cursor: pointer;
   vertical-align: middle;
 }
-.notify:empty {
+.info:empty {
   display: none;
 }
 .notification-text {
