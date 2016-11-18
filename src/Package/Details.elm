@@ -24,6 +24,7 @@ import Material.Typography as Typo
 import Base.Messages exposing (Msg(..))
 import Base.Search exposing (searchByTag)
 import Base.Tools exposing ((!!))
+import Base.Url as Url
 import Package.Messages as PMsg
 import Package.Models exposing
   ( PackageData
@@ -148,7 +149,7 @@ dependency d =
     [ Lists.withSubtitle ]
     [ Lists.content [ ]
         [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18 ] ]
-        , a [ href ("#packages/" ++ d.name) ] [ text d.name ]
+        , a [ href <| Url.package d.name ] [ text d.name ]
         , Lists.subtitle [ ]
             [ span [ class "list-cell" ] [ text d.version ] ]
         ]

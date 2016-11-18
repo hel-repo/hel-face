@@ -8,6 +8,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Base.Search exposing (SearchData, searchData, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
+import Base.Url as Url
 import Package.Update
 import User.Update
 
@@ -53,22 +54,22 @@ update msg model =
           | packageData = { packageData | share = "" }
           , search = query
         }
-        ! [ Navigation.newUrl ( "#search/" ++ query ) ]
+        ! [ Navigation.newUrl <| Url.search query ]
 
     RoutePackageDetails name ->
-      ( model, Navigation.newUrl ("#packages/" ++ name) )
+      ( model, Navigation.newUrl <| Url.package name )
 
     RoutePackageEdit name ->
-      ( model, Navigation.newUrl ("#edit/" ++ name) )
+      ( model, Navigation.newUrl <| Url.edit name )
 
     RouteAuth ->
-      ( model, Navigation.newUrl "#auth" )
+      ( model, Navigation.newUrl Url.auth )
 
     RouteRegister ->
-      ( model, Navigation.newUrl "#register" )
+      ( model, Navigation.newUrl Url.register )
 
     RouteProfile ->
-      ( model, Navigation.newUrl "#profile" )
+      ( model, Navigation.newUrl Url.profile )
 
     -- Notifications handling
     ErrorOccurred str ->

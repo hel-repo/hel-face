@@ -14,6 +14,7 @@ import Material.Typography as Typo
 
 import Base.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
+import Base.Url as Url
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -53,7 +54,7 @@ auth data =
               [ text "or" ]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ a [ href "#register" ] [ text "register" ] ]
+              [ a [ href Url.register ] [ text "register" ] ]
           ]
       ]
     ]

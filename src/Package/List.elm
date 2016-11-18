@@ -14,6 +14,7 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
+import Base.Url as Url
 import Package.Details exposing (notFoundCard)
 import Package.Models exposing (PackageData, Package)
 import Package.Messages as PMsg
@@ -27,7 +28,7 @@ card data index package =
         [ Elevation.e2 ]
         [ Card.title
           [ cs "card-title" ]
-          [ Card.head [] [ a [ href ("#packages/" ++ package.name) ] [ text package.name ] ] ]
+          [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]
         , Card.menu
             [ cs "noselect list-card-menu-button" ]
             ( if member data.username package.owners then
@@ -49,7 +50,7 @@ card data index package =
                 [ text package.shortDescription ]
               else
                 [ div [ ] [ text "Direct link:" ]
-                , div [ class "code" ] [ text <| "hel.fomalhaut.me/#packages/" ++ package.name ]
+                , div [ class "code" ] [ text <| "hel.fomalhaut.me/" ++ (Url.package package.name) ]
                 , div [ ] [ text "Install via HPM:" ]
                 , div [ class "code" ] [ text <| "hpm install " ++ package.name ]
                 ]

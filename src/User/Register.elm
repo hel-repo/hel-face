@@ -14,6 +14,7 @@ import Material.Textfield as Textfield
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Url as Url
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -73,7 +74,7 @@ register data =
               [ text "or" ]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ a [ href "#auth" ] [ text "log in" ] ]
+              [ a [ href Url.auth ] [ text "log in" ] ]
           ]
       ]
     ]

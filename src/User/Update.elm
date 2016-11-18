@@ -9,6 +9,7 @@ import Base.Config as Config
 import Base.Http exposing (..)
 import Base.Messages as Outer
 import Base.Tools as Tools exposing ((~))
+import Base.Url as Url
 import User.Decoders exposing (singleUserDecoder, profileDecoder)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (User, UserData, emptyUser)
@@ -131,12 +132,12 @@ update message data =
         , loading = False
       }
       ! [ wrapMsg <| FetchUser data.user.nickname ]
-      ~ [ Outer.Navigate "#packages" ]
+      ~ [ Outer.Navigate Url.packages ]
 
     LogOut ->
       { data | loading = True } ! [ logout ] ~ []
     LoggedOut ->
-      { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate "#auth" ]
+      { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate Url.auth ]
 
     FetchUser name ->
       data ! [ fetchUser name ] ~ []
@@ -155,7 +156,7 @@ update message data =
     Registered ->
       { data | loading = False }
       ! []
-      ~ [ Outer.Navigate "#auth", Outer.SomethingOccurred "You have registered successfully!" ]
+      ~ [ Outer.Navigate Url.auth, Outer.SomethingOccurred "You have registered successfully!" ]
 
     -- Navigation callbacks
     GoToAuth ->
