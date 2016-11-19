@@ -9,6 +9,7 @@ import Base.Config as Config
 import Base.Http exposing (..)
 import Base.Messages as Outer
 import Base.Search exposing (SearchData, searchAll, searchApiPath)
+import Base.Semver as Semver
 import Base.Tools as Tools exposing ((~), (!!))
 import Package.Encoders exposing (packageEncoder)
 import Package.Messages exposing (Msg(..))
@@ -111,7 +112,7 @@ update message data =
       { data | loading = True } ! [ lookupPackage name ] ~ []
     PackageFetched package ->
       let
-        sorted = { package | versions = reverse <| sortBy .version package.versions }
+        sorted = { package | versions = Semver.sort package.versions }
       in
         { data
           | package = sorted
