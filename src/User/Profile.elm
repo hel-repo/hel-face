@@ -2,9 +2,8 @@ module User.Profile exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import List exposing (map)
+import List exposing (isEmpty, map)
 
-import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
@@ -14,7 +13,6 @@ import Material.Options as Options exposing (cs)
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
-import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
@@ -26,40 +24,50 @@ badge group =
         [ text group ]
     ]
 
+subtitle : String -> Html Msg
+subtitle str =
+  Options.styled p [ Typo.button, cs "subtitle" ] [ text str ]
+
 profile : UserData -> Html Msg
 profile data =
-  div
-    [ class "page auth-card" ]
-    [ Card.view
-        [ Elevation.e2 ]
-        [ Card.title [ Card.border ] [ Card.head [] [ text "Profile" ] ]
-        , Card.actions [ ]
-          [ Icon.view "account_circle" [ cs "avatar" ]
-          , div [ class "badges" ]
-              ( map badge data.user.groups )
-          , Options.styled p
-              [ Typo.subhead, cs "profile-nickname" ]
+  Card.view
+    [ Elevation.e3 ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text "Profile" ] ]
+    , Card.text [ cs "profile-panel" ]
+      [ div [ class "profile-avatar" ] [ Icon.view "account_circle" [ cs "avatar" ] ]
+      , div [ class "profile-info" ]
+          [ subtitle "Nickname"
+          , div
+              [ class "profile-nickname" ]
               [ text data.user.nickname ]
-          , div [ ]
-              [ Button.render Mdl [11] data.mdl
-                  [ Button.raised
-                  , Button.ripple
-                  , cs "profile-button"
-                  , Button.onClick <| UserMsg UMsg.LogOut
-                  ]
-                  [ Icon.i "close", text "Log Out"]
-              ]
+          , subtitle "Groups"
+          , div
+              [ class "profile-badges" ]
+              ( map badge (if isEmpty data.user.groups then ["user"] else data.user.groups) )
           ]
-        ]
+      ]
     ]
+
+packages : UserData -> Html Msg
+packages data =
+  Card.view
+    [ Elevation.e2
+    , cs "profile-packages"
+    ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text "My packages" ] ]
+    , Card.actions
+        []
+        []
+    ]
+
 
 view : UserData -> Html Msg
 view data =
   div
-    [ class "page auth-card" ]
+    [ class "page" ]
     [ grid [ ]
-        [ cell [ size All 3, size Tablet 0 ] [ ]
-        , cell [ size All 6, size Tablet 8 ] [ profile data ]
-        , cell [ size All 3, size Tablet 0 ] [ ]
+        [ cell [ size All 2, size Tablet 0 ] [ ]
+        , cell [ size All 8, size Tablet 8 ] [ profile data, packages data ]
+        , cell [ size All 2, size Tablet 0 ] [ ]
         ]
     ]

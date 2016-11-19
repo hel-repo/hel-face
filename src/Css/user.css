@@ -6,28 +6,29 @@
   padding-left: 10px;
 }
 
+.profile-panel {
+}
+.profile-avatar {
+  display: inline-block;
+  vertical-align: top;
+}
 .avatar {
   font-size: 128px;
   color: #bbb;
   border: 2px solid #353535;
   border-radius: 128px;
 }
+.profile-info {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 1em;
+}
 .profile-nickname {
   color: #fff;
-  padding-top: 10px;
+  padding: 0 0 16px 0;
+  font-size: 18pt;
 }
-.profile-panel {
-  padding-top: 10px;
-}
-.profile-button {
-  margin: 10px;
-}
-.profile-button i {
-  vertical-align: top;
-  padding-right: 10px;
-}
-.badges {
-  padding-top: 10px;
+.profile-badges {
 }
 .badges:empty {
   display: none;
@@ -36,7 +37,11 @@
   background: rgb(255, 82, 82);
 }
 .user-badge {
-  background: #bbb;
+  background: #aaa;
+}
+
+.profile-packages {
+  margin-top: 1em;
 }
 
 /* MDL tweaks */
