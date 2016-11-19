@@ -52,7 +52,7 @@ createPackage : Package -> Cmd Msg
 createPackage package =
   post'
       ( Config.apiHost ++ "packages/" )
-      ( packageEncoder package package )
+      ( packageEncoder package emptyPackage )
       |> Task.mapError toString
       |> Task.perform ErrorOccurred PackageSaved
 
