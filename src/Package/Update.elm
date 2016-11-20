@@ -261,3 +261,15 @@ update message data =
     -- Other
     SharePackage name ->
       { data | share = (if name /= data.share then name else "") } ! [] ~ []
+
+    PreviousScreenshot ->
+      if data.screenshot > 0 then
+        { data | screenshot = data.screenshot - 1 } ! [] ~ []
+      else
+        data ! [] ~ []
+
+    NextScreenshot ->
+      if data.screenshot < (List.length data.package.screenshots - 1) then
+        { data | screenshot = data.screenshot + 1 } ! [] ~ []
+      else
+        data ! [] ~ []

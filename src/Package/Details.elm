@@ -32,10 +32,10 @@ import Package.Models exposing
   )
 
 
-screensCard : Material.Model -> Package -> Html Msg
-screensCard mdl package =
+screensCard : PackageData -> Package -> Html Msg
+screensCard data package =
   if not (List.isEmpty package.screenshots) then
-    case List.head package.screenshots of
+    case package.screenshots !! data.screenshot of
       Just screen ->
         Card.view
           [ Elevation.e2, cs "screen-card" ]
@@ -44,11 +44,25 @@ screensCard mdl package =
               [ img [ src screen.url ] [ ] ]
           , Card.actions
               [ Card.border ]
-              [ Button.render Mdl [1,0] mdl
-                  [ Button.ripple, Button.accent ]
+              [ Button.render Mdl [1,0] data.mdl
+                  [ Button.ripple
+                  , Button.accent
+                  , if data.screenshot > 0 then
+                      Options.nop
+                    else
+                      Button.disabled
+                  , Button.onClick <| PackageMsg PMsg.PreviousScreenshot
+                  ]
                   [ text "<" ]
-              , Button.render Mdl [1,1] mdl
-                  [ Button.ripple, Button.accent ]
+              , Button.render Mdl [1,1] data.mdl
+                  [ Button.ripple
+                  , Button.accent
+                  , if data.screenshot < (List.length package.screenshots - 1) then
+                      Options.nop
+                    else
+                      Button.disabled
+                  , Button.onClick <| PackageMsg PMsg.NextScreenshot
+                  ]
                   [ text ">" ]
               , Options.styled span
                   [ Typo.body1, cs "screen-desc" ]
@@ -267,7 +281,7 @@ view data =
       ( if String.isEmpty data.package.name then
           [ notFoundCard ]
         else
-          [ screensCard data.mdl data.package
+          [ screensCard data data.package
           , detailsCard data data.package
           ]
       )

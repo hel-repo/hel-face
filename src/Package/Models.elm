@@ -141,6 +141,7 @@ type alias PackageData =
   , package : Package
   , oldPackage : Package   -- backup for changes resolver
   , version : Int          -- currently selected version tab
+  , screenshot : Int       -- currently selected screenshot
   , loading : Bool
   , share : String         -- which card was triggered to show sharing links
   , username : String      -- current user nickname
@@ -155,6 +156,7 @@ emptyPackageData materialModel =
   , oldPackage = emptyPackage
   , loading = False
   , version = 0
+  , screenshot = 0
   , share = ""
   , username = ""
   , tags = emptyTags

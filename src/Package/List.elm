@@ -60,7 +60,7 @@ card data index package =
             [ Button.render Mdl [10, index*3+1] data.mdl
                 [ Button.icon
                 , Button.ripple
-                , Button.onClick <| SomethingOccurred "Thank you!"
+                , Button.onClick <| SomethingOccurred "Thank you! :3"
                 , cs "noselect"
                 ]
                 [ Icon.i "favorite_border" ]

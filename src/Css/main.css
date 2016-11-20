@@ -9,6 +9,9 @@ body {
   background: #303030;
 }
 
+hr {
+  border-top: dotted 1px #666;
+}
 
 .page {
   padding: 1em;

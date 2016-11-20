@@ -55,3 +55,5 @@ type Msg
   | InputKey Int
   -- Other
   | SharePackage String
+  | PreviousScreenshot
+  | NextScreenshot
