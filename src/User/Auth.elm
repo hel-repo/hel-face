@@ -29,7 +29,7 @@ auth data =
           [ Textfield.render Mdl [3] data.mdl
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
-              , Textfield.text'
+              , Textfield.text_
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
               ]
           ]

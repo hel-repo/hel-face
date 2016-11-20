@@ -1,6 +1,6 @@
 module Package.Decoders exposing (..)
 
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json exposing (field)
 import Json.Decode.Extra exposing ((|:))
 
 import Package.Models exposing (..)
@@ -12,13 +12,13 @@ pkgScreenshotList list =
 
 screenshots : Json.Decoder (List Screenshot)
 screenshots =
-  Json.keyValuePairs Json.string `Json.andThen` pkgScreenshotList
+  Json.keyValuePairs Json.string |> Json.andThen pkgScreenshotList
 
 pkgVersionFileData : Json.Decoder PkgVersionFileData
 pkgVersionFileData =
   Json.succeed PkgVersionFileData
-    |: ("dir" := Json.string)
-    |: ("name" := Json.string)
+    |: (field "dir" Json.string)
+    |: (field "name" Json.string)
 
 pkgVersionFilesList : List (String, PkgVersionFileData) -> Json.Decoder (List PkgVersionFile)
 pkgVersionFilesList list =
@@ -26,13 +26,13 @@ pkgVersionFilesList list =
 
 pkgVersionFiles : Json.Decoder (List PkgVersionFile)
 pkgVersionFiles =
-  Json.keyValuePairs pkgVersionFileData `Json.andThen` pkgVersionFilesList
+  Json.keyValuePairs pkgVersionFileData |> Json.andThen pkgVersionFilesList
 
 pkgVersionDependencyData : Json.Decoder PkgVersionDependencyData
 pkgVersionDependencyData =
   Json.succeed PkgVersionDependencyData
-    |: ("type" := Json.string)
-    |: ("version" := Json.string)
+    |: (field "type" Json.string)
+    |: (field "version" Json.string)
 
 pkgVersionDependencyList : List (String, PkgVersionDependencyData) -> Json.Decoder (List PkgVersionDependency)
 pkgVersionDependencyList list =
@@ -40,14 +40,14 @@ pkgVersionDependencyList list =
 
 pkgVersionDependencies : Json.Decoder (List PkgVersionDependency)
 pkgVersionDependencies =
-  Json.keyValuePairs pkgVersionDependencyData `Json.andThen` pkgVersionDependencyList
+  Json.keyValuePairs pkgVersionDependencyData |> Json.andThen pkgVersionDependencyList
 
 pkgVersionData : Json.Decoder PkgVersionData
 pkgVersionData =
   Json.succeed PkgVersionData
-    |: ("files" := pkgVersionFiles)
-    |: ("depends" := pkgVersionDependencies)
-    |: ("changes" := Json.string)
+    |: (field "files" pkgVersionFiles)
+    |: (field "depends" pkgVersionDependencies)
+    |: (field "changes" Json.string)
 
 pkgVersionList : List (String, PkgVersionData) -> Json.Decoder (List Version)
 pkgVersionList list =
@@ -55,37 +55,37 @@ pkgVersionList list =
 
 version : Json.Decoder (List Version)
 version =
-  Json.keyValuePairs pkgVersionData `Json.andThen` pkgVersionList
+  Json.keyValuePairs pkgVersionData |> Json.andThen pkgVersionList
 
 pkgStatsDate : Json.Decoder PkgStatsDate
 pkgStatsDate =
   Json.succeed PkgStatsDate
-    |: ("created" := Json.string)
-    |: ("last-updated" := Json.string)
+    |: (field "created" Json.string)
+    |: (field "last-updated" Json.string)
 
 stats : Json.Decoder Stats
 stats =
   Json.succeed Stats
-    |: ("views" := Json.int)
-    |: ("date" := pkgStatsDate)
+    |: (field "views" Json.int)
+    |: (field "date" pkgStatsDate)
 
 packageDecoder : Json.Decoder Package
 packageDecoder =
   Json.succeed Package
-    |: ("name" := Json.string)
-    |: ("description" := Json.string)
-    |: ("short_description" := Json.string)
-    |: ("owners" := Json.list Json.string)
-    |: ("authors" := Json.list Json.string)
-    |: ("license" := Json.string)
-    |: ("tags" := Json.list Json.string)
-    |: ("versions" := version)
-    |: ("screenshots" := screenshots)
-    |: ("stats" := stats)
+    |: (field "name" Json.string)
+    |: (field "description" Json.string)
+    |: (field "short_description" Json.string)
+    |: (field "owners" <| Json.list Json.string)
+    |: (field "authors" <| Json.list Json.string)
+    |: (field "license" Json.string)
+    |: (field "tags" <| Json.list Json.string)
+    |: (field "versions" version)
+    |: (field "screenshots" screenshots)
+    |: (field "stats" stats)
 
 packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
-  Json.at ["data", "list"] ( Json.list packageDecoder )
+  Json.at ["data", "list"] <| Json.list packageDecoder
 
 singlePackageDecoder : Json.Decoder Package
 singlePackageDecoder =

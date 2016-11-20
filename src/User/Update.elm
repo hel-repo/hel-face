@@ -1,7 +1,5 @@
 module User.Update exposing (..)
 
-import Task
-
 import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
@@ -25,41 +23,53 @@ update message data =
 
     -- Network
     LogIn nickname password ->
-      { data | loading = True } ! [ Api.login nickname password ErrorOccurred LoggedIn ] ~ []
-    LoggedIn ->
+      { data | loading = True } ! [ Api.login nickname password LoggedIn ] ~ []
+    LoggedIn (Ok _) ->
       { data
         | loggedin = True
         , loading = False
       }
       ! [ wrapMsg <| FetchUser data.user.nickname ]
       ~ [ Outer.Navigate Url.packages ]
+    LoggedIn (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to log in!") ] ~ []
 
     LogOut ->
-      { data | loading = True } ! [ Api.logout ErrorOccurred LoggedOut ] ~ []
-    LoggedOut ->
+      { data | loading = True } ! [ Api.logout LoggedOut ] ~ []
+    LoggedOut (Ok _) ->
       { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate Url.auth ]
+    LoggedOut (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to log out!") ] ~ []
 
     FetchUser name ->
-      data ! [ Api.fetchUser name ErrorOccurred UserFetched ] ~ []
-    UserFetched user ->
+      data ! [ Api.fetchUser name UserFetched ] ~ []
+    UserFetched (Ok user) ->
       { data | user = user } ! [] ~ []
+    UserFetched (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
     CheckSession ->
-      data ! [ Api.checkSession ErrorOccurred SessionChecked ] ~ []
-    SessionChecked profile ->
+      data ! [ Api.checkSession SessionChecked ] ~ []
+    SessionChecked (Ok profile) ->
       let user = data.user
       in { data | user = { user | nickname = profile.nickname }, loggedin = profile.loggedin }
          ! ( if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else [] ) ~ []
+    SessionChecked (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to check user session data!") ] ~ []
 
     Register user ->
-      { data | loading = True } ! [ Api.register user ErrorOccurred Registered ] ~ []
-    Registered ->
+      { data | loading = True } ! [ Api.register user Registered ] ~ []
+    Registered (Ok _) ->
       { data | loading = False }
       ! []
       ~ [ Outer.Navigate Url.auth, Outer.SomethingOccurred "You have registered successfully!" ]
+    Registered (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to register!") ] ~ []
 
-    PackagesFetched packages ->
+    PackagesFetched (Ok packages) ->
       { data | packages = packages, loading = False } ! [] ~ []
+    PackagesFetched (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to fetch the list of your packages!") ] ~ []
 
     -- Navigation callbacks
     GoToAuth ->
@@ -70,7 +80,7 @@ update message data =
 
     GoToProfile ->
       { data | loading = True }
-      ! [ Api.fetchPackages (Search.searchByAuthor data.user.nickname) ErrorOccurred PackagesFetched ] ~ []
+      ! [ Api.fetchPackages (Search.searchByAuthor data.user.nickname) PackagesFetched ] ~ []
 
     -- Other
     InputNickname nickname ->

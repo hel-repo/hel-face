@@ -1,7 +1,8 @@
 module Update exposing (..)
 
-import Navigation
 import Material
+import Navigation
+import UrlParser as Url
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
@@ -11,6 +12,8 @@ import Base.Tools exposing (wrapMsg, batchMsg)
 import Base.Url as Url
 import Package.Update
 import User.Update
+
+import Routing exposing (Route(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,6 +45,10 @@ update msg model =
         model ! []
 
     -- Routing
+    UpdateUrl location ->
+      let currentRoute = Maybe.withDefault NotFoundRoute <| Url.parseHash Routing.route location
+      in ( { model | route = currentRoute }, batchMsg ( Routing.routeMessage currentRoute ) )
+
     Navigate url ->
       model ! [ Navigation.newUrl url ]
 

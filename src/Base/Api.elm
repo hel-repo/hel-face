@@ -1,9 +1,7 @@
 module Base.Api exposing (..)
 
 import Http
-import Json.Decode as Json exposing ((:=))
 import String
-import Task
 
 import Base.Config as Config
 import Base.Http exposing (..)
@@ -18,138 +16,76 @@ import User.Models exposing (User, Profile)
 -- Packages
 ------------------------------------------------------------------------------------------------------------------------
 
-fetchPackage : String -> (String -> a) -> (Package -> a) -> Cmd a
-fetchPackage name errorMessage successMessage =
-  Http.get singlePackageDecoder (Config.apiHost ++ "packages/" ++ name)
-    |> Task.mapError toString
-    |> Task.perform errorMessage successMessage
+fetchPackage : String -> (Result Http.Error Package -> a) -> Cmd a
+fetchPackage name msg =
+  Http.send msg
+    <| xget (Config.apiHost ++ "packages/" ++ name) singlePackageDecoder
 
-fetchPackages : SearchData -> (String -> a) -> (List Package -> a) -> Cmd a
-fetchPackages data errorMessage successMessage =
-  Http.get packagesDecoder
-    ( Config.apiHost
-      ++ "packages"
-      ++ (searchApiPath data)
-    )
-    |> Task.mapError toString
-    |> Task.perform errorMessage successMessage
+fetchPackages : SearchData -> (Result Http.Error (List Package) -> a) -> Cmd a
+fetchPackages data msg =
+  Http.send msg
+    <| xget
+         ( Config.apiHost
+           ++ "packages"
+           ++ (searchApiPath data)
+         )
+         packagesDecoder
 
-savePackage : Package -> Package -> (String -> a) -> (Http.Response -> a) -> Cmd a
-savePackage package oldPackage errorMessage successMessage =
+savePackage : Package -> Package -> (Result Http.Error ApiResult -> a) -> Cmd a
+savePackage package oldPackage msg =
   let
     name = if String.isEmpty oldPackage.name then package.name else oldPackage.name
   in
-    xpatch
-      ( Config.apiHost ++ "packages/" ++ name )
-      ( packageEncoder package oldPackage )
-      |> Task.mapError toString
-      |> Task.perform errorMessage successMessage
+    Http.send msg
+      <| xpatch
+           ( Config.apiHost ++ "packages/" ++ name )
+           ( packageEncoder package oldPackage )
 
-createPackage : Package -> (String -> a) -> (Http.Response -> a) -> Cmd a
-createPackage package errorMessage successMessage =
-  xpost
-      ( Config.apiHost ++ "packages/" )
-      ( packageEncoder package emptyPackage )
-      |> Task.mapError toString
-      |> Task.perform errorMessage successMessage
+createPackage : Package -> (Result Http.Error ApiResult -> a) -> Cmd a
+createPackage package msg =
+  Http.send msg
+    <| xpost
+         ( Config.apiHost ++ "packages/" )
+         ( packageEncoder package emptyPackage )
 
-removePackage : String -> (String -> a) -> (Http.Response -> a) -> Cmd a
-removePackage name errorMessage successMessage =
-  xdelete
-      ( Config.apiHost ++ "packages/" ++ name )
-      |> Task.mapError toString
-      |> Task.perform errorMessage successMessage
+removePackage : String -> (Result Http.Error ApiResult -> a) -> Cmd a
+removePackage name msg =
+  Http.send msg
+    <| xdelete ( Config.apiHost ++ "packages/" ++ name )
 
 
 -- Users
 ------------------------------------------------------------------------------------------------------------------------
 
--- TODO: simplify this --
-xfromJson : Json.Decoder String -> Task.Task Http.RawError Http.Response -> Task.Task Http.Error String
-xfromJson decoder response =
-  let decode str =
-        case Json.decodeString decoder str of
-          Ok v -> Task.succeed v
-          Err msg -> Task.fail (Http.UnexpectedPayload msg)
-  in
-    Task.mapError promoteError response
-      `Task.andThen` handleResponse decode
+register : User -> (Result Http.Error ApiResult -> a) -> Cmd a
+register user msg =
+  Http.send msg
+    <| xpost
+         ( Config.apiHost ++ "auth" )
+         ( "{ \"action\": \"register\", \"nickname\": \"" ++ user.nickname
+           ++ "\", \"email\": \"" ++ user.email
+           ++ "\", \"password\": \"" ++ user.password
+           ++ "\" }" )
 
-handleResponse : (String -> Task.Task Http.Error String) -> Http.Response -> Task.Task Http.Error String
-handleResponse handle response =
-  case response.status of
-    200 ->
-      Task.succeed ""
-    _ ->
-      case response.value of
-        Http.Text str ->
-            handle str
-        _ ->
-            Task.fail (Http.UnexpectedPayload "Response body is a blob, expecting a string.")
+login : String -> String -> (Result Http.Error ApiResult -> a) -> Cmd a
+login nickname password msg =
+  Http.send msg
+    <| xpost
+         (Config.apiHost ++ "auth")
+         ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
 
-promoteError : Http.RawError -> Http.Error
-promoteError rawError =
-  case rawError of
-    Http.RawTimeout -> Http.Timeout
-    Http.RawNetworkError -> Http.NetworkError
+logout : (Result Http.Error ApiResult -> a) -> Cmd a
+logout msg =
+  Http.send msg
+    <| xpost (Config.apiHost ++ "auth") ("{ \"action\": \"log-out\" }")
 
-registerResponseDecoder : Json.Decoder String
-registerResponseDecoder =
-  "message" := Json.string
-
-parseRegisterResult : (String -> a) -> a -> String -> a
-parseRegisterResult errorMessage successMessage response =
-  if String.isEmpty response then
-    successMessage
-  else
-    errorMessage <| "Sorry! " ++ response ++ " Wanna try again?"
-----
-register : User -> (String -> a) -> a -> Cmd a
-register user errorMessage successMessage =
-  xfromJson registerResponseDecoder
-    ( xpost
-        (Config.apiHost ++ "auth")
-        ("{ \"action\": \"register\",
-            \"nickname\": \"" ++ user.nickname ++ "\",
-            \"email\": \"" ++ user.email ++ "\",
-            \"password\": \"" ++ user.password ++ "\" }") )
-    |> Task.mapError toString
-    |> Task.perform errorMessage (parseRegisterResult errorMessage successMessage)
+fetchUser : String -> (Result Http.Error User -> a) -> Cmd a
+fetchUser nickname msg =
+  Http.send msg
+    <| xget (Config.apiHost ++ "users/" ++ nickname) singleUserDecoder
 
 
-parseAuthResult : (String -> a) -> a -> Http.Response -> a
-parseAuthResult errorMessage successMessage response =
-  case response.status of
-    200 -> successMessage
-    _ -> errorMessage "Looks like either your nickname or password were incorrect. Wanna try again?"
-
-login : String -> String -> (String -> a) -> a -> Cmd a
-login nickname password errorMessage successMessage =
-  xpost
-      (Config.apiHost ++ "auth")
-      ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
-    |> Task.mapError toString
-    |> Task.perform errorMessage (parseAuthResult errorMessage successMessage)
-
-
-logout : (String -> a) -> a -> Cmd a
-logout errorMessage successMessage =
-  xpost
-      (Config.apiHost ++ "auth")
-      ("{ \"action\": \"log-out\" }")
-    |> Task.mapError toString
-    |> Task.perform (always successMessage) (always successMessage)
-
-
-fetchUser : String -> (String -> a) -> (User -> a) -> Cmd a
-fetchUser nickname errorMessage successMessage =
-  xget singleUserDecoder (Config.apiHost ++ "users/" ++ nickname)
-    |> Task.mapError toString
-    |> Task.perform errorMessage successMessage
-
-
-checkSession : (String -> a) -> (Profile -> a) -> Cmd a
-checkSession errorMessage successMessage =
-  xget profileDecoder (Config.apiHost ++ "profile")
-    |> Task.mapError toString
-    |> Task.perform errorMessage successMessage
+checkSession : (Result Http.Error Profile -> a) -> Cmd a
+checkSession msg =
+  Http.send msg
+    <| xget (Config.apiHost ++ "profile") profileDecoder

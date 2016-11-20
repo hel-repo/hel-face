@@ -6,5 +6,4 @@ import Json.Decode as Json
 keyDecoder : (Int -> a) -> Json.Decoder a
 keyDecoder msg =
   Json.map msg
-    <| Json.object1 identity
-        (Json.at ["keyCode"] Json.int)
+    <| Json.map identity (Json.at ["keyCode"] Json.int)

@@ -10,7 +10,7 @@ cache:
 before_install:
 - bash .travis/before-install.sh
 install:
-- npm install -g create-elm-app@0.1.10
+- npm install -g create-elm-app@0.2.0
 before_script:
 - elm-app package install -y
 script:

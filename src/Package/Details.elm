@@ -2,7 +2,7 @@ module Package.Details exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src)
-import List exposing (head, isEmpty, map, member)
+import List
 import String exposing (join)
 
 import Markdown exposing (defaultOptions)
@@ -34,8 +34,8 @@ import Package.Models exposing
 
 screensCard : Material.Model -> Package -> Html Msg
 screensCard mdl package =
-  if not (isEmpty package.screenshots) then
-    case head package.screenshots of
+  if not (List.isEmpty package.screenshots) then
+    case List.head package.screenshots of
       Just screen ->
         Card.view
           [ Elevation.e2, cs "screen-card" ]
@@ -137,7 +137,7 @@ files version =
       div
         [ class "files list-of-cards" ]
         [ subtitle "Files"
-        , Lists.ul [] (map file version.files)
+        , Lists.ul [] ( List.map file version.files )
         ]
     [ ] ->
       div [ class "files" ] [ subtitle "No files" ]
@@ -162,7 +162,7 @@ dependencies version =
       div
         [ class "dep-block list-of-cards" ]
         [ subtitle "Depends on"
-        , Lists.ul [ ] ( map dependency version.depends )
+        , Lists.ul [ ] ( List.map dependency version.depends )
         ]
     [ ] ->
       div [ class "dep-block" ] [ subtitle "No dependencies" ]
@@ -182,7 +182,7 @@ detailsCard data package =
             ]
         ]
     , Card.menu [ cs "noselect" ]
-        ( if member data.username package.owners then
+        ( if List.member data.username package.owners then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
@@ -207,14 +207,14 @@ detailsCard data package =
             ]
         )
     , Card.text [] [ Markdown.toHtmlWith { defaultOptions | sanitize = True } [] package.description ]
-    , Card.actions [] ( map chip package.tags )
+    , Card.actions [] ( List.map chip package.tags )
     , Card.actions [ cs "version-tabs" ]
         [ Tabs.render Mdl [0] data.mdl
             [ Tabs.ripple
             , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
             , Tabs.activeTab data.version
             ]
-            ( map versionLabel package.versions )
+            ( List.map versionLabel package.versions )
             [ case package.versions !! data.version of
                 Just version ->
                   div

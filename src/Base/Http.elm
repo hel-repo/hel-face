@@ -1,44 +1,75 @@
 module Base.Http exposing (..)
 
-import Http exposing (Error, RawError, Response, defaultSettings)
-import Json.Decode as Json exposing ((:=))
-import Task exposing (Task)
+import Http exposing (Body, Request, expectJson, expectStringResponse, emptyBody, stringBody)
+import Json.Decode as Decode exposing (field)
+import Json.Decode.Extra exposing ((|:))
 
 
-xpatch : String -> String -> Task RawError Response
+-- TODO: move this model to Api module
+type alias ApiResult =
+  { code : Int
+  , data : String
+  , loggedIn : Bool
+  , success : Bool
+  , title : String
+  , version : String
+  }
+
+resultDecoder : Decode.Decoder ApiResult
+resultDecoder =
+  Decode.succeed ApiResult
+    |: (field "code" Decode.int)
+    |: (field "data" Decode.string)
+    |: (field "logged_in" Decode.bool)
+    |: (field "success" Decode.bool)
+    |: (field "title" Decode.string)
+    |: (field "version" Decode.string)
+
+
+xpatch : String -> String -> Request ApiResult
 xpatch url data =
-  Http.send { defaultSettings | withCredentials = True }
-    { verb = "PATCH"
-    , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
+  Http.request
+    { method = "PATCH"
+    , headers = []
     , url = url
-    , body = Http.string data
+    , body = stringBody "application/json; charset=UTF-8" data
+    , expect = expectStringResponse (\_ -> Ok <| ApiResult 204 "Success!" True True "No Content" "")  -- TODO: fix
+    , timeout = Nothing
+    , withCredentials = True
     }
 
-xpost : String -> String -> Task RawError Response
+xpost : String -> String -> Request ApiResult
 xpost url data =
-  Http.send { defaultSettings | withCredentials = True }
-    { verb = "POST"
-    , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
-    , url = url
-    , body = Http.string data
-    }
-
-xget : Json.Decoder value -> String -> Task Error value
-xget decoder url =
-  let request =
-    { verb = "GET"
+  Http.request
+    { method = "POST"
     , headers = []
     , url = url
-    , body = Http.empty
+    , body = stringBody "application/json; charset=UTF-8" data
+    , expect = expectJson resultDecoder
+    , timeout = Nothing
+    , withCredentials = True
     }
-  in Http.fromJson decoder
-    <| Http.send { defaultSettings | withCredentials = True } request
 
-xdelete : String -> Task RawError Response
+xget : String -> Decode.Decoder a -> Request a
+xget url decoder =
+  Http.request
+    { method = "GET"
+    , headers = []
+    , url = url
+    , body = emptyBody
+    , expect = expectJson decoder
+    , timeout = Nothing
+    , withCredentials = True
+    }
+
+xdelete : String -> Request ApiResult
 xdelete url =
-  Http.send { defaultSettings | withCredentials = True }
-    { verb = "DELETE"
+  Http.request
+    { method = "DELETE"
     , headers = []
     , url = url
-    , body = Http.empty
+    , body = emptyBody
+    , expect = expectStringResponse (\_ -> Ok <| ApiResult 204 "Success!" True True "No Content" "")  -- TODO: fix
+    , timeout = Nothing
+    , withCredentials = True
     }

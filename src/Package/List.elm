@@ -85,4 +85,4 @@ view data =
         ]
     else
       if isEmpty data.packages then div [ class "page" ] [ notFoundCard ]
-      else grid [] ( map2 (card data) [1..(length data.packages)] data.packages )
+      else grid [] <| map2 (card data) (List.range 1 <| length data.packages) data.packages

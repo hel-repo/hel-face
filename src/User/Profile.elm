@@ -57,7 +57,7 @@ profile data =
 card : UserData -> Int -> Package -> Cell Msg
 card data index package =
   cell
-    [ size All 6 ]
+    [ size All 6, size Tablet 8 ]
     [ Card.view
         [ ]
         [ Card.title
@@ -101,7 +101,7 @@ packages data =
     , Card.actions
         [ cs "profile-packages-container" ]
         [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages ]
-          else grid [] ( List.map2 (card data) [1..(List.length data.packages)] data.packages )
+          else grid [] <| List.map2 (card data) (List.range 1 <| List.length data.packages) data.packages
         ]
     ]
 

@@ -1,23 +1,27 @@
 module User.Messages exposing (..)
 
+import Http exposing (Error)
+
+import Base.Http exposing (ApiResult)
 import Package.Models exposing (Package)
 import User.Models exposing (User, Profile)
+
 
 type Msg
   = NoOp
   | ErrorOccurred String
   -- Network
   | LogIn String String
-  | LoggedIn
+  | LoggedIn (Result Error ApiResult)
   | LogOut
-  | LoggedOut
+  | LoggedOut (Result Error ApiResult)
   | FetchUser String
-  | UserFetched User
+  | UserFetched (Result Error User)
   | CheckSession
-  | SessionChecked Profile
+  | SessionChecked (Result Error Profile)
   | Register User
-  | Registered
-  | PackagesFetched (List Package)
+  | Registered (Result Error ApiResult)
+  | PackagesFetched (Result Error (List Package))
   -- Navigation
   | GoToAuth
   | GoToRegister

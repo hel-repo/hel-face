@@ -1,10 +1,7 @@
 module Routing exposing (..)
 
-import String
-import Navigation
+import Http exposing (decodeUri)
 import UrlParser exposing (..)
-
-import Http exposing (uriDecode)
 
 import Base.Messages exposing (Msg(..))
 import Base.Search exposing (SearchData, searchAll, searchData)
@@ -33,44 +30,17 @@ routeMessage route =
     ProfileRoute -> [ UserMsg <| UMsg.GoToProfile ]
     _ -> []
 
-tail : Parser a a
-tail = s ""
-
-matchers : Parser (Route -> a) a
-matchers =
+route : Parser (Route -> a) a
+route =
   oneOf
-    [ format (PackageListRoute searchAll) (tail)
-    , format (PackageListRoute searchAll) (s "packages" </> tail)
-    , format (PackageListRoute << searchData << uriDecode) (s "search" </> string)
-    , format (PackageListRoute searchAll) (s "search")
-    , format PackageRoute (s "packages" </> string)
-    , format (PackageListRoute searchAll) (s "packages")
-    , format (PackageEditRoute "") (s "edit" </> tail)
-    , format PackageEditRoute (s "edit" </> string)
-    , format (PackageEditRoute "") (s "edit")
-    , format AuthRoute (s "auth")
-    , format RegisterRoute (s "register")
-    , format ProfileRoute (s "profile")
+    [ map (PackageListRoute searchAll) top
+    , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
+    , map (PackageListRoute searchAll) (s "search")
+    , map PackageRoute (s "packages" </> string)
+    , map (PackageListRoute searchAll) (s "packages")
+    , map PackageEditRoute (s "edit" </> string)
+    , map (PackageEditRoute "") (s "edit")
+    , map AuthRoute (s "auth")
+    , map RegisterRoute (s "register")
+    , map ProfileRoute (s "profile")
     ]
-
-
-hashParser : Navigation.Location -> Result String Route
-hashParser location =
-  location.hash
-    |> String.dropLeft 1
-    |> parse identity matchers
-
-
-parser : Navigation.Parser (Result String Route)
-parser =
-  Navigation.makeParser hashParser
-
-
-routeFromResult : Result String Route -> Route
-routeFromResult result =
-  case result of
-    Ok route ->
-      route
-
-    Err string ->
-      NotFoundRoute

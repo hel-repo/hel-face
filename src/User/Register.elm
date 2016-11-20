@@ -29,7 +29,7 @@ register data =
           [ Textfield.render Mdl [10] data.mdl
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
-              , Textfield.text'
+              , Textfield.text_
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
               ]
           ]
@@ -37,7 +37,7 @@ register data =
           [ Textfield.render Mdl [11] data.mdl
               [ Textfield.label "E-mail"
               , Textfield.floatingLabel
-              , Textfield.text'
+              , Textfield.text_
               , Textfield.onInput <| UMsg.InputEmail >> UserMsg
               ]
           ]

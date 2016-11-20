@@ -3,7 +3,7 @@ module View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, href, src)
 import Html.Events exposing (onClick)
-import Json.Decode as Decode exposing (Decoder, (:=))
+import Json.Decode as Decode
 import String exposing (contains, isEmpty)
 
 import Material.Button as Button
@@ -31,7 +31,7 @@ import User.Register
 keyDecoder : Decode.Decoder Msg
 keyDecoder =
   Decode.map InputKey
-    <| Decode.object1 identity
+    <| Decode.map identity
         (Decode.at ["keyCode"] Decode.int)
 
 

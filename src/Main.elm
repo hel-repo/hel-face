@@ -3,48 +3,35 @@
   2016 (c) MoonlightOwl
 -}
 
-import Time exposing (every)
-
 import Navigation
+import UrlParser as Url
+import Time exposing (every)
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (..)
 import Base.Tools exposing (batchMsg)
-
 import User.Messages as UMsg
 
-import Routing exposing (routeMessage, Route(..))
+import Routing exposing (Route(..))
 import Update exposing (update)
 import View exposing (view)
 
 
-init : Result String Route -> ( Model, Cmd Msg )
-init result =
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
   let
-    currentRoute =
-      Routing.routeFromResult result
+    currentRoute = Maybe.withDefault NotFoundRoute <| Url.parseHash Routing.route location
   in
     ( initialModel currentRoute
-    , batchMsg <| (UserMsg UMsg.CheckSession) :: (routeMessage currentRoute)
+    , batchMsg <| (UserMsg UMsg.CheckSession) :: (Routing.routeMessage currentRoute)
     )
 
-
-urlUpdate : Result String Route -> Model -> ( Model, Cmd Msg )
-urlUpdate result model =
-  let
-    currentRoute =
-      Routing.routeFromResult result
-  in
-    ( { model | route = currentRoute }, batchMsg ( routeMessage currentRoute ) )
-
-
-main : Program Never
+main : Program Never Model Msg
 main =
-  Navigation.program Routing.parser
+  Navigation.program UpdateUrl
     { init = init
     , view = view
     , subscriptions = always <| every Config.tickDelay Tick
     , update = update
-    , urlUpdate = urlUpdate
     }

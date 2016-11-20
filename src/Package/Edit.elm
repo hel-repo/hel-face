@@ -2,7 +2,7 @@ module Package.Edit exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import List exposing (head, length, map, map2, reverse, sortBy)
+import List
 
 import Material.Button as Button
 import Material.Card as Card
@@ -57,7 +57,7 @@ file data file index =
         , Textfield.render Mdl [100 + index*4 + 1] data.mdl
             [ Textfield.label "Path"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value file.dir
             , Textfield.onInput <| (PMsg.InputFilePath index) >> PackageMsg
             ]
@@ -67,7 +67,7 @@ file data file index =
         , Textfield.render Mdl [100 + index*4 + 2] data.mdl
             [ Textfield.label "File name"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value file.name
             , Textfield.onInput <| (PMsg.InputFileName index) >> PackageMsg
             ]
@@ -77,7 +77,7 @@ file data file index =
         , Textfield.render Mdl [100 + index*4 + 3] data.mdl
             [ Textfield.label "URL"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value file.url
             , Textfield.onInput <| (PMsg.InputFileUrl index) >> PackageMsg
             ]
@@ -96,7 +96,7 @@ files data version =
         , cs "edit-card-add-button"
         ]
         [ text "New file" ]
-    , div [] ( map2 (file data) version.files [0..(length version.files)] )
+    , div [] <| List.map2 (file data) version.files (List.range 0 <| List.length version.files)
     ]
 
 
@@ -115,7 +115,7 @@ dependency data d index =
         , Textfield.render Mdl [200 + index*3 + 1] data.mdl
             [ Textfield.label "Package name"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value d.name
             , Textfield.onInput <| (PMsg.InputDependencyName index) >> PackageMsg
             ]
@@ -125,7 +125,7 @@ dependency data d index =
         , Textfield.render Mdl [200 + index*3 + 2] data.mdl
             [ Textfield.label "Version"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value d.version
             , Textfield.onInput <| (PMsg.InputDependencyVersion index) >> PackageMsg
             ]
@@ -144,7 +144,7 @@ dependencies data version =
         , cs "edit-card-add-button"
         ]
         [ text "New dependency" ]
-    , div [] ( map2 (dependency data) version.depends [0..(length version.depends)] )
+    , div [] <| List.map2 (dependency data) version.depends (List.range 0 <| List.length version.depends)
     ]
 
 
@@ -163,7 +163,7 @@ screenshot data screen index =
         , Textfield.render Mdl [300 + index*3 + 1] data.mdl
             [ Textfield.label "Direct link to an image"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value screen.url
             , Textfield.onInput <| (PMsg.InputScreenshotUrl index) >> PackageMsg
             ]
@@ -173,7 +173,7 @@ screenshot data screen index =
         , Textfield.render Mdl [300 + index*3 + 2] data.mdl
             [ Textfield.label "Description"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value screen.description
             , Textfield.onInput <| (PMsg.InputScreenshotDescription index) >> PackageMsg
             ]
@@ -192,7 +192,7 @@ screenshots data package =
         , cs "edit-card-add-button"
         ]
         [ text "Add screenshot" ]
-    , div [] ( map2 (screenshot data) package.screenshots [0..(length package.screenshots)] )
+    , div [] <| List.map2 (screenshot data) package.screenshots (List.range 0 <| List.length package.screenshots)
     ]
 
 
@@ -222,7 +222,7 @@ packageCard data package =
         [ Textfield.render Mdl [11] data.mdl
             [ Textfield.label "Package name"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value package.name
             , Textfield.onInput <| PMsg.InputName >> PackageMsg
             , cs "edit-card-title"
@@ -230,7 +230,7 @@ packageCard data package =
         , Textfield.render Mdl [12] data.mdl
             [ Textfield.label "License"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value package.license
             , Textfield.onInput <| PMsg.InputLicense >> PackageMsg
             ]
@@ -266,30 +266,30 @@ packageCard data package =
         , Textfield.render Mdl [15] data.mdl
             [ Textfield.label "Package owner"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value data.tags.owner
             , Textfield.onInput <| PMsg.InputOwner >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map (chip PMsg.RemoveOwner) package.owners )
+        , div [] ( List.map (chip PMsg.RemoveOwner) package.owners )
         , Textfield.render Mdl [16] data.mdl
             [ Textfield.label "Author of program"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value data.tags.author
             , Textfield.onInput <| PMsg.InputAuthor >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map (chip PMsg.RemoveAuthor) package.authors )
+        , div [] ( List.map (chip PMsg.RemoveAuthor) package.authors )
         , Textfield.render Mdl [17] data.mdl
             [ Textfield.label "Content tag"
             , Textfield.floatingLabel
-            , Textfield.text'
+            , Textfield.text_
             , Textfield.value data.tags.content
             , Textfield.onInput <| PMsg.InputContent >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             ]
-        , div [] ( map (chip PMsg.RemoveContent) package.tags )
+        , div [] ( List.map (chip PMsg.RemoveContent) package.tags )
         ]
     , Card.text
         [ Card.border ]
@@ -315,7 +315,7 @@ packageCard data package =
             , Tabs.onSelectTab (\num -> PackageMsg (PMsg.GoToVersion num))
             , Tabs.activeTab data.version
             ]
-            ( map versionLabel package.versions )
+            ( List.map versionLabel package.versions )
             [ case package.versions !! data.version of
                 Just version ->
                   div

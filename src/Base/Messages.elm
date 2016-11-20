@@ -1,8 +1,8 @@
 module Base.Messages exposing (..)
 
-import Time exposing (Time)
-
 import Material
+import Navigation exposing (Location)
+import Time exposing (Time)
 
 import Base.Search exposing (SearchData)
 import Package.Messages as PMsg
@@ -12,6 +12,7 @@ import User.Messages as UMsg
 type Msg
   = Mdl (Material.Msg Msg)
   | Tick Time
+  | UpdateUrl Location
   | ErrorOccurred String
   | SomethingOccurred String
   | DismissNotification

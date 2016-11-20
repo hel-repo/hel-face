@@ -64,7 +64,7 @@ searchQuery data =
     names = List.map token data.names
     tags = List.map (prefixedToken "#") data.tags
     authors = List.map (prefixedToken "@") data.authors
-    tokens = names `List.append` tags `List.append` authors
+    tokens = List.concat [names, tags, authors]
   in
     join " " ( List.filter (not << isEmpty) tokens )
 
@@ -80,7 +80,7 @@ searchApiPath data =
     names = List.map ( prefixedPart "name=" ) data.names
     tags = List.map ( prefixedPart "tags=" ) data.tags
     authors = List.map ( prefixedPart "authors=" ) data.authors
-    tokens = names `List.append` tags `List.append` authors
+    tokens = List.concat [names, tags, authors]
     query = join "&" (List.filter (not << isEmpty) tokens)
   in
     if isEmpty query then "" else "?" ++ query
@@ -89,31 +89,33 @@ searchApiPath data =
 -- Parse local search URL back to search data
 type Token = Name String | Tag String | Author String
 
-word : Parser String
+word : Parser s String
 word = regex "\\S+"
 
-quoted : Parser String
+quoted : Parser s String
 quoted = regex "\"[^\"]*\""
 
-value : Parser String
-value = (map (dropLeft 1 << dropRight 1) quoted) `or` word
+value : Parser s String
+value = (map (dropLeft 1 << dropRight 1) quoted) <|> word
 
-prefixed : String -> Parser String
-prefixed prefix = (string prefix) `andThen` (always value)
+prefixed : String -> Parser s String
+prefixed prefix = (string prefix) |> andThen (always value)
 
-separator : Parser String
+separator : Parser s String
 separator = regex "\\s+"
 
 searchData : String -> SearchData
 searchData query =
   let
-    (tokens, _) = parse
-      ( sepBy separator ( choice
-        [ Tag `map` (prefixed "#")
-        , Author `map` (prefixed "@")
-        , Name `map` value
-        ] ) )
-      query
+    parser = sepBy separator
+      <| choice
+           [ Tag <$> (prefixed "#")
+           , Author <$> (prefixed "@")
+           , Name <$> value
+           ]
+    tokens = case parse parser query of
+      Ok(_, _, result) -> result
+      Err(_, _, _) -> []
   in
     List.foldl
       ( \token data ->
@@ -123,4 +125,4 @@ searchData query =
             Name name -> { data | names = name :: data.names }
       )
       searchAll
-      <| Result.withDefault [] tokens
+      tokens

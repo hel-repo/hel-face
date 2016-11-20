@@ -2,7 +2,6 @@ module Package.Update exposing (..)
 
 import List exposing (drop, filter, length, map2, member, reverse, sortBy, take)
 import String exposing (isEmpty)
-import Task exposing (Task)
 
 import Base.Api as Api
 import Base.Config as Config
@@ -33,7 +32,7 @@ updateItem : List a -> (a -> a) -> Int -> List a
 updateItem list processor index =
   map2
     ( \i item -> if i == index then processor item else item )
-    [0..(length list)]
+    (List.range 0 <| length list)
     list
 
 
@@ -43,24 +42,22 @@ update message data =
     NoOp ->
       ( data, Cmd.none, [] )
     ErrorOccurred message ->
-      { data
-        | loading = False
-        , packages = []
-        , package = emptyPackage
-      } ! [] ~ [ Outer.ErrorOccurred message ]
+      { data | loading = False } ! [] ~ [ Outer.ErrorOccurred message ]
 
     -- Network
     FetchPackages searchData ->
-      { data | loading = True } ! [ Api.fetchPackages searchData ErrorOccurred PackagesFetched ] ~ []
-    PackagesFetched packages ->
+      { data | loading = True } ! [ Api.fetchPackages searchData PackagesFetched ] ~ []
+    PackagesFetched (Ok packages) ->
       { data
         | packages = packages
         , loading = False
       } ! [] ~ []
+    PackagesFetched (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to fetch packages!") ] ~ []
 
     FetchPackage name ->
-      { data | loading = True } ! [ Api.fetchPackage name ErrorOccurred PackageFetched ] ~ []
-    PackageFetched package ->
+      { data | loading = True } ! [ Api.fetchPackage name PackageFetched ] ~ []
+    PackageFetched (Ok package) ->
       let
         sorted = { package | versions = Semver.sort package.versions }
       in
@@ -70,26 +67,32 @@ update message data =
           , version = 0
           , loading = False
         } ! [] ~ []
+    PackageFetched (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to fetch package!") ] ~ []
 
     SavePackage package ->
       { data | loading = True }
       ! [ if not <| isEmpty data.oldPackage.name then
-            Api.savePackage package data.oldPackage ErrorOccurred PackageSaved
+            Api.savePackage package data.oldPackage PackageSaved
           else
-            Api.createPackage package ErrorOccurred PackageSaved
+            Api.createPackage package PackageSaved
         ]
       ~ []
-    PackageSaved response ->
+    PackageSaved (Ok _) ->
       { data | loading = False }
       ! []
       ~ [ Outer.RoutePackageDetails data.package.name, Outer.SomethingOccurred "Package was succesfully saved!" ]
+    PackageSaved (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to save the package!") ] ~ []
 
     RemovePackage name ->
-      { data | loading = True } ! [ Api.removePackage name ErrorOccurred PackageRemoved ] ~ []
-    PackageRemoved response ->
+      { data | loading = True } ! [ Api.removePackage name PackageRemoved ] ~ []
+    PackageRemoved (Ok _) ->
       { data | loading = False }
       ! []
       ~ [ Outer.RoutePackageList searchAll, Outer.SomethingOccurred "Package was succesfully removed!" ]
+    PackageRemoved (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to remove the package!") ] ~ []
 
     -- Navigation
     GoToPackageList searchData ->
