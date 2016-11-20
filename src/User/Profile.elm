@@ -1,18 +1,23 @@
 module User.Profile exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
-import List exposing (isEmpty, map)
+import Html.Attributes exposing (class, href)
+import List
 
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
+import Material.Menu as Menu
 import Material.Options as Options exposing (cs)
+import Material.Spinner as Loading
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Url as Url
+import Package.Models exposing (Package)
+import Package.Messages as PMsg
 import User.Models exposing (UserData)
 
 
@@ -43,9 +48,47 @@ profile data =
           , subtitle "Groups"
           , div
               [ class "profile-badges" ]
-              ( map badge (if isEmpty data.user.groups then ["user"] else data.user.groups) )
+              ( List.map badge (if List.isEmpty data.user.groups then ["user"] else data.user.groups) )
           ]
       ]
+    ]
+
+
+card : UserData -> Int -> Package -> Cell Msg
+card data index package =
+  cell
+    [ size All 4 ]
+    [ Card.view
+        [ Elevation.e2 ]
+        [ Card.title
+          [ cs "card-title" ]
+          [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]
+        , Card.menu
+            [ cs "noselect list-card-menu-button" ]
+            ( if List.member data.user.nickname package.owners then
+                [ Menu.render Mdl [index*3] data.mdl
+                    [ Menu.ripple, Menu.bottomRight ]
+                    [ Menu.item
+                        [ Menu.onSelect <| RoutePackageEdit package.name ]
+                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    , Menu.item
+                        [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
+                        [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    ]
+                ]
+              else []
+            )
+        , Card.text [] [ text package.shortDescription ]
+        ]
+    ]
+
+noPackages : Html Msg
+noPackages =
+  Card.view
+    [ Elevation.e2 ]
+    [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
+    , Card.text []
+        [ div [] [ text "You've not added any packages to this repository yet." ] ]
     ]
 
 packages : UserData -> Html Msg
@@ -56,18 +99,26 @@ packages data =
     ]
     [ Card.title [ Card.border ] [ Card.head [] [ text "My packages" ] ]
     , Card.actions
-        []
-        []
+        [ cs "profile-packages-container" ]
+        [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages ]
+          else grid [] ( List.map2 (card data) [1..(List.length data.packages)] data.packages )
+        ]
     ]
 
 
 view : UserData -> Html Msg
 view data =
-  div
-    [ class "page" ]
-    [ grid [ ]
-        [ cell [ size All 2, size Tablet 0 ] [ ]
-        , cell [ size All 8, size Tablet 8 ] [ profile data, packages data ]
-        , cell [ size All 2, size Tablet 0 ] [ ]
-        ]
-    ]
+  if data.loading then
+    Loading.spinner
+      [ Loading.active True
+      , cs "spinner"
+      ]
+  else
+    div
+      [ class "page" ]
+      [ grid [ ]
+          [ cell [ size All 2, size Tablet 0 ] [ ]
+          , cell [ size All 8, size Tablet 8 ] [ profile data, packages data ]
+          , cell [ size All 2, size Tablet 0 ] [ ]
+          ]
+      ]

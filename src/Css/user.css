@@ -21,7 +21,7 @@
 .profile-info {
   display: inline-block;
   vertical-align: top;
-  margin-left: 1em;
+  margin-left: 1.5em;
 }
 .profile-nickname {
   color: #fff;
@@ -42,6 +42,9 @@
 
 .profile-packages {
   margin-top: 1em;
+}
+.profile-packages-container {
+  background: #333;
 }
 
 /* MDL tweaks */

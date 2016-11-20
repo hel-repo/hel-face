@@ -30,6 +30,7 @@ routeMessage route =
     PackageListRoute data -> [ PackageMsg <| PMsg.GoToPackageList data ]
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
+    ProfileRoute -> [ UserMsg <| UMsg.GoToProfile ]
     _ -> []
 
 tail : Parser a a

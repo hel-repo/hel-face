@@ -1,5 +1,6 @@
 module User.Messages exposing (..)
 
+import Package.Models exposing (Package)
 import User.Models exposing (User, Profile)
 
 type Msg
@@ -16,9 +17,11 @@ type Msg
   | SessionChecked Profile
   | Register User
   | Registered
+  | PackagesFetched (List Package)
   -- Navigation
   | GoToAuth
   | GoToRegister
+  | GoToProfile
   -- Other
   | InputNickname String
   | InputPassword String

@@ -1,68 +1,22 @@
 module Package.Update exposing (..)
 
-import Http
 import List exposing (drop, filter, length, map2, member, reverse, sortBy, take)
 import String exposing (isEmpty)
 import Task exposing (Task)
 
+import Base.Api as Api
 import Base.Config as Config
-import Base.Http exposing (..)
 import Base.Messages as Outer
 import Base.Search exposing (SearchData, searchAll, searchApiPath)
 import Base.Semver as Semver
 import Base.Tools as Tools exposing ((~), (!!))
-import Package.Encoders exposing (packageEncoder)
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
-import Package.Decoders exposing (singlePackageDecoder, packagesDecoder)
 
 
 wrapMsg : Msg -> Cmd Msg
 wrapMsg msg =
   Task.perform (always msg) (always msg) (Task.succeed ())
-
-lookupPackage : String -> Cmd Msg
-lookupPackage name =
-  Http.get singlePackageDecoder (Config.apiHost ++ "packages/" ++ name)
-    |> Task.mapError toString
-    |> Task.perform ErrorOccurred PackageFetched
-
-lookupPackages : SearchData -> Cmd Msg
-lookupPackages data =
-  Http.get packagesDecoder
-    ( Config.apiHost
-      ++ "packages"
-      ++ (searchApiPath data)
-    )
-    |> Task.mapError toString
-    |> Task.perform ErrorOccurred PackagesFetched
-
-savePackage : Package -> Package -> Cmd Msg
-savePackage package oldPackage =
-  let
-    name = if isEmpty oldPackage.name then package.name else oldPackage.name
-  in
-    patch'
-      ( Config.apiHost ++ "packages/" ++ name )
-      ( packageEncoder package oldPackage )
-      |> Task.mapError toString
-      |> Task.perform ErrorOccurred PackageSaved
-
-createPackage : Package -> Cmd Msg
-createPackage package =
-  post'
-      ( Config.apiHost ++ "packages/" )
-      ( packageEncoder package emptyPackage )
-      |> Task.mapError toString
-      |> Task.perform ErrorOccurred PackageSaved
-
-removePackage : String -> Cmd Msg
-removePackage name =
-  delete'
-      ( Config.apiHost ++ "packages/" ++ name )
-      |> Task.mapError toString
-      |> Task.perform ErrorOccurred PackageRemoved
-
 
 add : List a -> a -> List a
 add list item =
@@ -101,7 +55,7 @@ update message data =
 
     -- Network
     FetchPackages searchData ->
-      { data | loading = True } ! [ lookupPackages searchData ] ~ []
+      { data | loading = True } ! [ Api.fetchPackages searchData ErrorOccurred PackagesFetched ] ~ []
     PackagesFetched packages ->
       { data
         | packages = packages
@@ -109,7 +63,7 @@ update message data =
       } ! [] ~ []
 
     FetchPackage name ->
-      { data | loading = True } ! [ lookupPackage name ] ~ []
+      { data | loading = True } ! [ Api.fetchPackage name ErrorOccurred PackageFetched ] ~ []
     PackageFetched package ->
       let
         sorted = { package | versions = Semver.sort package.versions }
@@ -123,8 +77,10 @@ update message data =
 
     SavePackage package ->
       { data | loading = True }
-      ! [ if not <| isEmpty data.oldPackage.name then savePackage package data.oldPackage
-          else createPackage package
+      ! [ if not <| isEmpty data.oldPackage.name then
+            Api.savePackage package data.oldPackage ErrorOccurred PackageSaved
+          else
+            Api.createPackage package ErrorOccurred PackageSaved
         ]
       ~ []
     PackageSaved response ->
@@ -133,7 +89,7 @@ update message data =
       ~ [ Outer.RoutePackageDetails data.package.name, Outer.SomethingOccurred "Package was succesfully saved!" ]
 
     RemovePackage name ->
-      { data | loading = True } ! [ removePackage name ] ~ []
+      { data | loading = True } ! [ Api.removePackage name ErrorOccurred PackageRemoved ] ~ []
     PackageRemoved response ->
       { data | loading = False }
       ! []

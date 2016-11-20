@@ -2,6 +2,8 @@ module User.Models exposing (..)
 
 import Material
 
+import Package.Models exposing (Package)
+
 
 -- Auxiliary model, used for checking a session
 type alias Profile =
@@ -28,6 +30,7 @@ type alias UserData =
   , user : User
   , loggedin : Bool
   , loading : Bool
+  , packages : List Package
   }
 
 emptyUserData : Material.Model -> UserData
@@ -36,4 +39,5 @@ emptyUserData materialModel =
   , user = emptyUser
   , loggedin = False
   , loading = False
+  , packages = []
   }
