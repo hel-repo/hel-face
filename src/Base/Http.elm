@@ -5,8 +5,8 @@ import Json.Decode as Json exposing ((:=))
 import Task exposing (Task)
 
 
-patch' : String -> String -> Task RawError Response
-patch' url data =
+xpatch : String -> String -> Task RawError Response
+xpatch url data =
   Http.send { defaultSettings | withCredentials = True }
     { verb = "PATCH"
     , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
@@ -14,8 +14,8 @@ patch' url data =
     , body = Http.string data
     }
 
-post' : String -> String -> Task RawError Response
-post' url data =
+xpost : String -> String -> Task RawError Response
+xpost url data =
   Http.send { defaultSettings | withCredentials = True }
     { verb = "POST"
     , headers = [ ("Content-Type", "application/json; charset=UTF-8") ]
@@ -23,8 +23,8 @@ post' url data =
     , body = Http.string data
     }
 
-get' : Json.Decoder value -> String -> Task Error value
-get' decoder url =
+xget : Json.Decoder value -> String -> Task Error value
+xget decoder url =
   let request =
     { verb = "GET"
     , headers = []
@@ -34,8 +34,8 @@ get' decoder url =
   in Http.fromJson decoder
     <| Http.send { defaultSettings | withCredentials = True } request
 
-delete' : String -> Task RawError Response
-delete' url =
+xdelete : String -> Task RawError Response
+xdelete url =
   Http.send { defaultSettings | withCredentials = True }
     { verb = "DELETE"
     , headers = []

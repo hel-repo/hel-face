@@ -39,7 +39,7 @@ savePackage package oldPackage errorMessage successMessage =
   let
     name = if String.isEmpty oldPackage.name then package.name else oldPackage.name
   in
-    patch'
+    xpatch
       ( Config.apiHost ++ "packages/" ++ name )
       ( packageEncoder package oldPackage )
       |> Task.mapError toString
@@ -47,7 +47,7 @@ savePackage package oldPackage errorMessage successMessage =
 
 createPackage : Package -> (String -> a) -> (Http.Response -> a) -> Cmd a
 createPackage package errorMessage successMessage =
-  post'
+  xpost
       ( Config.apiHost ++ "packages/" )
       ( packageEncoder package emptyPackage )
       |> Task.mapError toString
@@ -55,7 +55,7 @@ createPackage package errorMessage successMessage =
 
 removePackage : String -> (String -> a) -> (Http.Response -> a) -> Cmd a
 removePackage name errorMessage successMessage =
-  delete'
+  xdelete
       ( Config.apiHost ++ "packages/" ++ name )
       |> Task.mapError toString
       |> Task.perform errorMessage successMessage
@@ -65,8 +65,8 @@ removePackage name errorMessage successMessage =
 ------------------------------------------------------------------------------------------------------------------------
 
 -- TODO: simplify this --
-fromJson' : Json.Decoder String -> Task.Task Http.RawError Http.Response -> Task.Task Http.Error String
-fromJson' decoder response =
+xfromJson : Json.Decoder String -> Task.Task Http.RawError Http.Response -> Task.Task Http.Error String
+xfromJson decoder response =
   let decode str =
         case Json.decodeString decoder str of
           Ok v -> Task.succeed v
@@ -106,8 +106,8 @@ parseRegisterResult errorMessage successMessage response =
 ----
 register : User -> (String -> a) -> a -> Cmd a
 register user errorMessage successMessage =
-  fromJson' registerResponseDecoder
-    ( post'
+  xfromJson registerResponseDecoder
+    ( xpost
         (Config.apiHost ++ "auth")
         ("{ \"action\": \"register\",
             \"nickname\": \"" ++ user.nickname ++ "\",
@@ -125,7 +125,7 @@ parseAuthResult errorMessage successMessage response =
 
 login : String -> String -> (String -> a) -> a -> Cmd a
 login nickname password errorMessage successMessage =
-  post'
+  xpost
       (Config.apiHost ++ "auth")
       ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
     |> Task.mapError toString
@@ -134,7 +134,7 @@ login nickname password errorMessage successMessage =
 
 logout : (String -> a) -> a -> Cmd a
 logout errorMessage successMessage =
-  post'
+  xpost
       (Config.apiHost ++ "auth")
       ("{ \"action\": \"log-out\" }")
     |> Task.mapError toString
@@ -143,13 +143,13 @@ logout errorMessage successMessage =
 
 fetchUser : String -> (String -> a) -> (User -> a) -> Cmd a
 fetchUser nickname errorMessage successMessage =
-  get' singleUserDecoder (Config.apiHost ++ "users/" ++ nickname)
+  xget singleUserDecoder (Config.apiHost ++ "users/" ++ nickname)
     |> Task.mapError toString
     |> Task.perform errorMessage successMessage
 
 
 checkSession : (String -> a) -> (Profile -> a) -> Cmd a
 checkSession errorMessage successMessage =
-  get' profileDecoder (Config.apiHost ++ "profile")
+  xget profileDecoder (Config.apiHost ++ "profile")
     |> Task.mapError toString
     |> Task.perform errorMessage successMessage

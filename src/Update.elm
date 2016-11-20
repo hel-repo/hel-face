@@ -17,10 +17,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     -- Transfer MDL events
-    Mdl msg' ->
+    Mdl mmsg ->
       -- TODO: make it prettier
       let
-        (uModel, uCmd) = Material.update msg' model
+        (uModel, uCmd) = Material.update mmsg model
       in let
           packageData = uModel.packageData
           userData = uModel.userData
