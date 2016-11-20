@@ -57,9 +57,9 @@ profile data =
 card : UserData -> Int -> Package -> Cell Msg
 card data index package =
   cell
-    [ size All 4 ]
+    [ size All 6 ]
     [ Card.view
-        [ Elevation.e2 ]
+        [ ]
         [ Card.title
           [ cs "card-title" ]
           [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]
@@ -85,7 +85,7 @@ card data index package =
 noPackages : Html Msg
 noPackages =
   Card.view
-    [ Elevation.e2 ]
+    [ ]
     [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
     , Card.text []
         [ div [] [ text "You've not added any packages to this repository yet." ] ]

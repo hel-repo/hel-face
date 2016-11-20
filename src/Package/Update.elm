@@ -9,14 +9,10 @@ import Base.Config as Config
 import Base.Messages as Outer
 import Base.Search exposing (SearchData, searchAll, searchApiPath)
 import Base.Semver as Semver
-import Base.Tools as Tools exposing ((~), (!!))
+import Base.Tools as Tools exposing ((~), (!!), wrapMsg)
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
 
-
-wrapMsg : Msg -> Cmd Msg
-wrapMsg msg =
-  Task.perform (always msg) (always msg) (Task.succeed ())
 
 add : List a -> a -> List a
 add list item =

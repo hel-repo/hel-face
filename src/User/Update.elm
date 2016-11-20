@@ -6,15 +6,10 @@ import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
 import Base.Search as Search
-import Base.Tools as Tools exposing ((~))
+import Base.Tools as Tools exposing ((~), wrapMsg)
 import Base.Url as Url
 import User.Messages exposing (Msg(..))
 import User.Models exposing (User, UserData, emptyUser)
-
-
-wrapMsg : Msg -> Cmd Msg
-wrapMsg msg =
-  Task.perform (always msg) (always msg) (Task.succeed ())
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg, List Outer.Msg )

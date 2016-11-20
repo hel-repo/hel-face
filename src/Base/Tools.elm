@@ -3,17 +3,15 @@ module Base.Tools exposing (..)
 import List exposing (drop, head, map)
 import Task exposing (Task)
 
-import Base.Messages exposing (Msg)
-
 
 zip : List a -> List b -> List (a, b)
 zip = List.map2 (,)
 
-wrapMsg : Msg -> Cmd Msg
+wrapMsg : a -> Cmd a
 wrapMsg msg =
   Task.perform (always msg) (always msg) (Task.succeed ())
 
-batchMsg : List Msg -> Cmd Msg
+batchMsg : List a -> Cmd a
 batchMsg list =
   Cmd.batch ( map wrapMsg list )
 
