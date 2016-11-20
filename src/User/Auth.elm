@@ -30,6 +30,7 @@ auth data =
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
               , Textfield.text_
+              , Textfield.value data.user.nickname
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
               ]
           ]
@@ -38,6 +39,7 @@ auth data =
             [ Textfield.label "Password"
             , Textfield.floatingLabel
             , Textfield.password
+            , Textfield.value data.user.password
             , Textfield.onInput <| UMsg.InputPassword >> UserMsg
             , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
             ]

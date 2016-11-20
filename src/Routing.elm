@@ -34,12 +34,12 @@ route : Parser (Route -> a) a
 route =
   oneOf
     [ map (PackageListRoute searchAll) top
-    , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
     , map (PackageListRoute searchAll) (s "search")
-    , map PackageRoute (s "packages" </> string)
+    , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
     , map (PackageListRoute searchAll) (s "packages")
-    , map PackageEditRoute (s "edit" </> string)
+    , map PackageRoute (s "packages" </> string)
     , map (PackageEditRoute "") (s "edit")
+    , map PackageEditRoute (s "edit" </> string)
     , map AuthRoute (s "auth")
     , map RegisterRoute (s "register")
     , map ProfileRoute (s "profile")

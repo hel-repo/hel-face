@@ -19,7 +19,7 @@ resultDecoder : Decode.Decoder ApiResult
 resultDecoder =
   Decode.succeed ApiResult
     |: (field "code" Decode.int)
-    |: (field "data" Decode.string)
+    |: Decode.oneOf [field "data" Decode.string, Decode.succeed ""]
     |: (field "logged_in" Decode.bool)
     |: (field "success" Decode.bool)
     |: (field "title" Decode.string)

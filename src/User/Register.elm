@@ -30,6 +30,7 @@ register data =
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
               , Textfield.text_
+              , Textfield.value data.user.nickname
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
               ]
           ]
@@ -38,6 +39,7 @@ register data =
               [ Textfield.label "E-mail"
               , Textfield.floatingLabel
               , Textfield.text_
+              , Textfield.value data.user.email
               , Textfield.onInput <| UMsg.InputEmail >> UserMsg
               ]
           ]
@@ -46,6 +48,7 @@ register data =
             [ Textfield.label "Password"
             , Textfield.floatingLabel
             , Textfield.password
+            , Textfield.value data.user.password
             , Textfield.onInput <| UMsg.InputPassword >> UserMsg
             ]
           ]
@@ -54,6 +57,7 @@ register data =
             [ Textfield.label "Retype the password"
             , Textfield.floatingLabel
             , Textfield.password
+            , Textfield.value data.user.retryPassword
             , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
             , if (not <| data.user.password == data.user.retryPassword)
               && (not <| isEmpty data.user.retryPassword) then
