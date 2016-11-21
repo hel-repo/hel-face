@@ -83,7 +83,7 @@ update message data =
       ! []
       ~ [ Outer.RoutePackageDetails data.package.name, Outer.SomethingOccurred "Package was succesfully saved!" ]
     PackageSaved (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to save the package!") ] ~ []
+      { data | validate = True } ! [ wrapMsg (ErrorOccurred "Failed to save the package!") ] ~ []
 
     RemovePackage name ->
       { data | loading = True } ! [ Api.removePackage name PackageRemoved ] ~ []
@@ -101,10 +101,10 @@ update message data =
       data ! [ wrapMsg (FetchPackage name) ] ~ []
     GoToPackageEdit name ->
       if not <| isEmpty name then
-        data ! [ wrapMsg (FetchPackage name) ] ~ []
+        { data | validate = False } ! [ wrapMsg (FetchPackage name) ] ~ []
       else
         let newPackage = { emptyPackage | owners = [data.username] }
-        in { data | package = newPackage, oldPackage = newPackage } ! [] ~ []
+        in { data | package = newPackage, oldPackage = newPackage, validate = False } ! [] ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []

@@ -60,6 +60,10 @@ file data file index =
             , Textfield.text_
             , Textfield.value file.dir
             , Textfield.onInput <| (PMsg.InputFilePath index) >> PackageMsg
+            , if data.validate && String.isEmpty file.dir then
+                Textfield.error "Which folder will this file be installed in?"
+              else
+                Options.nop
             ]
         ]
     , div [ class "edit-card-desc-box" ]
@@ -70,6 +74,10 @@ file data file index =
             , Textfield.text_
             , Textfield.value file.name
             , Textfield.onInput <| (PMsg.InputFileName index) >> PackageMsg
+            , if data.validate && String.isEmpty file.name then
+                Textfield.error "How this file will be named?"
+              else
+                Options.nop
             ]
         ]
     , div [ class "edit-card-desc-box" ]
@@ -80,6 +88,10 @@ file data file index =
             , Textfield.text_
             , Textfield.value file.url
             , Textfield.onInput <| (PMsg.InputFileUrl index) >> PackageMsg
+            , if data.validate && String.isEmpty file.url then
+                Textfield.error "Specify a direct URL for downloading this file"
+              else
+                Options.nop
             ]
         ]
     ]
@@ -118,6 +130,10 @@ dependency data d index =
             , Textfield.text_
             , Textfield.value d.name
             , Textfield.onInput <| (PMsg.InputDependencyName index) >> PackageMsg
+            , if data.validate && String.isEmpty d.name then
+                Textfield.error "Can't be empty! Specify dependency name"
+              else
+                Options.nop
             ]
         ]
     , div [ class "edit-card-desc-box" ]
@@ -128,6 +144,10 @@ dependency data d index =
             , Textfield.text_
             , Textfield.value d.version
             , Textfield.onInput <| (PMsg.InputDependencyVersion index) >> PackageMsg
+            , if data.validate && String.isEmpty d.version then
+                Textfield.error "Can't be empty! You can use asterisk (*) for generic version."
+              else
+                Options.nop
             ]
         ]
     ]
@@ -225,6 +245,10 @@ packageCard data package =
             , Textfield.text_
             , Textfield.value package.name
             , Textfield.onInput <| PMsg.InputName >> PackageMsg
+            , if data.validate && String.isEmpty package.name then
+                Textfield.error "You must give your package some name!"
+              else
+                Options.nop
             , cs "edit-card-title"
             ]
         , Textfield.render Mdl [12] data.mdl
@@ -270,6 +294,10 @@ packageCard data package =
             , Textfield.value data.tags.owner
             , Textfield.onInput <| PMsg.InputOwner >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , if data.validate && List.isEmpty package.owners then
+                Textfield.error "A package must have at least one owner. Consider adding yourself."
+              else
+                Options.nop
             ]
         , div [] ( List.map (chip PMsg.RemoveOwner) package.owners )
         , Textfield.render Mdl [16] data.mdl
@@ -326,6 +354,10 @@ packageCard data package =
                             , Textfield.floatingLabel
                             , Textfield.value version.version
                             , Textfield.onInput <| PMsg.InputVersion >> PackageMsg
+                            , if data.validate && String.isEmpty version.version then
+                                Textfield.error "Can't be empty. Specify version number using semantic versioning rules (x.y.z)."
+                              else
+                                Options.nop
                             ] ]
                         [ Textfield.render Mdl [31] data.mdl
                             [ Textfield.label "Version changes"

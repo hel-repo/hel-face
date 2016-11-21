@@ -146,6 +146,7 @@ type alias PackageData =
   , share : String         -- which card was triggered to show sharing links
   , username : String      -- current user nickname
   , tags : Tags            -- tag textboxes state, for edit form
+  , validate : Bool        -- show validation messages below textfields (usually after edit confirmation)
   }
 
 emptyPackageData : Material.Model -> PackageData
@@ -160,4 +161,5 @@ emptyPackageData materialModel =
   , share = ""
   , username = ""
   , tags = emptyTags
+  , validate = False
   }

@@ -32,6 +32,10 @@ auth data =
               , Textfield.text_
               , Textfield.value data.user.nickname
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
+              , if data.validate && String.isEmpty data.user.nickname then
+                  Textfield.error "Can't be empty"
+                else
+                  Options.nop
               ]
           ]
       , div [ ]
@@ -42,6 +46,10 @@ auth data =
             , Textfield.value data.user.password
             , Textfield.onInput <| UMsg.InputPassword >> UserMsg
             , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
+            , if data.validate && String.isEmpty data.user.password then
+                Textfield.error "Can't be empty"
+              else
+                Options.nop
             ]
           ]
       , div [ class "profile-panel" ]

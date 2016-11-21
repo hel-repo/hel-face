@@ -31,7 +31,8 @@ type alias UserData =
   , loggedin : Bool
   , loading : Bool
   , packages : List Package
-  }
+  , validate : Bool          -- show validation messages below textboxes
+  }                          -- (usually after "Send" or "Ok" button was pressed)
 
 emptyUserData : Material.Model -> UserData
 emptyUserData materialModel =
@@ -40,4 +41,5 @@ emptyUserData materialModel =
   , loggedin = False
   , loading = False
   , packages = []
+  , validate = False
   }

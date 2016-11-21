@@ -32,14 +32,18 @@ update message data =
       ! [ wrapMsg <| FetchUser data.user.nickname ]
       ~ [ Outer.Navigate Url.packages ]
     LoggedIn (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to log in!") ] ~ []
+      { data | validate = True }
+      ! [ wrapMsg (ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?") ]
+      ~ []
 
     LogOut ->
       { data | loading = True } ! [ Api.logout LoggedOut ] ~ []
     LoggedOut (Ok _) ->
       { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate Url.auth ]
     LoggedOut (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to log out!") ] ~ []
+      data
+      ! [ wrapMsg (ErrorOccurred "For some reason, you can't close your session. Maybe you stay a little longer?") ]
+      ~ []
 
     FetchUser name ->
       data ! [ Api.fetchUser name UserFetched ] ~ []
@@ -64,7 +68,9 @@ update message data =
       ! []
       ~ [ Outer.Navigate Url.auth, Outer.SomethingOccurred "You have registered successfully!" ]
     Registered (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to register!") ] ~ []
+      { data | validate = True }
+      ! [ wrapMsg (ErrorOccurred "Failed to register! Check the entered data, please.") ]
+      ~ []
 
     PackagesFetched (Ok packages) ->
       { data | packages = packages, loading = False } ! [] ~ []
@@ -73,10 +79,10 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      data ! [] ~ []
+      { data | validate = False } ! [] ~ []
 
     GoToRegister ->
-      data ! [] ~ []
+      { data | validate = False } ! [] ~ []
 
     GoToProfile ->
       { data | loading = True }

@@ -7,7 +7,6 @@ import String exposing (join)
 
 import Markdown exposing (defaultOptions)
 
-import Material
 import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip

@@ -32,6 +32,10 @@ register data =
               , Textfield.text_
               , Textfield.value data.user.nickname
               , Textfield.onInput <| UMsg.InputNickname >> UserMsg
+              , if data.validate && isEmpty data.user.nickname then
+                  Textfield.error "Can't be empty"
+                else
+                  Options.nop
               ]
           ]
       , div [ ]
@@ -41,6 +45,10 @@ register data =
               , Textfield.text_
               , Textfield.value data.user.email
               , Textfield.onInput <| UMsg.InputEmail >> UserMsg
+              , if data.validate && isEmpty data.user.email then
+                  Textfield.error "Can't be empty"
+                else
+                  Options.nop
               ]
           ]
       , div [ ]
@@ -50,6 +58,10 @@ register data =
             , Textfield.password
             , Textfield.value data.user.password
             , Textfield.onInput <| UMsg.InputPassword >> UserMsg
+            , if data.validate && isEmpty data.user.password then
+                Textfield.error "Can't be empty"
+              else
+                Options.nop
             ]
           ]
       , div [ ]
@@ -60,7 +72,7 @@ register data =
             , Textfield.value data.user.retryPassword
             , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
             , if (not <| data.user.password == data.user.retryPassword)
-              && (not <| isEmpty data.user.retryPassword) then
+              && ((not <| isEmpty data.user.retryPassword) || data.validate) then
                 Textfield.error <| "Doesn't match password!"
               else
                 Options.nop
