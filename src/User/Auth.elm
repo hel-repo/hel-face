@@ -24,8 +24,8 @@ auth data =
   Card.view
     [ Elevation.e2 ]
     [ Card.title [ Card.border ] [ Card.head [] [ text "Authorization" ] ]
-    , Card.text [ ]
-      [ div [ ]
+    , Card.text []
+      [ div []
           [ Textfield.render Mdl [3] data.mdl
               [ Textfield.label "Nickname"
               , Textfield.floatingLabel
@@ -38,7 +38,7 @@ auth data =
                   Options.nop
               ]
           ]
-      , div [ ]
+      , div []
           [ Textfield.render Mdl [4] data.mdl
             [ Textfield.label "Password"
             , Textfield.floatingLabel
@@ -80,7 +80,7 @@ view data =
   else
     div
       [ class "page auth-card" ]
-      [ grid [ ]
+      [ grid []
           [ cell [ size All 3, size Tablet 0 ] [ ]
           , cell [ size All 6, size Tablet 8 ] [ auth data ]
           , cell [ size All 3, size Tablet 0 ] [ ]

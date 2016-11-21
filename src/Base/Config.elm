@@ -6,6 +6,9 @@ import Time exposing (Time, second)
 apiHost : String
 apiHost = "https://hel-roottree.rhcloud.com/"
 
+version : String
+version = "0.2.0"
+
 enterKey : Int
 enterKey = 13
 

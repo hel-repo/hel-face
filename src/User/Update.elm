@@ -56,8 +56,11 @@ update message data =
       data ! [ Api.checkSession SessionChecked ] ~ []
     SessionChecked (Ok profile) ->
       let user = data.user
-      in { data | user = { user | nickname = profile.nickname }, loggedin = profile.loggedin }
-         ! ( if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else [] ) ~ []
+      in { data
+             | user = { user | nickname = profile.nickname }
+             , loggedin = profile.loggedin
+             , apiVersion = profile.apiVersion
+         } ! ( if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else [] ) ~ []
     SessionChecked (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to check user session data!") ] ~ []
 
@@ -87,6 +90,9 @@ update message data =
     GoToProfile ->
       { data | loading = True }
       ! [ Api.fetchPackages (Search.searchByAuthor data.user.nickname) PackagesFetched ] ~ []
+
+    GoToAbout ->
+      data ! [] ~ []
 
     -- Other
     InputNickname nickname ->

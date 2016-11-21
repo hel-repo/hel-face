@@ -78,6 +78,9 @@ update msg model =
     RouteProfile ->
       ( model, Navigation.newUrl Url.profile )
 
+    RouteAbout ->
+      ( model, Navigation.newUrl Url.about )
+
     -- Notifications handling
     ErrorOccurred str ->
       { model | notification = error str } ! []

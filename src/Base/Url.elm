@@ -20,3 +20,6 @@ register = "#register"
 
 profile : String
 profile = "#profile"
+
+about : String
+about = "#about"

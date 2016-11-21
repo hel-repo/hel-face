@@ -26,6 +26,7 @@ type Msg
   | GoToAuth
   | GoToRegister
   | GoToProfile
+  | GoToAbout
   -- Other
   | InputNickname String
   | InputPassword String

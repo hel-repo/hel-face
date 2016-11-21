@@ -12,6 +12,7 @@ profileDecoder =
     |: (field "success" Json.bool)
     |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ]
     |: oneOf [ field "logged_in" Json.bool, succeed False ]
+    |: (field "version" Json.string)
 
 userDecoder : Json.Decoder User
 userDecoder =

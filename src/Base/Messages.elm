@@ -23,6 +23,7 @@ type Msg
   | RouteAuth
   | RouteRegister
   | RouteProfile
+  | RouteAbout
   | InputSearch String
   | InputKey Int
   | PackageMsg PMsg.Msg

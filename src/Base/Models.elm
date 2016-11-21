@@ -33,6 +33,7 @@ materialModel =
   Material.model
 
 
+emptyNotification : Notification
 emptyNotification =
   { ntype = Info
   , message = ""

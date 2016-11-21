@@ -1,0 +1,16 @@
+.about-title {
+  padding: 40px 0 10px 0;
+  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-weight: 300;
+  font-size: 24pt;
+}
+.about-description {
+  color: #fff;
+}
+.about-value {
+  color: rgb(255, 82, 82);
+  padding-left: 20px;
+}
+.about-copyright {
+  padding-top: 10px;
+}

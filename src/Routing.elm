@@ -16,6 +16,7 @@ type Route
   | AuthRoute
   | RegisterRoute
   | ProfileRoute
+  | AboutRoute
   | NotFoundRoute
 
 
@@ -28,6 +29,7 @@ routeMessage route =
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     ProfileRoute -> [ UserMsg <| UMsg.GoToProfile ]
+    AboutRoute -> [ UserMsg <| UMsg.GoToAbout ]
     _ -> []
 
 route : Parser (Route -> a) a
@@ -43,4 +45,5 @@ route =
     , map AuthRoute (s "auth")
     , map RegisterRoute (s "register")
     , map ProfileRoute (s "profile")
+    , map AboutRoute (s "about")
     ]

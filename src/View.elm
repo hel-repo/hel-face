@@ -26,6 +26,7 @@ import User.Auth
 import User.Messages as UMsg
 import User.Profile
 import User.Register
+import User.About
 
 
 keyDecoder : Decode.Decoder Msg
@@ -90,18 +91,24 @@ view model =
               ]
           , if model.userData.loggedin then
               div [ class "buttons noselect" ]
-                  [ Button.render Mdl [4] model.mdl
+                  [ Button.render Mdl [5] model.mdl
                       [ Button.minifab
                       , Button.ripple
                       , Button.onClick <| RoutePackageEdit ""
                       ]
                       [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
-                  , Button.render Mdl [3] model.mdl
+                  , Button.render Mdl [4] model.mdl
                       [ Button.minifab
                       , Button.ripple
                       , Button.onClick RouteProfile
                       ]
                       [ Icon.view "account_circle" [ Icon.size36 ] ]
+                  , Button.render Mdl [3] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      , Button.onClick RouteAbout
+                      ]
+                      [ Icon.view "help_outline" [ Icon.size36 ] ]
                   , Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
@@ -111,12 +118,18 @@ view model =
                   ]
             else
               div [ class "buttons noselect" ]
-                  [ Button.render Mdl [2] model.mdl
+                  [ Button.render Mdl [3] model.mdl
                       [ Button.minifab
                       , Button.ripple
                       , Button.onClick RouteAuth
                       ]
                       [ Icon.view "fingerprint" [ Icon.size36 ] ]
+                  , Button.render Mdl [2] model.mdl
+                      [ Button.minifab
+                      , Button.ripple
+                      , Button.onClick RouteAbout
+                      ]
+                      [ Icon.view "help_outline" [ Icon.size36 ] ]
                   ]
           ]
       , notification model.notification
@@ -147,6 +160,9 @@ viewBody model =
 
     ProfileRoute ->
       User.Profile.view model.userData
+
+    AboutRoute ->
+      User.About.view model.userData
 
     NotFoundRoute ->
       div

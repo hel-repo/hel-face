@@ -10,6 +10,7 @@ type alias Profile =
   { success : Bool
   , nickname : String
   , loggedin : Bool
+  , apiVersion : String
   }
 
 -- Actual User model
@@ -32,7 +33,8 @@ type alias UserData =
   , loading : Bool
   , packages : List Package
   , validate : Bool          -- show validation messages below textboxes
-  }                          -- (usually after "Send" or "Ok" button was pressed)
+  , apiVersion : String         -- (usually after "Send" or "Ok" button was pressed)
+  }
 
 emptyUserData : Material.Model -> UserData
 emptyUserData materialModel =
@@ -42,4 +44,5 @@ emptyUserData materialModel =
   , loading = False
   , packages = []
   , validate = False
+  , apiVersion = "0.0.0"
   }
