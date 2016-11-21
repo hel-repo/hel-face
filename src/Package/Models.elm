@@ -145,6 +145,7 @@ type alias PackageData =
   , loading : Bool
   , share : String         -- which card was triggered to show sharing links
   , username : String      -- current user nickname
+  , userGroups : List String
   , tags : Tags            -- tag textboxes state, for edit form
   , validate : Bool        -- show validation messages below textfields (usually after edit confirmation)
   }
@@ -159,7 +160,8 @@ emptyPackageData materialModel =
   , version = 0
   , screenshot = 0
   , share = ""
-  , username = ""
+  , username = ""     -- TODO: refactor common data sharing
+  , userGroups = []
   , tags = emptyTags
   , validate = False
   }

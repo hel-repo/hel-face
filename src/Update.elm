@@ -115,5 +115,7 @@ update msg model =
           User.Update.update subMsg model.userData
         packageData = model.packageData
       in
-        { model | userData = updatedData, packageData = { packageData | username = updatedData.user.nickname } }
-        ! [ Cmd.map UserMsg cmd, batchMsg transferred ]
+        { model
+          | userData = updatedData
+          , packageData = { packageData | username = updatedData.user.nickname, userGroups = updatedData.user.groups }
+        } ! [ Cmd.map UserMsg cmd, batchMsg transferred ]
