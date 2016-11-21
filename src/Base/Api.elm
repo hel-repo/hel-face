@@ -10,7 +10,7 @@ import Package.Decoders exposing (singlePackageDecoder, packagesDecoder)
 import Package.Encoders exposing (packageEncoder)
 import Package.Models exposing (Package, emptyPackage)
 import User.Decoders exposing (singleUserDecoder, profileDecoder)
-import User.Models exposing (User, Profile)
+import User.Models exposing (User, Session)
 
 
 -- Packages
@@ -85,7 +85,7 @@ fetchUser nickname msg =
     <| xget (Config.apiHost ++ "users/" ++ nickname) singleUserDecoder
 
 
-checkSession : (Result Http.Error Profile -> a) -> Cmd a
+checkSession : (Result Http.Error Session -> a) -> Cmd a
 checkSession msg =
   Http.send msg
     <| xget (Config.apiHost ++ "profile") profileDecoder

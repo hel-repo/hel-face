@@ -4,7 +4,7 @@ import Http exposing (Error)
 
 import Base.Http exposing (ApiResult)
 import Package.Models exposing (Package)
-import User.Models exposing (User, Profile)
+import User.Models exposing (User, Session)
 
 
 type Msg
@@ -18,7 +18,7 @@ type Msg
   | FetchUser String
   | UserFetched (Result Error User)
   | CheckSession
-  | SessionChecked (Result Error Profile)
+  | SessionChecked (Result Error Session)
   | Register User
   | Registered (Result Error ApiResult)
   | PackagesFetched (Result Error (List Package))

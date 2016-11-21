@@ -98,7 +98,7 @@ update message data =
     GoToPackageList searchData ->
       data ! [ wrapMsg (FetchPackages searchData) ] ~ []
     GoToPackageDetails name ->
-      data ! [ wrapMsg (FetchPackage name) ] ~ []
+      { data | screenshot = 0 } ! [ wrapMsg (FetchPackage name) ] ~ []
     GoToPackageEdit name ->
       if not <| isEmpty name then
         { data | validate = False } ! [ wrapMsg (FetchPackage name) ] ~ []

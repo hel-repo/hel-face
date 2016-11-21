@@ -6,9 +6,9 @@ import Json.Decode.Extra exposing ((|:))
 import User.Models exposing (..)
 
 
-profileDecoder : Json.Decoder Profile
+profileDecoder : Json.Decoder Session
 profileDecoder =
-  Json.succeed Profile
+  Json.succeed Session
     |: (field "success" Json.bool)
     |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ]
     |: oneOf [ field "logged_in" Json.bool, succeed False ]

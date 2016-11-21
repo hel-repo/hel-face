@@ -6,7 +6,7 @@ import Package.Models exposing (Package)
 
 
 -- Auxiliary model, used for checking a session
-type alias Profile =
+type alias Session =
   { success : Bool
   , nickname : String
   , loggedin : Bool
