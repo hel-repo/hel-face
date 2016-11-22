@@ -1,68 +1,173 @@
 module Base.Models exposing (..)
 
-import Time exposing (Time, second)
 
-import Material
-import Routing
-
-import Base.Config as Config
-import Package.Models exposing (PackageData, emptyPackageData)
-import User.Models exposing (UserData, emptyUserData)
-
-
-type NotificationType = Info | Error
-
-type alias Notification =
-  { ntype : NotificationType
-  , message : String
-  , delay : Time
+-- Global state model
+-----------------------------------------------------------------------------------
+type alias Session =
+  { user : User
+  , loggedin : Bool
+  , apiVersion : String
   }
 
-type alias Model =
-  { mdl : Material.Model
-  , route : Routing.Route
-  , notification : Notification
-  , search : String
-  , packageData : PackageData
-  , userData : UserData
+emptySession : Session
+emptySession =
+  { user = emptyUser
+  , loggedin = False
+  , apiVersion = "0.0.0"
   }
 
 
-materialModel : Material.Model
-materialModel =
-  Material.model
-
-
-emptyNotification : Notification
-emptyNotification =
-  { ntype = Info
-  , message = ""
-  , delay = 0
+-- User related models
+-----------------------------------------------------------------------------------
+type alias User =
+  { nickname : String
+  , password : String
+  , retryPassword : String
+  , email : String
+  , groups : List String
   }
 
-error : String -> Notification
-error message =
-  { ntype = Error
-  , message = message
-  , delay = Config.notificationDelay
+emptyUser : User
+emptyUser = { nickname = "", password = "", retryPassword = "", email = "", groups = [] }
+
+userByName : String -> User
+userByName name = { emptyUser | nickname = name }
+
+
+-- Package related models
+-----------------------------------------------------------------------------------
+type alias Screenshot =
+  { url : String
+  , description : String
   }
 
-info : String -> Notification
-info message =
-  { ntype = Info
-  , message = message
-  , delay = Config.notificationDelay
+emptyScreenshot : Screenshot
+emptyScreenshot =
+  { url = ""
+  , description = ""
+  }
+
+type alias PkgVersionFileData =
+  { dir : String
+  , name : String
+  }
+
+type alias VersionFile =
+  { url : String
+  , dir : String
+  , name : String
+  , remove : Bool
+  }
+
+emptyFile : VersionFile
+emptyFile =
+  { url = ""
+  , dir = ""
+  , name = ""
+  , remove = False
+  }
+
+type alias PkgVersionDependencyData =
+  { deptype : String
+  , version : String
+  }
+
+type alias VersionDependency =
+  { name: String
+  , deptype : String
+  , version : String
+  , remove : Bool
+  }
+
+emptyDependency : VersionDependency
+emptyDependency =
+  { name = ""
+  , deptype = "required"
+  , version = "*"
+  , remove = False
+  }
+
+type alias PkgVersionData =
+  { files : List VersionFile
+  , depends : List VersionDependency
+  , changes : String
+  }
+
+type alias Version =
+  { version : String
+  , files : List VersionFile
+  , depends : List VersionDependency
+  , changes : String
+  , remove : Bool
+  }
+
+emptyVersion : Version
+emptyVersion =
+  { version = "x.y.z"
+  , files = []
+  , depends = []
+  , changes = ""
+  , remove = False
+  }
+
+type alias PkgStatsDate =
+  { created : String
+  , lastUpdated : String
+  }
+
+type alias Stats =
+  { views : Int
+  , date : PkgStatsDate
+  }
+
+emptyStats: Stats
+emptyStats = { views = 0, date = { created = "", lastUpdated = "" } }
+
+type alias Package =
+  { name : String
+  , description : String
+  , shortDescription : String
+  , owners : List String
+  , authors : List String
+  , license : String
+  , tags : List String
+  , versions : List Version
+  , screenshots : List Screenshot
+  , stats : Stats
+  }
+
+emptyPackage : Package
+emptyPackage =
+  { name = ""
+  , description = ""
+  , shortDescription = ""
+  , owners = []
+  , authors = []
+  , license = "MIT"
+  , tags = []
+  , versions = []
+  , screenshots = []
+  , stats = emptyStats
   }
 
 
-initialModel : Routing.Route -> Model
-initialModel route =
-  { mdl = materialModel
-  , route = route
-  , notification = emptyNotification
-  , search = ""
-  , packageData =
-      emptyPackageData materialModel
-  , userData =
-      emptyUserData materialModel
+-- Networking models
+-----------------------------------------------------------------------------------
+type alias ApiResult =
+  { code : Int
+  , data : String
+  , loggedIn : Bool
+  , success : Bool
+  , title : String
+  , version : String
+  }
+
+emptyApiResult : ApiResult
+emptyApiResult =
+  { code = 204
+  , data = "Success!"
+  , loggedIn = True
+  , success = True
+  , title = "No Content"
+  , version = "0.0.0"
   }

@@ -18,9 +18,10 @@ import Material.Textfield as Textfield
 
 import Base.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (Package, Version, VersionDependency, VersionFile, Screenshot)
 import Base.Tools exposing ((!!))
 import Package.Messages as PMsg
-import Package.Models exposing (..)
+import Package.Models exposing (PackageData)
 
 
 chip : (String -> PMsg.Msg) -> String -> Html Msg
@@ -42,7 +43,7 @@ subtitle str =
   p [ class "subtitle" ] [ text str ]
 
 
-file : PackageData -> PkgVersionFile -> Int -> Html Msg
+file : PackageData -> VersionFile -> Int -> Html Msg
 file data file index =
   div [ class "edit-card-item" ]
     [ Button.render Mdl [100 + index*4] data.mdl
@@ -112,7 +113,7 @@ files data version =
     ]
 
 
-dependency : PackageData -> PkgVersionDependency -> Int -> Html Msg
+dependency : PackageData -> VersionDependency -> Int -> Html Msg
 dependency data d index =
   div [ class "edit-card-item" ]
     [ Button.render Mdl [200 + index*3] data.mdl

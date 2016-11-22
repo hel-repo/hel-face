@@ -4,9 +4,10 @@ import Material
 import Navigation
 import UrlParser as Url
 
+import Models exposing (..)
+import Base.Api as Api
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (..)
 import Base.Search exposing (SearchData, searchData, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
 import Base.Url as Url
@@ -43,6 +44,39 @@ update msg model =
           } ! []
       else
         model ! []
+
+    -- Network
+    CheckSession ->
+      model ! [ Api.checkSession SessionChecked ]
+
+    SessionChecked (Ok session) ->
+      let
+        packageData = model.packageData
+        userData = model.userData
+      in
+        { model
+          | session = session
+          , packageData = { packageData | session = session }
+          , userData = { userData | session = session }
+        } ! ( if String.isEmpty session.user.nickname then []
+              else [ Api.fetchUser session.user.nickname UserFetched ] )
+    SessionChecked (Err _) ->
+      model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
+
+    UserFetched (Ok user) ->
+      let
+        oldSession = model.session
+        session = { oldSession | user = user }
+        packageData = model.packageData
+        userData = model.userData
+      in
+        { model
+          | session = session
+          , packageData = { packageData | session = session }
+          , userData = { userData | session = session }
+        } ! []
+    UserFetched (Err _) ->
+      model ! [ wrapMsg <| ErrorOccurred "Cannot fetch your user data!" ]
 
     -- Routing
     UpdateUrl location ->
@@ -91,7 +125,7 @@ update msg model =
     DismissNotification ->
       { model | notification = emptyNotification } ! []
 
-    -- Other
+    -- Input
     InputSearch str ->
       { model | search = str } ! []
 
@@ -107,15 +141,13 @@ update msg model =
         ( updatedData, cmd, transferred ) =
           Package.Update.update subMsg model.packageData
       in
-        { model | packageData = updatedData } ! [ Cmd.map PackageMsg cmd, batchMsg transferred ]
+        { model | packageData = updatedData, session = updatedData.session }
+        ! [ Cmd.map PackageMsg cmd, batchMsg transferred ]
 
     UserMsg subMsg ->
       let
         ( updatedData, cmd, transferred ) =
           User.Update.update subMsg model.userData
-        packageData = model.packageData
       in
-        { model
-          | userData = updatedData
-          , packageData = { packageData | username = updatedData.user.nickname, userGroups = updatedData.user.groups }
-        } ! [ Cmd.map UserMsg cmd, batchMsg transferred ]
+        { model | userData = updatedData, session = updatedData.session }
+        ! [ Cmd.map UserMsg cmd, batchMsg transferred ]

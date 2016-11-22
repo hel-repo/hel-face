@@ -4,18 +4,15 @@ import Http
 import String
 
 import Base.Config as Config
+import Base.Decoders exposing (..)
+import Base.Encoders exposing (packageEncoder)
 import Base.Http exposing (..)
+import Base.Models exposing (ApiResult, Package, emptyPackage, Session, User)
 import Base.Search exposing (SearchData, searchApiPath)
-import Package.Decoders exposing (singlePackageDecoder, packagesDecoder)
-import Package.Encoders exposing (packageEncoder)
-import Package.Models exposing (Package, emptyPackage)
-import User.Decoders exposing (singleUserDecoder, profileDecoder)
-import User.Models exposing (User, Session)
 
 
 -- Packages
-------------------------------------------------------------------------------------------------------------------------
-
+-----------------------------------------------------------------------------------
 fetchPackage : String -> (Result Http.Error Package -> a) -> Cmd a
 fetchPackage name msg =
   Http.send msg
@@ -55,8 +52,7 @@ removePackage name msg =
 
 
 -- Users
-------------------------------------------------------------------------------------------------------------------------
-
+-----------------------------------------------------------------------------------
 register : User -> (Result Http.Error ApiResult -> a) -> Cmd a
 register user msg =
   Http.send msg
@@ -72,7 +68,8 @@ login nickname password msg =
   Http.send msg
     <| xpost
          (Config.apiHost ++ "auth")
-         ("{ \"action\": \"log-in\", \"nickname\": \"" ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
+         ("{ \"action\": \"log-in\", \"nickname\": \""
+          ++ nickname ++ "\", \"password\": \"" ++ password ++ "\"}")
 
 logout : (Result Http.Error ApiResult -> a) -> Cmd a
 logout msg =
@@ -88,4 +85,4 @@ fetchUser nickname msg =
 checkSession : (Result Http.Error Session -> a) -> Cmd a
 checkSession msg =
   Http.send msg
-    <| xget (Config.apiHost ++ "profile") profileDecoder
+    <| xget (Config.apiHost ++ "profile") sessionDecoder

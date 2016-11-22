@@ -5,7 +5,7 @@ import Regex exposing (HowMany(..), split, regex)
 import String exposing (toInt)
 
 import Base.Tools exposing (zip)
-import Package.Models exposing (Version)
+import Base.Models exposing (Version)
 
 
 splitToParts : Version -> List String

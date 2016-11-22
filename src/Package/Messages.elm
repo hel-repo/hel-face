@@ -2,9 +2,8 @@ module Package.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Http exposing (ApiResult)
+import Base.Models exposing (ApiResult, Package)
 import Base.Search exposing (SearchData)
-import Package.Models exposing (Package)
 
 
 type Msg

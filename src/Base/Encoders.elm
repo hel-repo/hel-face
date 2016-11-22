@@ -1,21 +1,21 @@
-module Package.Encoders exposing (packageEncoder)
+module Base.Encoders exposing (..)
 
-import Array exposing (fromList)
+import Array
 import Json.Encode as Json exposing (..)
-import List exposing (map)
-import String exposing (isEmpty)
 
-import Package.Models exposing (Package, Version, PkgVersionDependency, PkgVersionFile)
+import Base.Models exposing (Package, Version, VersionDependency, VersionFile)
 
 
-file : PkgVersionFile -> Value
+-- Package related encoding
+-----------------------------------------------------------------------------------
+file : VersionFile -> Value
 file f =
   object
     [ ("dir", string f.dir)
     , ("name", string f.name)
     ]
 
-dependency : PkgVersionDependency -> Value
+dependency : VersionDependency -> Value
 dependency dep =
   object
     [ ("type", string dep.deptype)
@@ -26,8 +26,8 @@ version : Version -> Value
 version v =
   object
     [ ("changes", string v.changes)
-    , ("depends", object <| map (\d -> (d.name, if d.remove then null else dependency d)) v.depends)
-    , ("files", object <| map (\f -> (f.url, if f.remove then null else file f)) v.files)
+    , ("depends", object <| List.map (\d -> (d.name, if d.remove then null else dependency d)) v.depends)
+    , ("files", object <| List.map (\f -> (f.url, if f.remove then null else file f)) v.files)
     ]
 
 package : Package -> Value
@@ -37,20 +37,19 @@ package pkg =
       [ ("license", string pkg.license)
       , ("description", string pkg.description)
       , ("short_description", string pkg.shortDescription)
-      , ("owners", array <| fromList <| map string pkg.owners)
-      , ("authors", array <| fromList <| map string pkg.authors)
-      , ("tags", array <| fromList <| map string pkg.tags)
-      , ("versions", object <| map (\v -> (v.version, if v.remove then null else version v)) pkg.versions)
-      , ("screenshots", object <| map (\s -> (s.url, string s.description)) pkg.screenshots)
+      , ("owners", array <| Array.fromList <| List.map string pkg.owners)
+      , ("authors", array <| Array.fromList <| List.map string pkg.authors)
+      , ("tags", array <| Array.fromList <| List.map string pkg.tags)
+      , ("versions", object <| List.map (\v -> (v.version, if v.remove then null else version v)) pkg.versions)
+      , ("screenshots", object <| List.map (\s -> (s.url, string s.description)) pkg.screenshots)
       ]
   in
     object
-      ( if not <| isEmpty pkg.name then
+      ( if not <| String.isEmpty pkg.name then
           ("name", string pkg.name) :: fields
         else
           fields
       )
-
 
 resolvedFiles : Version -> Version -> Version
 resolvedFiles v ov =
@@ -86,7 +85,6 @@ resolved pkg oldPkg =
       | versions = List.append nullified prepared
       , name = if pkg.name /= oldPkg.name then pkg.name else ""
     }
-
 
 packageEncoder : Package -> Package -> String
 packageEncoder pkg oldPkg =

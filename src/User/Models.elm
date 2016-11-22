@@ -2,47 +2,24 @@ module User.Models exposing (..)
 
 import Material
 
-import Package.Models exposing (Package)
+import Base.Models exposing (Package, Session, emptySession, User, emptyUser)
 
 
--- Auxiliary model, used for checking a session
-type alias Session =
-  { success : Bool
-  , nickname : String
-  , loggedin : Bool
-  , apiVersion : String
-  }
-
--- Actual User model
-type alias User =
-  { nickname : String
-  , password : String
-  , retryPassword : String
-  , email : String
-  , groups : List String
-  }
-
-emptyUser : User
-emptyUser = { nickname = "", password = "", retryPassword = "", email = "", groups = [] }
-
--- User interface state
 type alias UserData =
   { mdl : Material.Model
+  , session : Session
   , user : User
-  , loggedin : Bool
+  , packages : List Package     -- list of user packages (for profile page)
   , loading : Bool
-  , packages : List Package
-  , validate : Bool          -- show validation messages below textboxes
-  , apiVersion : String         -- (usually after "Send" or "Ok" button was pressed)
-  }
+  , validate : Bool             -- show validation messages below textboxes
+  }                             -- (usually after "Send" or "Ok" button was pressed)
 
 emptyUserData : Material.Model -> UserData
 emptyUserData materialModel =
   { mdl = materialModel
+  , session = emptySession
   , user = emptyUser
-  , loggedin = False
-  , loading = False
   , packages = []
+  , loading = False
   , validate = False
-  , apiVersion = "0.0.0"
   }

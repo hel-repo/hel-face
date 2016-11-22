@@ -14,9 +14,10 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (Package)
 import Base.Url as Url
 import Package.Details exposing (notFoundCard)
-import Package.Models exposing (PackageData, Package)
+import Package.Models exposing (PackageData)
 import Package.Messages as PMsg
 
 
@@ -31,7 +32,8 @@ card data index package =
           [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]
         , Card.menu
             [ cs "noselect list-card-menu-button" ]
-            ( if (member data.username package.owners) || (member "admins" data.userGroups) then
+            ( if (member data.session.user.nickname package.owners)
+              || (member "admins" data.session.user.groups) then
                 [ Menu.render Mdl [index*3] data.mdl
                     [ Menu.ripple, Menu.bottomRight ]
                     [ Menu.item
@@ -74,7 +76,6 @@ card data index package =
             ]
         ]
     ]
-
 
 view : PackageData -> Html Msg
 view data =

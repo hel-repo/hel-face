@@ -14,9 +14,10 @@ import Material.Layout as Layout
 import Material.Options as Options exposing (cs)
 import Material.Textfield as Textfield
 
+import About
+import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (..)
 import Base.Search exposing (searchAll, searchByName)
 import Package.List
 import Package.Details
@@ -26,7 +27,6 @@ import User.Auth
 import User.Messages as UMsg
 import User.Profile
 import User.Register
-import User.About
 
 
 keyDecoder : Decode.Decoder Msg
@@ -89,7 +89,7 @@ view model =
                   ]
                   [ Icon.i "search"]
               ]
-          , if model.userData.loggedin then
+          , if model.session.loggedin then
               div [ class "buttons noselect" ]
                   [ Button.render Mdl [5] model.mdl
                       [ Button.minifab
@@ -162,7 +162,7 @@ viewBody model =
       User.Profile.view model.userData
 
     AboutRoute ->
-      User.About.view model.userData
+      About.view model.session
 
     NotFoundRoute ->
       div

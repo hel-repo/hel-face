@@ -21,14 +21,12 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (Package, Version, VersionDependency, VersionFile)
 import Base.Search exposing (searchByTag)
 import Base.Tools exposing ((!!))
 import Base.Url as Url
 import Package.Messages as PMsg
-import Package.Models exposing
-  ( PackageData
-  , Package, Version, PkgVersionFile, PkgVersionDependency
-  )
+import Package.Models exposing (PackageData)
 
 
 screensCard : PackageData -> Package -> Html Msg
@@ -133,7 +131,7 @@ versionDesc name version =
     ]
 
 
-file : PkgVersionFile -> Html Msg
+file : VersionFile -> Html Msg
 file file =
   Lists.li []
     [ Lists.content []
@@ -156,7 +154,7 @@ files version =
       div [ class "files" ] [ subtitle "No files" ]
 
 
-dependency : PkgVersionDependency -> Html Msg
+dependency : VersionDependency -> Html Msg
 dependency d =
   Lists.li
     [ Lists.withSubtitle ]
@@ -195,7 +193,8 @@ detailsCard data package =
             ]
         ]
     , Card.menu [ cs "noselect" ]
-        ( if List.member data.username package.owners then
+        ( if (List.member data.session.user.nickname package.owners)
+          || (List.member "admins" data.session.user.groups) then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item

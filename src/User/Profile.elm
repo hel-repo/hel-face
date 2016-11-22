@@ -15,8 +15,8 @@ import Material.Spinner as Loading
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (Package)
 import Base.Url as Url
-import Package.Models exposing (Package)
 import Package.Messages as PMsg
 import User.Models exposing (UserData)
 
@@ -44,11 +44,14 @@ profile data =
           [ subtitle "Nickname"
           , div
               [ class "profile-nickname" ]
-              [ text data.user.nickname ]
+              [ text data.session.user.nickname ]
           , subtitle "Groups"
           , div
               [ class "profile-badges" ]
-              ( List.map badge (if List.isEmpty data.user.groups then ["user"] else data.user.groups) )
+              ( List.map
+                  badge
+                  (if List.isEmpty data.session.user.groups then ["user"] else data.session.user.groups)
+              )
           ]
       ]
     ]
@@ -65,19 +68,16 @@ card data index package =
           [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]
         , Card.menu
             [ cs "noselect list-card-menu-button" ]
-            ( if List.member data.user.nickname package.owners then
-                [ Menu.render Mdl [index*3] data.mdl
-                    [ Menu.ripple, Menu.bottomRight ]
-                    [ Menu.item
-                        [ Menu.onSelect <| RoutePackageEdit package.name ]
-                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
-                    , Menu.item
-                        [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
-                        [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
-                    ]
+            [ Menu.render Mdl [index*3] data.mdl
+                [ Menu.ripple, Menu.bottomRight ]
+                [ Menu.item
+                    [ Menu.onSelect <| RoutePackageEdit package.name ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                , Menu.item
+                    [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
                 ]
-              else []
-            )
+            ]
         , Card.text [] [ text package.shortDescription ]
         ]
     ]

@@ -10,6 +10,7 @@ type alias SearchData =
   { names : List String
   , tags : List String
   , authors : List String
+  , owners : List String
   }
 
 searchAll : SearchData
@@ -17,6 +18,7 @@ searchAll =
   { names = []
   , tags = []
   , authors = []
+  , owners = []
   }
 
 searchByName : String -> SearchData
@@ -45,6 +47,17 @@ searchByAuthors : List String -> SearchData
 searchByAuthors authors =
   { searchAll
   | authors = authors
+  }
+
+searchByOwner : String -> SearchData
+searchByOwner owner =
+  { searchAll
+  | owners = [ owner ]
+  }
+searchByOwners : List String -> SearchData
+searchByOwners owners =
+  { searchAll
+  | owners = owners
   }
 
 
@@ -80,7 +93,8 @@ searchApiPath data =
     names = List.map ( prefixedPart "name=" ) data.names
     tags = List.map ( prefixedPart "tags=" ) data.tags
     authors = List.map ( prefixedPart "authors=" ) data.authors
-    tokens = List.concat [names, tags, authors]
+    owners = List.map ( prefixedPart "owners=" ) data.owners
+    tokens = List.concat [names, tags, authors, owners]
     query = join "&" (List.filter (not << isEmpty) tokens)
   in
     if isEmpty query then "" else "?" ++ query

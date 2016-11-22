@@ -1,4 +1,4 @@
-module User.About exposing (..)
+module About exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src)
@@ -9,11 +9,11 @@ import Material.Grid exposing (..)
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import User.Models exposing (UserData)
+import Base.Models exposing (Session)
 
 
-about : UserData -> Html Msg
-about data =
+about : Session -> Html Msg
+about session =
   Card.view
     [ Elevation.e2 ]
     [ Card.title [ Card.border ] [ Card.head [] [ text "About us" ] ]
@@ -37,20 +37,20 @@ about data =
       , hr [] []
       , div []
         [ text "Version / API:"
-        , span [ class "about-value" ] [ text <| Config.version ++ " / " ++ data.apiVersion ]
+        , span [ class "about-value" ] [ text <| Config.version ++ " / " ++ session.apiVersion ]
         ]
       , div [ class "about-copyright" ] [ text "2016 (c) Fingercomp, Totoro" ]
       ]
     ]
 
 
-view : UserData -> Html Msg
-view data =
+view : Session -> Html Msg
+view session =
   div
     [ class "page auth-card" ]
     [ grid []
         [ cell [ size All 3, size Tablet 0 ] [ ]
-        , cell [ size All 6, size Tablet 8 ] [ about data ]
+        , cell [ size All 6, size Tablet 8 ] [ about session ]
         , cell [ size All 3, size Tablet 0 ] [ ]
         ]
     ]

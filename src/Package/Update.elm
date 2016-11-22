@@ -6,6 +6,7 @@ import String exposing (isEmpty)
 import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
+import Base.Models exposing (emptyPackage, emptyVersion, emptyDependency, emptyFile, emptyScreenshot)
 import Base.Search exposing (SearchData, searchAll, searchApiPath)
 import Base.Semver as Semver
 import Base.Tools as Tools exposing ((~), (!!), wrapMsg)
@@ -103,7 +104,7 @@ update message data =
       if not <| isEmpty name then
         { data | validate = False } ! [ wrapMsg (FetchPackage name) ] ~ []
       else
-        let newPackage = { emptyPackage | owners = [data.username] }
+        let newPackage = { emptyPackage | owners = [data.session.user.nickname] }
         in { data | package = newPackage, oldPackage = newPackage, validate = False } ! [] ~ []
 
     GoToVersion num ->

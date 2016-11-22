@@ -1,5 +1,5 @@
 {-
-  Hel Repository single-page web app
+  Hel Repository single-page web app client
   2016 (c) MoonlightOwl
 -}
 
@@ -7,11 +7,10 @@ import Navigation
 import UrlParser as Url
 import Time exposing (every)
 
+import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (..)
 import Base.Tools exposing (batchMsg)
-import User.Messages as UMsg
 
 import Routing exposing (Route(..))
 import Update exposing (update)
@@ -24,7 +23,7 @@ init location =
     currentRoute = Maybe.withDefault NotFoundRoute <| Url.parseHash Routing.route location
   in
     ( initialModel currentRoute
-    , batchMsg <| (UserMsg UMsg.CheckSession) :: (Routing.routeMessage currentRoute)
+    , batchMsg <| CheckSession :: (Routing.routeMessage currentRoute)
     )
 
 main : Program Never Model Msg

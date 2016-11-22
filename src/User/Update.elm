@@ -3,11 +3,12 @@ module User.Update exposing (..)
 import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
+import Base.Models exposing (User, emptyUser)
 import Base.Search as Search
 import Base.Tools as Tools exposing ((~), wrapMsg)
 import Base.Url as Url
 import User.Messages exposing (Msg(..))
-import User.Models exposing (User, UserData, emptyUser)
+import User.Models exposing (UserData)
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg, List Outer.Msg )
@@ -16,21 +17,25 @@ update message data =
     NoOp ->
       ( data, Cmd.none, [] )
     ErrorOccurred message ->
-      { data
-        | loggedin = False
-        , loading = False
-      } ! [] ~ [ Outer.ErrorOccurred message ]
+      let session = data.session
+      in
+        { data
+          | session = { session | loggedin = False }
+          , loading = False
+        } ! [] ~ [ Outer.ErrorOccurred message ]
 
     -- Network
     LogIn nickname password ->
       { data | loading = True } ! [ Api.login nickname password LoggedIn ] ~ []
     LoggedIn (Ok _) ->
-      { data
-        | loggedin = True
-        , loading = False
-      }
-      ! [ wrapMsg <| FetchUser data.user.nickname ]
-      ~ [ Outer.Navigate Url.packages ]
+      let session = data.session
+      in
+        { data
+          | session = { session | loggedin = True }
+          , loading = False
+        }
+        ! [ wrapMsg <| FetchUser data.user.nickname ]
+        ~ [ Outer.Navigate Url.packages ]
     LoggedIn (Err _) ->
       { data | validate = True }
       ! [ wrapMsg (ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?") ]
@@ -39,7 +44,10 @@ update message data =
     LogOut ->
       { data | loading = True } ! [ Api.logout LoggedOut ] ~ []
     LoggedOut (Ok _) ->
-      { data | loading = False, loggedin = False, user = emptyUser } ! [] ~ [ Outer.Navigate Url.auth ]
+      let session = data.session
+      in
+        { data | loading = False, session = { session | loggedin = False }, user = emptyUser }
+        ! [] ~ [ Outer.Navigate Url.auth ]
     LoggedOut (Err _) ->
       data
       ! [ wrapMsg (ErrorOccurred "For some reason, you can't close your session. Maybe you stay a little longer?") ]
@@ -51,18 +59,6 @@ update message data =
       { data | user = user } ! [] ~ []
     UserFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
-
-    CheckSession ->
-      data ! [ Api.checkSession SessionChecked ] ~ []
-    SessionChecked (Ok profile) ->
-      let user = data.user
-      in { data
-             | user = { user | nickname = profile.nickname }
-             , loggedin = profile.loggedin
-             , apiVersion = profile.apiVersion
-         } ! ( if profile.loggedin then [ wrapMsg <| FetchUser profile.nickname ] else [] ) ~ []
-    SessionChecked (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to check user session data!") ] ~ []
 
     Register user ->
       { data | loading = True } ! [ Api.register user Registered ] ~ []
@@ -89,7 +85,7 @@ update message data =
 
     GoToProfile ->
       { data | loading = True }
-      ! [ Api.fetchPackages (Search.searchByAuthor data.user.nickname) PackagesFetched ] ~ []
+      ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
 
     GoToAbout ->
       data ! [] ~ []

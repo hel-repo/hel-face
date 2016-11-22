@@ -1,11 +1,39 @@
-module Package.Decoders exposing (..)
+module Base.Decoders exposing (..)
 
-import Json.Decode as Json exposing (field)
+import Json.Decode as Json exposing (field, oneOf, succeed)
 import Json.Decode.Extra exposing ((|:))
 
-import Package.Models exposing (..)
+import Base.Models exposing (..)
 
 
+-- Global state related models
+-----------------------------------------------------------------------------------
+sessionDecoder : Json.Decoder Session
+sessionDecoder =
+  Json.succeed Session
+    |: (Json.succeed userByName |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ])
+    |: oneOf [ field "logged_in" Json.bool, succeed False ]
+    |: (field "version" Json.string)
+
+
+-- User related models
+-----------------------------------------------------------------------------------
+userDecoder : Json.Decoder User
+userDecoder =
+  Json.succeed User
+    |: (field "nickname" Json.string)
+    |: succeed "" -- We do not need this password field anymore, so we can erase it
+    |: succeed "" -- Same for "retry password" field
+    |: succeed "" -- Same for email
+    |: (field "groups" <| Json.list Json.string)
+
+singleUserDecoder : Json.Decoder User
+singleUserDecoder =
+  Json.at ["data"] userDecoder
+
+
+-- Package related modelds
+-----------------------------------------------------------------------------------
 pkgScreenshotList : List (String, String) -> Json.Decoder (List Screenshot)
 pkgScreenshotList list =
   Json.succeed (List.map (\(url, desc) -> Screenshot url desc) list)
@@ -20,11 +48,11 @@ pkgVersionFileData =
     |: (field "dir" Json.string)
     |: (field "name" Json.string)
 
-pkgVersionFilesList : List (String, PkgVersionFileData) -> Json.Decoder (List PkgVersionFile)
+pkgVersionFilesList : List (String, PkgVersionFileData) -> Json.Decoder (List VersionFile)
 pkgVersionFilesList list =
-  Json.succeed (List.map (\(url, data) -> PkgVersionFile url data.dir data.name False) list)
+  Json.succeed (List.map (\(url, data) -> VersionFile url data.dir data.name False) list)
 
-pkgVersionFiles : Json.Decoder (List PkgVersionFile)
+pkgVersionFiles : Json.Decoder (List VersionFile)
 pkgVersionFiles =
   Json.keyValuePairs pkgVersionFileData |> Json.andThen pkgVersionFilesList
 
@@ -34,11 +62,11 @@ pkgVersionDependencyData =
     |: (field "type" Json.string)
     |: (field "version" Json.string)
 
-pkgVersionDependencyList : List (String, PkgVersionDependencyData) -> Json.Decoder (List PkgVersionDependency)
+pkgVersionDependencyList : List (String, PkgVersionDependencyData) -> Json.Decoder (List VersionDependency)
 pkgVersionDependencyList list =
-  Json.succeed (List.map (\(name, data) -> PkgVersionDependency name data.deptype data.version False) list)
+  Json.succeed (List.map (\(name, data) -> VersionDependency name data.deptype data.version False) list)
 
-pkgVersionDependencies : Json.Decoder (List PkgVersionDependency)
+pkgVersionDependencies : Json.Decoder (List VersionDependency)
 pkgVersionDependencies =
   Json.keyValuePairs pkgVersionDependencyData |> Json.andThen pkgVersionDependencyList
 
@@ -90,3 +118,16 @@ packagesDecoder =
 singlePackageDecoder : Json.Decoder Package
 singlePackageDecoder =
   Json.at ["data"] packageDecoder
+
+
+-- Networking models
+-----------------------------------------------------------------------------------
+apiResultDecoder : Json.Decoder ApiResult
+apiResultDecoder =
+  Json.succeed ApiResult
+    |: (field "code" Json.int)
+    |: Json.oneOf [field "data" Json.string, Json.succeed ""]
+    |: (field "logged_in" Json.bool)
+    |: (field "success" Json.bool)
+    |: (field "title" Json.string)
+    |: (field "version" Json.string)

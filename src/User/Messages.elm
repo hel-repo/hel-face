@@ -2,9 +2,7 @@ module User.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Http exposing (ApiResult)
-import Package.Models exposing (Package)
-import User.Models exposing (User, Session)
+import Base.Models exposing (ApiResult, Package, User)
 
 
 type Msg
@@ -17,8 +15,6 @@ type Msg
   | LoggedOut (Result Error ApiResult)
   | FetchUser String
   | UserFetched (Result Error User)
-  | CheckSession
-  | SessionChecked (Result Error Session)
   | Register User
   | Registered (Result Error ApiResult)
   | PackagesFetched (Result Error (List Package))
