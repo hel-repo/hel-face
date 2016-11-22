@@ -24,11 +24,7 @@ about data =
       , hr [] []
       , div
           [ class "about-description" ]
-          [ div [] [ text "Easy way to distribute your application." ]
-          , div [] [ text <| "You don't need to worry about necessary libraries,"
-                          ++ " where your application was put by user, which name your files got,"
-                          ++ " or how to download all the parts and not to forget anything." ]
-          ]
+          [ div [] [ text "An easy way to distribute your applications." ] ]
       , hr [] []
       , div []
           [ text "IRC channel:"
