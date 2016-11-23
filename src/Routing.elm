@@ -16,6 +16,7 @@ type Route
   | AuthRoute
   | RegisterRoute
   | ProfileRoute String
+  | UserListRoute
   | AboutRoute
   | NotFoundRoute
 
@@ -29,6 +30,7 @@ routeMessage route =
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     ProfileRoute nickname -> [ UserMsg <| UMsg.GoToProfile nickname ]
+    UserListRoute -> [ UserMsg <| UMsg.GoToUserList ]
     AboutRoute -> [ UserMsg <| UMsg.GoToAbout ]
     _ -> []
 
@@ -42,9 +44,11 @@ route =
     , map PackageRoute (s "packages" </> string)
     , map (PackageEditRoute "") (s "edit")
     , map PackageEditRoute (s "edit" </> string)
-    , map AuthRoute (s "auth")
-    , map RegisterRoute (s "register")
     , map (ProfileRoute "") (s "profile")
     , map ProfileRoute (s "profile" </> string)
+    , map ProfileRoute (s "user" </> string)
+    , map UserListRoute (s "users")
+    , map AuthRoute (s "auth")
+    , map RegisterRoute (s "register")
     , map AboutRoute (s "about")
     ]

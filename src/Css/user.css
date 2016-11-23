@@ -47,6 +47,10 @@
   background: #333;
 }
 
+.user-card-title {
+  padding-bottom: 0;
+}
+
 /* MDL tweaks */
 .mdl-textfield__error {
   color: rgb(255, 82, 82);

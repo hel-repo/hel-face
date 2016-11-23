@@ -27,6 +27,10 @@ userDecoder =
     |: succeed "" -- Same for email
     |: (field "groups" <| Json.list Json.string)
 
+usersDecoder : Json.Decoder (List User)
+usersDecoder =
+  Json.at ["data", "list"] <| Json.list userDecoder
+
 singleUserDecoder : Json.Decoder User
 singleUserDecoder =
   Json.at ["data"] userDecoder

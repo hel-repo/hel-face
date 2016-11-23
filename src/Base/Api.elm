@@ -81,6 +81,10 @@ fetchUser nickname msg =
   Http.send msg
     <| xget (Config.apiHost ++ "users/" ++ nickname) singleUserDecoder
 
+fetchUsers : (Result Http.Error (List User) -> a) -> Cmd a
+fetchUsers msg =
+  Http.send msg
+    <| xget ( Config.apiHost ++ "users" ) usersDecoder
 
 checkSession : (Result Http.Error Session -> a) -> Cmd a
 checkSession msg =

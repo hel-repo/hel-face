@@ -21,5 +21,8 @@ register = "#register"
 profile : String
 profile = "#profile"
 
+user : String -> String
+user nickname = "#profile/" ++ nickname
+
 about : String
 about = "#about"

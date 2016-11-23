@@ -60,6 +60,13 @@ update message data =
     UserFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
+    FetchUsers ->
+      data ! [ Api.fetchUsers UsersFetched ] ~ []
+    UsersFetched (Ok users) ->
+      { data | users = users, loading = False } ! [] ~ []
+    UsersFetched (Err _) ->
+      data ! [ wrapMsg (ErrorOccurred "Failed to fetch user list!") ] ~ []
+
     Register user ->
       { data | loading = True } ! [ Api.register user Registered ] ~ []
     Registered (Ok _) ->
@@ -92,6 +99,9 @@ update message data =
         ! [ Api.fetchPackages (Search.searchByAuthor nickname) PackagesFetched
           , wrapMsg <| FetchUser nickname
           ] ~ []
+
+    GoToUserList ->
+      data ! [ wrapMsg FetchUsers ] ~ []
 
     GoToAbout ->
       data ! [] ~ []

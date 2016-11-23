@@ -2,7 +2,6 @@ module Base.Http exposing (..)
 
 import Http exposing (Body, Request, expectJson, expectStringResponse, emptyBody, stringBody)
 import Json.Decode as Decode exposing (field)
-import Json.Decode.Extra exposing ((|:))
 
 import Base.Models exposing (ApiResult, emptyApiResult)
 import Base.Decoders exposing (apiResultDecoder)
