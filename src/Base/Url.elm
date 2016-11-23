@@ -24,6 +24,9 @@ profile = "#profile"
 user : String -> String
 user nickname = "#profile/" ++ nickname
 
+editUser : String -> String
+editUser nickname = "#uedit/" ++ nickname
+
 users : String
 users = "#users"
 

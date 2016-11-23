@@ -87,6 +87,13 @@ update message data =
     UserSaved (Err _) ->
       data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user data wasn't saved!" ] ~ []
 
+    RemoveUser nickname ->
+      data ! [] ~ []
+    UserRemoved (Ok _) ->
+      data ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User account was successfully removed!" ]
+    UserRemoved (Err _) ->
+      data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user account wasn't removed!" ] ~ []
+
     PackagesFetched (Ok packages) ->
       { data | packages = packages, loading = False } ! [] ~ []
     PackagesFetched (Err _) ->

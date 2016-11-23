@@ -21,6 +21,8 @@ type Msg
   | Registered (Result Error ApiResult)
   | SaveUser User
   | UserSaved (Result Error ApiResult)
+  | RemoveUser String
+  | UserRemoved (Result Error ApiResult)
   | PackagesFetched (Result Error (List Package))
   -- Navigation
   | GoToAuth

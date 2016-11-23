@@ -7,12 +7,15 @@ import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
 import Material.Grid exposing (..)
+import Material.Icon as Icon
+import Material.Menu as Menu
 import Material.Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (User)
 import Base.Url as Url
+import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
@@ -35,9 +38,23 @@ card data index user =
         [ Card.title
             [ cs "card-title user-card-title" ]
             [ Card.head [] [ a [ href <| Url.user user.nickname ] [ text user.nickname ] ] ]
-         , Card.actions
+        , Card.actions
             []
             ( List.map badge (if List.isEmpty user.groups then ["user"] else user.groups) )
+        , Card.menu [ cs "noselect" ]
+            ( if List.member "admins" data.session.user.groups then
+                [ Menu.render Mdl [500 + index] data.mdl
+                    [ Menu.ripple, Menu.bottomRight ]
+                    [ Menu.item
+                        [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]
+                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    , Menu.item
+                        [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser data.user.nickname ]
+                        [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    ]
+                ]
+              else []
+            )
         ]
     ]
 

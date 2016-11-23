@@ -19,6 +19,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models exposing (Package)
 import Base.Url as Url
 import Package.Messages as PMsg
+import User.Messages as UMsg
 import User.Models exposing (UserData)
 
 
@@ -28,19 +29,32 @@ badge group =
     [ Chip.onClick <| Navigate <| Url.usersByGroup group
     , cs (if group == "admins" then "admin-badge" else "user-badge" )
     ]
-    [ Chip.content []
-        [ text group ]
-    ]
+    [ Chip.content [] [ text group ] ]
 
 subtitle : String -> Html Msg
 subtitle str =
   Options.styled p [ Typo.button, cs "subtitle" ] [ text str ]
+
 
 profile : UserData -> Html Msg
 profile data =
   Card.view
     [ Elevation.e3 ]
     [ Card.title [ Card.border ] [ Card.head [] [ text "Profile" ] ]
+    , Card.menu [ cs "noselect" ]
+        ( if List.member "admins" data.session.user.groups then
+            [ Menu.render Mdl [20] data.mdl
+                [ Menu.ripple, Menu.bottomRight ]
+                [ Menu.item
+                    [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                , Menu.item
+                    [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser data.user.nickname ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                ]
+            ]
+          else []
+        )
     , Card.text [ cs "profile-panel" ]
       [ div [ class "profile-avatar" ] [ Icon.view "account_circle" [ cs "avatar" ] ]
       , div [ class "profile-info" ]
@@ -60,8 +74,8 @@ profile data =
     ]
 
 
-card : UserData -> Int -> Package -> Cell Msg
-card data index package =
+package : UserData -> Int -> Package -> Cell Msg
+package data index package =
   cell
     [ size All 6, size Tablet 8 ]
     [ Card.view
@@ -151,7 +165,7 @@ packages data =
     , Card.actions
         [ cs "profile-packages-container" ]
         [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages data ]
-          else grid [] <| List.map2 (card data) (List.range 1 <| List.length data.packages) data.packages
+          else grid [] <| List.map2 (package data) (List.range 1 <| List.length data.packages) data.packages
         ]
     ]
 
