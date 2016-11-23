@@ -250,7 +250,7 @@ detailsCard data package =
                         ]
                     ]
                 Nothing ->
-                  div [ class "error" ] [ text "Wrong version code!" ]
+                  div [ class "banner" ] [ text "This package does not have any versions. So, you can not download it." ]
             ]
         ]
     ]
