@@ -16,7 +16,7 @@ type Route
   | AuthRoute
   | RegisterRoute
   | ProfileRoute String
-  | UserListRoute
+  | UserListRoute String
   | UserEditRoute String
   | AboutRoute
   | NotFoundRoute
@@ -31,7 +31,7 @@ routeMessage route =
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     ProfileRoute nickname -> [ UserMsg <| UMsg.GoToProfile nickname ]
-    UserListRoute -> [ UserMsg <| UMsg.GoToUserList ]
+    UserListRoute group -> [ UserMsg <| UMsg.GoToUserList group ]
     UserEditRoute nickname -> [ UserMsg <| UMsg.GoToUserEdit nickname ]
     AboutRoute -> [ UserMsg <| UMsg.GoToAbout ]
     _ -> []
@@ -49,7 +49,8 @@ route =
     , map (ProfileRoute "") (s "profile")
     , map ProfileRoute (s "profile" </> string)
     , map ProfileRoute (s "user" </> string)
-    , map UserListRoute (s "users")
+    , map (UserListRoute "") (s "users")
+    , map UserListRoute (s "users" </> string)
     , map (UserEditRoute "") (s "uedit")
     , map UserEditRoute (s "uedit" </> string)
     , map AuthRoute (s "auth")

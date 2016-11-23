@@ -15,7 +15,7 @@ type Msg
   | LoggedOut (Result Error ApiResult)
   | FetchUser String
   | UserFetched (Result Error User)
-  | FetchUsers
+  | FetchUsers String
   | UsersFetched (Result Error (List User))
   | Register User
   | Registered (Result Error ApiResult)
@@ -26,7 +26,7 @@ type Msg
   | GoToAuth
   | GoToRegister
   | GoToProfile String
-  | GoToUserList
+  | GoToUserList String
   | GoToUserEdit String
   | GoToAbout
   -- Other

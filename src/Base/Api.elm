@@ -86,6 +86,11 @@ fetchUsers msg =
   Http.send msg
     <| xget ( Config.apiHost ++ "users" ) usersDecoder
 
+fetchUsersByGroup : String -> (Result Http.Error (List User) -> a) -> Cmd a
+fetchUsersByGroup group msg =
+  Http.send msg
+    <| xget ( Config.apiHost ++ "users?groups=" ++ group ) usersDecoder
+
 checkSession : (Result Http.Error Session -> a) -> Cmd a
 checkSession msg =
   Http.send msg

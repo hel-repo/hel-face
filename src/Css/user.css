@@ -37,7 +37,7 @@
   background: rgb(255, 82, 82);
 }
 .user-badge {
-  background: #aaa;
+  background: #777;
 }
 
 .profile-packages {
@@ -49,6 +49,13 @@
 
 .user-card-title {
   padding-bottom: 0;
+}
+.user-card-title .mdl-card__title-text {
+  font-size: 16pt;
+}
+
+.appboard-button {
+  margin-left: 10px;
 }
 
 /* MDL tweaks */

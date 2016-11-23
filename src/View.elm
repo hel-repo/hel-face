@@ -163,7 +163,7 @@ viewBody model =
     ProfileRoute nickname ->
       User.Profile.view model.userData
 
-    UserListRoute ->
+    UserListRoute group ->
       User.List.view model.userData
 
     UserEditRoute nickname ->

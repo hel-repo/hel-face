@@ -19,7 +19,9 @@ import User.Models exposing (UserData)
 badge : String -> Html Msg
 badge group =
   Chip.button
-    [ cs (if group == "admins" then "admin-badge" else "user-badge" ) ]
+    [ Chip.onClick <| Navigate <| Url.usersByGroup group
+    , cs (if group == "admins" then "admin-badge" else "user-badge" )
+    ]
     [ Chip.content []
         [ text group ]
     ]

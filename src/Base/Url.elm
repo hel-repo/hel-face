@@ -27,5 +27,8 @@ user nickname = "#profile/" ++ nickname
 users : String
 users = "#users"
 
+usersByGroup : String -> String
+usersByGroup group = "#users/" ++ ( if group == "user" then "" else group )
+
 about : String
 about = "#about"

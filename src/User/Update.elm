@@ -60,8 +60,10 @@ update message data =
     UserFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
-    FetchUsers ->
-      data ! [ Api.fetchUsers UsersFetched ] ~ []
+    FetchUsers group ->
+      { data | loading = True }
+      ! [ if String.isEmpty group then Api.fetchUsers UsersFetched else Api.fetchUsersByGroup group UsersFetched ]
+      ~ []
     UsersFetched (Ok users) ->
       { data | users = users, loading = False } ! [] ~ []
     UsersFetched (Err _) ->
@@ -107,8 +109,8 @@ update message data =
           , wrapMsg <| FetchUser nickname
           ] ~ []
 
-    GoToUserList ->
-      data ! [ wrapMsg FetchUsers ] ~ []
+    GoToUserList group ->
+      data ! [ wrapMsg <| FetchUsers group ] ~ []
 
     GoToUserEdit nickname ->
       { data | loading = True, validate = False, page = Edit }
