@@ -14,21 +14,6 @@ import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
 
 
-add : List a -> a -> List a
-add list item =
-  if member item list then
-    list
-  else
-    item :: list
-
-remove : List a -> a -> List a
-remove list item =
-  filter (\a -> a /= item) list
-
-removeByIndex : Int -> List a -> List a
-removeByIndex i xs =
-  (take i xs) ++ (drop (i+1) xs)
-
 updateItem : List a -> (a -> a) -> Int -> List a
 updateItem list processor index =
   map2
@@ -128,19 +113,19 @@ update message data =
       in { data | tags = Tags Owner owner tags.author tags.content } ! [] ~ []
     RemoveOwner owner ->
       let package = data.package
-      in { data | package = { package | owners = remove package.owners owner } } ! [] ~ []
+      in { data | package = { package | owners = Tools.remove package.owners owner } } ! [] ~ []
     InputAuthor author ->
       let tags = data.tags
       in { data | tags = Tags Author tags.owner author tags.content } ! [] ~ []
     RemoveAuthor author ->
       let package = data.package
-      in { data | package = { package | authors = remove package.authors author } } ! [] ~ []
+      in { data | package = { package | authors = Tools.remove package.authors author } } ! [] ~ []
     InputContent content ->
       let tags = data.tags
       in { data | tags = Tags Content tags.owner tags.author content } ! [] ~ []
     RemoveContent content ->
       let package = data.package
-      in { data | package = { package | tags = remove package.tags content } } ! [] ~ []
+      in { data | package = { package | tags = Tools.remove package.tags content } } ! [] ~ []
     AddVersion ->
       let package = data.package
       in { data | version = 0, package = { package | versions = emptyVersion :: package.versions } } ! [] ~ []
@@ -195,7 +180,10 @@ update message data =
     RemoveFile index ->
       let
         package = data.package
-        versions = updateItem package.versions (\v -> { v | files = removeByIndex index v.files }) data.version
+        versions = updateItem
+          package.versions
+          (\v -> { v | files = Tools.removeByIndex index v.files })
+          data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
     InputDependencyName index name ->
       let
@@ -221,7 +209,10 @@ update message data =
     RemoveDependency index ->
       let
         package = data.package
-        versions = updateItem package.versions (\v -> { v | depends = removeByIndex index v.depends }) data.version
+        versions = updateItem
+          package.versions
+          (\v -> { v | depends = Tools.removeByIndex index v.depends })
+          data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
     InputScreenshotUrl index url ->
       let
@@ -238,7 +229,7 @@ update message data =
       in { data | package = { package | screenshots = emptyScreenshot :: package.screenshots } } ! [] ~ []
     RemoveScreenshot index ->
       let package = data.package
-      in { data | package = { package | screenshots = removeByIndex index package.screenshots } } ! [] ~ []
+      in { data | package = { package | screenshots = Tools.removeByIndex index package.screenshots } } ! [] ~ []
 
     InputKey key ->
       if key == Config.enterKey then
@@ -247,13 +238,13 @@ update message data =
         in
           ( case data.tags.active of
               Owner ->
-                let owners = add package.owners data.tags.owner
+                let owners = Tools.add package.owners data.tags.owner
                 in { data | package = { package | owners = owners } } ! [ wrapMsg (InputOwner "") ]
               Author ->
-                let authors = add package.authors data.tags.author
+                let authors = Tools.add package.authors data.tags.author
                 in { data | package = { package | authors = authors } } ! [ wrapMsg (InputAuthor "") ]
               Content ->
-                let content = add package.tags data.tags.content
+                let content = Tools.add package.tags data.tags.content
                 in { data | package = { package | tags = content } } ! [ wrapMsg (InputContent "") ]
           ) ~ []
       else

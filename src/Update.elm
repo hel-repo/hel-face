@@ -8,6 +8,7 @@ import Models exposing (..)
 import Base.Api as Api
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (Session)
 import Base.Search exposing (SearchData, searchData, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
 import Base.Url as Url
@@ -16,6 +17,18 @@ import User.Update
 
 import Routing exposing (Route(..))
 
+
+updateSession : Model -> Session -> Model
+updateSession model session =
+  let
+    packageData = model.packageData
+    userData = model.userData
+  in
+    { model
+      | session = session
+      , packageData = { packageData | session = session }
+      , userData = { userData | session = session }
+    }
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -50,31 +63,15 @@ update msg model =
       model ! [ Api.checkSession SessionChecked ]
 
     SessionChecked (Ok session) ->
-      let
-        packageData = model.packageData
-        userData = model.userData
-      in
-        { model
-          | session = session
-          , packageData = { packageData | session = session }
-          , userData = { userData | session = session }
-        } ! ( if String.isEmpty session.user.nickname then []
-              else [ Api.fetchUser session.user.nickname UserFetched ] )
+       ( updateSession model session )
+       ! ( if String.isEmpty session.user.nickname then []
+           else [ Api.fetchUser session.user.nickname UserFetched ] )
     SessionChecked (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
 
     UserFetched (Ok user) ->
-      let
-        oldSession = model.session
-        session = { oldSession | user = user }
-        packageData = model.packageData
-        userData = model.userData
-      in
-        { model
-          | session = session
-          , packageData = { packageData | session = session }
-          , userData = { userData | session = session }
-        } ! []
+      let session = model.session
+      in ( updateSession model { session | user = user } ) ! []
     UserFetched (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Cannot fetch your user data!" ]
 
@@ -85,6 +82,9 @@ update msg model =
 
     Navigate url ->
       model ! [ Navigation.newUrl url ]
+
+    Back ->
+      model ! [ Navigation.back 1 ]
 
     RoutePackageList searchData ->
       let

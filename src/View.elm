@@ -28,6 +28,7 @@ import User.Messages as UMsg
 import User.Profile
 import User.Register
 import User.List
+import User.Edit
 
 
 keyDecoder : Decode.Decoder Msg
@@ -164,6 +165,9 @@ viewBody model =
 
     UserListRoute ->
       User.List.view model.userData
+
+    UserEditRoute nickname ->
+      User.Edit.view model.userData
 
     AboutRoute ->
       About.view model.session

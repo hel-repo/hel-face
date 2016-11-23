@@ -387,7 +387,7 @@ packageCard data package =
         , Button.render Mdl [61] data.mdl
             [ Button.raised
             , Button.ripple
-            , Button.onClick <| RoutePackageDetails data.oldPackage.name
+            , Button.onClick <| Back
             ]
             [ text "Cancel" ]
         ]

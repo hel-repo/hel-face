@@ -8,7 +8,7 @@ import Base.Search as Search
 import Base.Tools as Tools exposing ((~), wrapMsg)
 import Base.Url as Url
 import User.Messages exposing (Msg(..))
-import User.Models exposing (UserData)
+import User.Models exposing (UserData, Page(..))
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg, List Outer.Msg )
@@ -78,6 +78,13 @@ update message data =
       ! [ wrapMsg (ErrorOccurred "Failed to register! Check the entered data, please.") ]
       ~ []
 
+    SaveUser user ->
+      data ! [] ~ []
+    UserSaved (Ok _) ->
+      data ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User data was successfully saved!" ]
+    UserSaved (Err _) ->
+      data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user data wasn't saved!" ] ~ []
+
     PackagesFetched (Ok packages) ->
       { data | packages = packages, loading = False } ! [] ~ []
     PackagesFetched (Err _) ->
@@ -85,7 +92,7 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      { data | validate = False } ! [] ~ []
+      { data | validate = False, page = Auth } ! [] ~ []
 
     GoToRegister ->
       { data | validate = False } ! [] ~ []
@@ -103,6 +110,11 @@ update message data =
     GoToUserList ->
       data ! [ wrapMsg FetchUsers ] ~ []
 
+    GoToUserEdit nickname ->
+      { data | loading = True, validate = False, page = Edit }
+      ! [ wrapMsg <| FetchUser (if String.isEmpty nickname then data.session.user.nickname else nickname) ]
+      ~ []
+
     GoToAbout ->
       data ! [] ~ []
 
@@ -119,9 +131,21 @@ update message data =
     InputEmail email ->
       let user = data.user
       in { data | user = { user | email = email } } ! [] ~ []
+    InputGroup group ->
+      { data | groupTag = group } ! [] ~ []
+    RemoveGroup group ->
+      let user = data.user
+      in { data | user = { user | groups = Tools.remove user.groups group } } ! [] ~ []
 
     InputKey key ->
-      data ! (
-        if key == Config.enterKey then [ wrapMsg <| LogIn data.user.nickname data.user.password ]
-        else []
-      ) ~ []
+      if key == Config.enterKey then
+        case data.page of
+          Auth ->
+            data ! [ wrapMsg <| LogIn data.user.nickname data.user.password ] ~ []
+          Edit ->
+            let user = data.user
+            in { data | user = { user | groups = Tools.add user.groups data.groupTag }, groupTag = "" } ! [] ~ []
+          _ ->
+            data ! [] ~ []
+      else
+        data ! [] ~ []

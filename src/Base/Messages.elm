@@ -32,6 +32,7 @@ type Msg
   | RouteRegister
   | RouteProfile
   | RouteAbout
+  | Back
   -- Input
   | InputSearch String
   | InputKey Int
