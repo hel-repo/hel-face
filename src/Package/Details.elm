@@ -190,6 +190,8 @@ detailsCard data package =
             , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
             , span [ class "card-subtitle-icon card-license noselect" ] [ Icon.view "copyright" [ Icon.size18 ] ]
             , span [ class "align-top" ] [ license package.license ]
+            , span [ class "card-subtitle-icon card-license noselect" ] [ Icon.view "turned_in_not" [ Icon.size18 ] ]
+            , span [ class "align-top" ] [ text ( join ", " package.owners ) ]
             ]
         ]
     , Card.menu [ cs "noselect" ]
