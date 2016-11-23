@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import List
 
+import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
@@ -99,6 +100,27 @@ noPackages data =
         ]
     ]
 
+appboard : UserData -> Html Msg
+appboard data =
+  if List.member "admins" data.session.user.groups then
+    Card.view
+      [ Elevation.e2
+      , cs "profile-packages"
+      ]
+      [ Card.title [ Card.border ] [ Card.head [] [ text "Dashboard" ] ]
+      , Card.actions
+          [ ]
+          [ Button.render Mdl [100] data.mdl
+              [ Button.raised
+              , Button.ripple
+              , Button.onClick <| Navigate Url.users
+              ]
+              [ text "List of users" ]
+          ]
+      ]
+  else
+    div [] []
+
 packages : UserData -> Html Msg
 packages data =
   Card.view
@@ -130,7 +152,7 @@ view data =
       [ class "page" ]
       [ grid [ ]
           [ cell [ size All 2, size Tablet 0 ] [ ]
-          , cell [ size All 8, size Tablet 8 ] [ profile data, packages data ]
+          , cell [ size All 8, size Tablet 8 ] [ profile data, appboard data, packages data ]
           , cell [ size All 2, size Tablet 0 ] [ ]
           ]
       ]
