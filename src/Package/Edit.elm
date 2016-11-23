@@ -2,7 +2,6 @@ module Package.Edit exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import List
 
 import Material.Button as Button
 import Material.Card as Card

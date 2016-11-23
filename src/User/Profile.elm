@@ -82,13 +82,21 @@ card data index package =
         ]
     ]
 
-noPackages : Html Msg
-noPackages =
+noPackages : UserData -> Html Msg
+noPackages data =
   Card.view
     [ ]
     [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
     , Card.text []
-        [ div [] [ text "You've not added any packages to this repository yet." ] ]
+        [ div []
+            [ text
+                ( if data.user.nickname == data.session.user.nickname then
+                    "You've not added any packages to this repository yet."
+                  else
+                    "This user have not added any packages to repository yet."
+                )
+            ]
+        ]
     ]
 
 packages : UserData -> Html Msg
@@ -97,10 +105,14 @@ packages data =
     [ Elevation.e2
     , cs "profile-packages"
     ]
-    [ Card.title [ Card.border ] [ Card.head [] [ text "My packages" ] ]
+    [ Card.title
+        [ Card.border ]
+        [ Card.head []
+            [ text (if data.user.nickname == data.session.user.nickname then "My packages" else "Packages") ]
+        ]
     , Card.actions
         [ cs "profile-packages-container" ]
-        [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages ]
+        [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages data ]
           else grid [] <| List.map2 (card data) (List.range 1 <| List.length data.packages) data.packages
         ]
     ]
