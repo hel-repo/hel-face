@@ -158,7 +158,7 @@ viewBody model =
     RegisterRoute ->
       User.Register.view model.userData
 
-    ProfileRoute ->
+    ProfileRoute nickname ->
       User.Profile.view model.userData
 
     AboutRoute ->

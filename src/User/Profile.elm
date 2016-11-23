@@ -44,13 +44,13 @@ profile data =
           [ subtitle "Nickname"
           , div
               [ class "profile-nickname" ]
-              [ text data.session.user.nickname ]
+              [ text data.user.nickname ]
           , subtitle "Groups"
           , div
               [ class "profile-badges" ]
               ( List.map
                   badge
-                  (if List.isEmpty data.session.user.groups then ["user"] else data.session.user.groups)
+                  (if List.isEmpty data.user.groups then ["user"] else data.user.groups)
               )
           ]
       ]

@@ -56,7 +56,7 @@ update message data =
     FetchUser name ->
       data ! [ Api.fetchUser name UserFetched ] ~ []
     UserFetched (Ok user) ->
-      { data | user = user } ! [] ~ []
+      { data | user = user, loading = False } ! [] ~ []
     UserFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
@@ -83,9 +83,15 @@ update message data =
     GoToRegister ->
       { data | validate = False } ! [] ~ []
 
-    GoToProfile ->
-      { data | loading = True }
-      ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
+    GoToProfile nickname ->
+      if String.isEmpty nickname then
+        { data | loading = True, user = data.session.user }
+        ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
+      else
+        { data | loading = True }
+        ! [ Api.fetchPackages (Search.searchByAuthor nickname) PackagesFetched
+          , wrapMsg <| FetchUser nickname
+          ] ~ []
 
     GoToAbout ->
       data ! [] ~ []

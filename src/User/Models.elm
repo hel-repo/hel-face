@@ -8,7 +8,7 @@ import Base.Models exposing (Package, Session, emptySession, User, emptyUser)
 type alias UserData =
   { mdl : Material.Model
   , session : Session
-  , user : User
+  , user : User                 -- auxiliary user model, used by interfaces
   , packages : List Package     -- list of user packages (for profile page)
   , loading : Bool
   , validate : Bool             -- show validation messages below textboxes
