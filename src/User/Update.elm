@@ -56,7 +56,7 @@ update message data =
     FetchUser name ->
       data ! [ Api.fetchUser name UserFetched ] ~ []
     UserFetched (Ok user) ->
-      { data | user = user, loading = False } ! [] ~ []
+      { data | user = user, loading = False, oldNickname = user.nickname } ! [] ~ []
     UserFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
@@ -81,16 +81,16 @@ update message data =
       ~ []
 
     SaveUser user ->
-      data ! [] ~ []
+      { data | loading = True } ! [ Api.saveUser user data.oldNickname UserSaved ] ~ []
     UserSaved (Ok _) ->
-      data ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User data was successfully saved!" ]
+      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User data was successfully saved!" ]
     UserSaved (Err _) ->
-      data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user data wasn't saved!" ] ~ []
+      { data | validate = True } ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user data wasn't saved!" ] ~ []
 
     RemoveUser nickname ->
-      data ! [] ~ []
+      { data | loading = True } ! [ Api.removeUser nickname UserRemoved ] ~ []
     UserRemoved (Ok _) ->
-      data ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User account was successfully removed!" ]
+      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User account was successfully removed!" ]
     UserRemoved (Err _) ->
       data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user account wasn't removed!" ] ~ []
 

@@ -5,10 +5,18 @@ import String
 
 import Base.Config as Config
 import Base.Decoders exposing (..)
-import Base.Encoders exposing (packageEncoder)
+import Base.Encoders exposing (packageEncoder, userEncoder)
 import Base.Http exposing (..)
 import Base.Models exposing (ApiResult, Package, emptyPackage, Session, User)
 import Base.Search exposing (SearchData, searchApiPath)
+
+
+-- Global state
+-----------------------------------------------------------------------------------
+checkSession : (Result Http.Error Session -> a) -> Cmd a
+checkSession msg =
+  Http.send msg
+    <| xget (Config.apiHost ++ "profile") sessionDecoder
 
 
 -- Packages
@@ -91,7 +99,12 @@ fetchUsersByGroup group msg =
   Http.send msg
     <| xget ( Config.apiHost ++ "users?groups=" ++ group ) usersDecoder
 
-checkSession : (Result Http.Error Session -> a) -> Cmd a
-checkSession msg =
+saveUser : User -> String -> (Result Http.Error ApiResult -> a) -> Cmd a
+saveUser user oldNickname msg =
   Http.send msg
-    <| xget (Config.apiHost ++ "profile") sessionDecoder
+    <| xpatch ( Config.apiHost ++ "users/" ++ oldNickname ) ( userEncoder user )
+
+removeUser : String -> (Result Http.Error ApiResult -> a) -> Cmd a
+removeUser nickname msg =
+  Http.send msg
+    <| xdelete ( Config.apiHost ++ "users/" ++ nickname )

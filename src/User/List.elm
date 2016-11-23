@@ -46,10 +46,10 @@ card data index user =
                 [ Menu.render Mdl [500 + index] data.mdl
                     [ Menu.ripple, Menu.bottomRight ]
                     [ Menu.item
-                        [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]
+                        [ Menu.onSelect <| Navigate <| Url.editUser user.nickname ]
                         [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
                     , Menu.item
-                        [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser data.user.nickname ]
+                        [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser user.nickname ]
                         [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
                     ]
                 ]

@@ -3,7 +3,7 @@ module Base.Encoders exposing (..)
 import Array
 import Json.Encode as Json exposing (..)
 
-import Base.Models exposing (Package, Version, VersionDependency, VersionFile)
+import Base.Models exposing (Package, Version, VersionDependency, VersionFile, User)
 
 
 -- Package related encoding
@@ -89,3 +89,14 @@ resolved pkg oldPkg =
 packageEncoder : Package -> Package -> String
 packageEncoder pkg oldPkg =
   encode 0 <| package <| resolved pkg oldPkg
+
+
+-- User related encoding
+-----------------------------------------------------------------------------------
+userEncoder : User -> String
+userEncoder user =
+  encode 0
+    <| object
+         [ ("nickname", string user.nickname)
+         , ("groups", list <| List.map string user.groups)
+         ]

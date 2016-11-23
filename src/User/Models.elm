@@ -14,6 +14,7 @@ type alias UserData =
   , user : User                 -- auxiliary user model, used by profile / auth interfaces
   , users : List User           -- auxiliary model for user list interface
   , groupTag : String           -- for user edit dialog
+  , oldNickname : String        -- for user edit dialog
   , packages : List Package     -- list of user packages (for profile page)
   , loading : Bool
   , validate : Bool             -- show validation messages below textboxes
@@ -27,6 +28,7 @@ emptyUserData materialModel =
   , user = emptyUser
   , users = []
   , groupTag = ""
+  , oldNickname = ""
   , packages = []
   , loading = False
   , validate = False
