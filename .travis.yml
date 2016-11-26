@@ -4,9 +4,6 @@ node_js:
 - '6'
 addons:
   ssh_known_hosts: fomalhaut.me
-cache:
-  directories:
-    - elm-stuff/build-artifacts
 before_install:
 - bash .travis/before-install.sh
 install:

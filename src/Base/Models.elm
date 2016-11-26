@@ -153,6 +153,15 @@ emptyPackage =
 
 -- Networking models
 -----------------------------------------------------------------------------------
+type alias Page =
+  { list : List Package
+  , offset : Int
+  }
+
+emptyPage : Page
+emptyPage = { list = [], offset = 0 }
+
+
 type alias ApiResult =
   { code : Int
   , data : String

@@ -119,6 +119,12 @@ packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
   Json.at ["data", "list"] <| Json.list packageDecoder
 
+packagesPageDecoder : Json.Decoder Page
+packagesPageDecoder =
+  Json.succeed Page
+    |: (Json.at ["data", "list"] <| Json.list packageDecoder)
+    |: Json.at ["data", "offset"] Json.int
+
 singlePackageDecoder : Json.Decoder Package
 singlePackageDecoder =
   Json.at ["data"] packageDecoder

@@ -17,3 +17,6 @@ tickDelay = 5 * second
 
 notificationDelay : Time
 notificationDelay = 10 * second
+
+pageSize : Int
+pageSize = 20

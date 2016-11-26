@@ -7,7 +7,7 @@ import Base.Config as Config
 import Base.Decoders exposing (..)
 import Base.Encoders exposing (packageEncoder, userEncoder)
 import Base.Http exposing (..)
-import Base.Models exposing (ApiResult, Package, emptyPackage, Session, User)
+import Base.Models exposing (ApiResult, Package, emptyPackage, Page, Session, User)
 import Base.Search exposing (SearchData, searchApiPath)
 
 
@@ -35,6 +35,11 @@ fetchPackages data msg =
            ++ (searchApiPath data)
          )
          packagesDecoder
+
+fetchPackagesPage : SearchData -> (Result Http.Error Page -> a) -> Cmd a
+fetchPackagesPage data msg =
+  Http.send msg
+    <| xget ( Config.apiHost ++ "packages" ++ (searchApiPath data) ) packagesPageDecoder
 
 savePackage : Package -> Package -> (Result Http.Error ApiResult -> a) -> Cmd a
 savePackage package oldPackage msg =

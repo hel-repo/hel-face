@@ -11,6 +11,7 @@ type alias SearchData =
   , tags : List String
   , authors : List String
   , owners : List String
+  , offset : Int
   }
 
 searchAll : SearchData
@@ -19,6 +20,7 @@ searchAll =
   , tags = []
   , authors = []
   , owners = []
+  , offset = 0
   }
 
 searchByName : String -> SearchData
@@ -60,6 +62,12 @@ searchByOwners owners =
   | owners = owners
   }
 
+searchOffset : Int -> SearchData -> SearchData
+searchOffset offset data =
+  { data
+  | offset = offset
+  }
+
 
 -- Serialize search query to local URL
 token : String -> String
@@ -97,7 +105,7 @@ searchApiPath data =
     tokens = List.concat [names, tags, authors, owners]
     query = join "&" (List.filter (not << isEmpty) tokens)
   in
-    if isEmpty query then "" else "?" ++ query
+    "?offset=" ++ (toString data.offset) ++ (if isEmpty query then "" else "&" ++ query)
 
 
 -- Parse local search URL back to search data
