@@ -19,6 +19,7 @@ import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Search exposing (searchAll, searchByName)
+import Base.Url as Url
 import Package.List
 import Package.Details
 import Package.Edit
@@ -68,8 +69,8 @@ view model =
     { header =
       [ div
           [ class "header" ]
-          [ div
-              [ class "header-title noselect", onClick <| RoutePackageList searchAll ]
+          [ a
+              [ class "header-title noselect", href Url.packages ]
               [ img [ src "static/media/logo.7c5853e0.png", class "header-image" ] [] ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl
