@@ -13,6 +13,7 @@ import Material.Menu as Menu
 import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
+import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (Package)
 import Base.Url as Url
@@ -85,5 +86,19 @@ view data =
         , cs "spinner"
         ]
     else
-      if isEmpty data.packages then div [ class "page" ] [ notFoundCard ]
-      else grid [] <| map2 (card data) (List.range 1 <| length data.packages) data.packages
+      if isEmpty data.packages.list then div [ class "page" ] [ notFoundCard ]
+      else
+        div []
+          [ grid [] <| map2 (card data) (List.range 1 <| length data.packages.list) data.packages.list
+          , if (data.packages.total - data.packages.offset) > Config.pageSize then
+              div [ class "more" ]
+                [ Button.render Mdl [99] data.mdl
+                    [ Button.ripple
+                    , Button.onClick <| PackageMsg PMsg.NextPage
+                    ]
+                    [ text "More ..."]
+                ]
+            else
+              div [] []
+          ]
+

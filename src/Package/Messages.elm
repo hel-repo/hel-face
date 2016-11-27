@@ -2,7 +2,7 @@ module Package.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Models exposing (ApiResult, Package)
+import Base.Models exposing (ApiResult, Package, Page)
 import Base.Search exposing (SearchData)
 
 
@@ -11,7 +11,8 @@ type Msg
   | ErrorOccurred String
   -- Network
   | FetchPackages SearchData
-  | PackagesFetched (Result Error (List Package))
+  | PackagesFetched (Result Error Page)
+  | NextPage
   | FetchPackage String
   | PackageFetched (Result Error Package)
   | SavePackage Package

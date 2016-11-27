@@ -156,10 +156,11 @@ emptyPackage =
 type alias Page =
   { list : List Package
   , offset : Int
+  , total: Int
   }
 
 emptyPage : Page
-emptyPage = { list = [], offset = 0 }
+emptyPage = { list = [], offset = 0, total = 0 }
 
 
 type alias ApiResult =

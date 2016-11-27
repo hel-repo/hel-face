@@ -124,6 +124,7 @@ packagesPageDecoder =
   Json.succeed Page
     |: (Json.at ["data", "list"] <| Json.list packageDecoder)
     |: Json.at ["data", "offset"] Json.int
+    |: Json.at ["data", "total"] Json.int
 
 singlePackageDecoder : Json.Decoder Package
 singlePackageDecoder =

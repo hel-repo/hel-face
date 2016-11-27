@@ -32,14 +32,21 @@ update message data =
 
     -- Network
     FetchPackages searchData ->
-      { data | loading = True } ! [ Api.fetchPackages searchData PackagesFetched ] ~ []
-    PackagesFetched (Ok packages) ->
+      { data | loading = True, searchData = searchData } ! [ Api.fetchPackagesPage searchData PackagesFetched ] ~ []
+    PackagesFetched (Ok page) ->
       { data
-        | packages = packages
+        | packages = page
         , loading = False
       } ! [] ~ []
     PackagesFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch packages!") ] ~ []
+
+    NextPage ->
+      let
+        searchData = data.searchData
+        nextPageData = { searchData | offset = searchData.offset + Config.pageSize }
+      in
+        data ! [ Api.fetchPackagesPage nextPageData PackagesFetched ] ~ []
 
     FetchPackage name ->
       { data | loading = True } ! [ Api.fetchPackage name PackageFetched ] ~ []

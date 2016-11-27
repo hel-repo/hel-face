@@ -2,7 +2,8 @@ module Package.Models exposing (..)
 
 import Material
 
-import Base.Models exposing (Package, emptyPackage, Session, emptySession)
+import Base.Models exposing (Package, emptyPackage, Page, emptyPage, Session, emptySession)
+import Base.Search exposing (SearchData, searchAll)
 
 
 type TagType = Owner | Author | Content
@@ -25,22 +26,24 @@ emptyTags =
 type alias PackageData =
   { mdl : Material.Model
   , session : Session
-  , packages : List Package
+  , packages : Page
+  , searchData : SearchData -- last search query
   , package : Package
-  , oldPackage : Package   -- backup for changes resolver
-  , version : Int          -- currently selected version tab
-  , screenshot : Int       -- currently selected screenshot
+  , oldPackage : Package    -- backup for changes resolver
+  , version : Int           -- currently selected version tab
+  , screenshot : Int        -- currently selected screenshot
   , loading : Bool
-  , share : String         -- which card was triggered to show sharing links
-  , tags : Tags            -- tag textboxes state, for edit form
-  , validate : Bool        -- show validation messages below textfields (usually after edit confirmation)
+  , share : String          -- which card was triggered to show sharing links
+  , tags : Tags             -- tag textboxes state, for edit form
+  , validate : Bool         -- show validation messages below textfields (usually after edit confirmation)
   }
 
 emptyPackageData : Material.Model -> PackageData
 emptyPackageData materialModel =
   { mdl = materialModel
   , session = emptySession
-  , packages = []
+  , packages = emptyPage
+  , searchData = searchAll
   , package = emptyPackage
   , oldPackage = emptyPackage
   , loading = False

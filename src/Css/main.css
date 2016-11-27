@@ -127,3 +127,11 @@ i.material-icons {
 .danger {
   color: rgb(255, 82, 82);
 }
+
+.more {
+  text-align: center;
+  margin: 0 0 2em 0;
+}
+.more .mdl-button {
+  color: #aaa;
+}
