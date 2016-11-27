@@ -98,7 +98,7 @@ prefixedPart prefix token =
 searchApiPath : SearchData -> String
 searchApiPath data =
   let
-    names = List.map ( prefixedPart "name=" ) data.names
+    names = List.map ( prefixedPart "q=" ) data.names
     tags = List.map ( prefixedPart "tags=" ) data.tags
     authors = List.map ( prefixedPart "authors=" ) data.authors
     owners = List.map ( prefixedPart "owners=" ) data.owners
