@@ -35,7 +35,6 @@ update msg model =
   case msg of
     -- Transfer MDL events
     Mdl mmsg ->
-      -- TODO: make it prettier
       let
         (uModel, uCmd) = Material.update mmsg model
       in let

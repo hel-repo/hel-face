@@ -7,7 +7,7 @@ apiHost : String
 apiHost = "https://hel-roottree.rhcloud.com/"
 
 version : String
-version = "0.2.0"
+version = "1.0.0-beta"
 
 enterKey : Int
 enterKey = 13

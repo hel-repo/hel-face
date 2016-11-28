@@ -20,12 +20,11 @@ about session =
     , Card.text []
       [ div []
           [ img [ src "static/media/about.6c5ea71c.png" ] [] ]
-      , div [ class "about-title" ] [ text "HEL Package Repository" ]
-      , hr [] []
+      , p [ class "about-title" ] [ text "HEL Package Repository" ]
       , div
           [ class "about-description" ]
           [ div [] [ text "An easy way to distribute your applications." ] ]
-      , hr [] []
+      , p [] []
       , div []
           [ text "IRC channel:"
           , span [ class "about-value" ] [ a [ href "https://webchat.esper.net/?channels=#cc.ru" ] [ text "#cc.ru" ] ]
@@ -34,7 +33,7 @@ about session =
           [ text "GitHub:"
           , span [ class "about-value" ] [ a [ href "https://github.com/hel-repo" ] [ text "hel-repo" ] ]
           ]
-      , hr [] []
+      , p [] []
       , div []
         [ text "Version / API:"
         , span [ class "about-value" ] [ text <| Config.version ++ " / " ++ session.apiVersion ]
