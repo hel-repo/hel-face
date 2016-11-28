@@ -47,7 +47,7 @@ update message data =
           searchData = data.searchData
           nextPageData = { searchData | offset = searchData.offset + Config.pageSize }
         in
-          data ! [ Api.fetchPackagesPage nextPageData PackagesFetched ] ~ []
+          data ! [ wrapMsg <| FetchPackages nextPageData ] ~ []
       else data ! [] ~ []
 
     PreviousPage ->
@@ -56,7 +56,7 @@ update message data =
           searchData = data.searchData
           prevPageData = { searchData | offset = max 0 <| searchData.offset - Config.pageSize }
         in
-          data ! [ Api.fetchPackagesPage prevPageData PackagesFetched ] ~ []
+          data ! [ wrapMsg <| FetchPackages prevPageData ] ~ []
       else data ! [] ~ []
 
     FetchPackage name ->
