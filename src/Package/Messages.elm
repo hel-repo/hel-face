@@ -13,6 +13,7 @@ type Msg
   | FetchPackages SearchData
   | PackagesFetched (Result Error Page)
   | NextPage
+  | PreviousPage
   | FetchPackage String
   | PackageFetched (Result Error Package)
   | SavePackage Package

@@ -90,15 +90,25 @@ view data =
       else
         div []
           [ grid [] <| map2 (card data) (List.range 1 <| length data.packages.list) data.packages.list
-          , if (data.packages.total - data.packages.offset) > Config.pageSize then
-              div [ class "more" ]
-                [ Button.render Mdl [99] data.mdl
-                    [ Button.ripple
-                    , Button.onClick <| PackageMsg PMsg.NextPage
-                    ]
-                    [ text "More ..."]
-                ]
-            else
-              div [] []
+          , div [ class "more" ]
+              [ span []
+                  [ if data.packages.offset > 0 then
+                      Button.render Mdl [99] data.mdl
+                        [ Button.ripple
+                        , Button.onClick <| PackageMsg PMsg.PreviousPage
+                        ]
+                        [ text "< Prev Page"]
+                    else
+                      div [] []
+                  , if (data.packages.total - data.packages.offset) > Config.pageSize then
+                      Button.render Mdl [100] data.mdl
+                        [ Button.ripple
+                        , Button.onClick <| PackageMsg PMsg.NextPage
+                        ]
+                        [ text "Next Page >"]
+                    else
+                      div [] []
+                  ]
+              ]
           ]
 

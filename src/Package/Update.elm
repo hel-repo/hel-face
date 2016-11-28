@@ -42,11 +42,22 @@ update message data =
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch packages!") ] ~ []
 
     NextPage ->
-      let
-        searchData = data.searchData
-        nextPageData = { searchData | offset = searchData.offset + Config.pageSize }
-      in
-        data ! [ Api.fetchPackagesPage nextPageData PackagesFetched ] ~ []
+      if (data.packages.total - data.packages.offset) > Config.pageSize then
+        let
+          searchData = data.searchData
+          nextPageData = { searchData | offset = searchData.offset + Config.pageSize }
+        in
+          data ! [ Api.fetchPackagesPage nextPageData PackagesFetched ] ~ []
+      else data ! [] ~ []
+
+    PreviousPage ->
+      if data.packages.offset > 0 then
+        let
+          searchData = data.searchData
+          prevPageData = { searchData | offset = max 0 <| searchData.offset - Config.pageSize }
+        in
+          data ! [ Api.fetchPackagesPage prevPageData PackagesFetched ] ~ []
+      else data ! [] ~ []
 
     FetchPackage name ->
       { data | loading = True } ! [ Api.fetchPackage name PackageFetched ] ~ []
