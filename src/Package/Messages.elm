@@ -58,3 +58,4 @@ type Msg
   | SharePackage String
   | PreviousScreenshot
   | NextScreenshot
+  | ScreenshotLoaded

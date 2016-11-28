@@ -90,6 +90,9 @@ pre code {
   padding-left: 10px;
 }
 
+.invisible {
+  display: none;
+}
 
 .align-top {
   vertical-align: top;

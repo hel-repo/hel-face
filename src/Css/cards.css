@@ -36,6 +36,26 @@
   color: #fff;
 }
 
+.mdl-progress {
+  width: auto;
+}
+.mdl-progress.mdl-progress__indeterminate>.bar1 {
+  background-color: rgb(255, 82, 82);
+}
+.mdl-progress>.bufferbar {
+  background-image: linear-gradient(
+    to right,
+    rgba(10,10,10,.7),
+    rgba(10,10,10,.7)),
+    linear-gradient(to right, rgb(255,82,82), rgb(255,82,82));
+}
+.mdl-progress:not(.mdl-progress--indeterminate):not(.mdl-progress--indeterminate)>.auxbar {
+  background-image: linear-gradient(
+    to right,
+    rgba(10,10,10,.7),
+    rgba(10,10,10,.7)),
+    linear-gradient(to right, rgb(255,82,82), rgb(255,82,82));
+}
 
 /* Custom elements */
 .card-title {
@@ -46,6 +66,9 @@
   font-weight: inherit;
   text-decoration: none;
 }
+
+.progress { padding: 4px 8px 8px 8px; }
+.no-progress { }
 
 .card-license {
   padding-left: 10px;

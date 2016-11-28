@@ -2,6 +2,8 @@ module Package.Details exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src)
+import Html.Events exposing (on)
+import Json.Decode as Json
 import List
 import String exposing (join)
 
@@ -16,6 +18,7 @@ import Material.Icon as Icon
 import Material.List as Lists
 import Material.Menu as Menu
 import Material.Options as Options exposing (cs)
+import Material.Progress as Progress
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
 import Material.Typography as Typo
@@ -29,6 +32,10 @@ import Package.Messages as PMsg
 import Package.Models exposing (PackageData)
 
 
+onLoad : msg -> Attribute msg
+onLoad message =
+  on "load" (Json.succeed message)
+
 screensCard : PackageData -> Package -> Html Msg
 screensCard data package =
   if not (List.isEmpty package.screenshots) then
@@ -38,7 +45,16 @@ screensCard data package =
           [ Elevation.e2, cs "screen-card" ]
           [ Card.actions
               [ cs "screen-img" ]
-              [ img [ src screen.url ] [ ] ]
+              [ img
+                  [ src screen.url
+                  , onLoad <| PackageMsg PMsg.ScreenshotLoaded
+                  ] []
+              ]
+          , ( if data.screenshotLoading then
+                Card.actions [ cs "progress" ] [ div [] [ Progress.indeterminate ] ]
+              else
+                Card.actions [ cs "no-progress" ] []
+            )
           , Card.actions
               [ Card.border ]
               [ Button.render Mdl [1,0] data.mdl

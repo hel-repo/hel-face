@@ -102,7 +102,7 @@ update message data =
     GoToPackageList searchData ->
       data ! [ wrapMsg (FetchPackages searchData) ] ~ []
     GoToPackageDetails name ->
-      { data | screenshot = 0 } ! [ wrapMsg (FetchPackage name) ] ~ []
+      { data | screenshot = 0, screenshotLoading = True } ! [ wrapMsg (FetchPackage name) ] ~ []
     GoToPackageEdit name ->
       if not <| isEmpty name then
         { data | validate = False } ! [ wrapMsg (FetchPackage name) ] ~ []
@@ -274,12 +274,15 @@ update message data =
 
     PreviousScreenshot ->
       if data.screenshot > 0 then
-        { data | screenshot = data.screenshot - 1 } ! [] ~ []
+        { data | screenshot = data.screenshot - 1, screenshotLoading = True } ! [] ~ []
       else
         data ! [] ~ []
 
     NextScreenshot ->
       if data.screenshot < (List.length data.package.screenshots - 1) then
-        { data | screenshot = data.screenshot + 1 } ! [] ~ []
+        { data | screenshot = data.screenshot + 1, screenshotLoading = True } ! [] ~ []
       else
         data ! [] ~ []
+
+    ScreenshotLoaded ->
+      { data | screenshotLoading = False } ! [] ~ []
