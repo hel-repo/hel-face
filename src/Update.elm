@@ -58,20 +58,24 @@ update msg model =
       else
         model ! []
 
+    UpdateSession session ->
+      ( updateSession model session ) ! []
+
     -- Network
     CheckSession ->
       model ! [ Api.checkSession SessionChecked ]
 
     SessionChecked (Ok session) ->
-       ( updateSession model session )
-       ! ( if String.isEmpty session.user.nickname then []
-           else [ Api.fetchUser session.user.nickname UserFetched ] )
+       model ! List.append
+         ( if String.isEmpty session.user.nickname then []
+         else [ Api.fetchUser session.user.nickname UserFetched ] )
+         [ wrapMsg <| UpdateSession session ]
     SessionChecked (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
 
     UserFetched (Ok user) ->
       let session = model.session
-      in ( updateSession model { session | user = user } ) ! []
+      in model ! [ wrapMsg <| UpdateSession { session | user = user } ]
     UserFetched (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Cannot fetch your user data!" ]
 
@@ -141,7 +145,7 @@ update msg model =
         ( updatedData, cmd, transferred ) =
           Package.Update.update subMsg model.packageData
       in
-        { model | packageData = updatedData, session = updatedData.session }
+        { model | packageData = updatedData }
         ! [ Cmd.map PackageMsg cmd, batchMsg transferred ]
 
     UserMsg subMsg ->
@@ -149,5 +153,5 @@ update msg model =
         ( updatedData, cmd, transferred ) =
           User.Update.update subMsg model.userData
       in
-        { model | userData = updatedData, session = updatedData.session }
+        { model | userData = updatedData }
         ! [ Cmd.map UserMsg cmd, batchMsg transferred ]

@@ -13,8 +13,8 @@ type Msg
   | LoggedIn (Result Error ApiResult)
   | LogOut
   | LoggedOut (Result Error ApiResult)
-  | FetchUser String
-  | UserFetched (Result Error User)
+  | FetchUser Bool String
+  | UserFetched Bool (Result Error User)
   | FetchUsers String
   | UsersFetched (Result Error (List User))
   | Register User

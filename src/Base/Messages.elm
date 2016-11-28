@@ -15,6 +15,7 @@ type Msg
   = Mdl (Material.Msg Msg)
   | Tick Time
   | UpdateUrl Location
+  | UpdateSession Session
   -- Network
   | CheckSession
   | SessionChecked (Result Error Session)

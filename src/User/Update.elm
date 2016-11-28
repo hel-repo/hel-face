@@ -28,14 +28,16 @@ update message data =
     LogIn nickname password ->
       { data | loading = True } ! [ Api.login nickname password LoggedIn ] ~ []
     LoggedIn (Ok _) ->
-      let session = data.session
+      let
+        oldSession = data.session
+        session = { oldSession | loggedin = True }
       in
         { data
-          | session = { session | loggedin = True }
+          | session = session
           , loading = False
         }
-        ! [ wrapMsg <| FetchUser data.user.nickname ]
-        ~ [ Outer.Navigate Url.packages ]
+        ! [ wrapMsg <| FetchUser True data.user.nickname ]
+        ~ [ Outer.Navigate Url.packages, Outer.UpdateSession session ]
     LoggedIn (Err _) ->
       { data | validate = True }
       ! [ wrapMsg (ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?") ]
@@ -44,20 +46,28 @@ update message data =
     LogOut ->
       { data | loading = True } ! [ Api.logout LoggedOut ] ~ []
     LoggedOut (Ok _) ->
-      let session = data.session
+      let
+        oldSession = data.session
+        session = { oldSession | loggedin = False, user = emptyUser }
       in
-        { data | loading = False, session = { session | loggedin = False }, user = emptyUser }
-        ! [] ~ [ Outer.Navigate Url.auth ]
+        { data | loading = False, session = session }
+        ! [] ~ [ Outer.Navigate Url.auth, Outer.UpdateSession session ]
     LoggedOut (Err _) ->
       data
       ! [ wrapMsg (ErrorOccurred "For some reason, you can't close your session. Maybe you stay a little longer?") ]
       ~ []
 
-    FetchUser name ->
-      data ! [ Api.fetchUser name UserFetched ] ~ []
-    UserFetched (Ok user) ->
-      { data | user = user, loading = False, oldNickname = user.nickname } ! [] ~ []
-    UserFetched (Err _) ->
+    FetchUser sessionFetch name ->
+      data ! [ Api.fetchUser name (UserFetched sessionFetch) ] ~ []
+    UserFetched sessionFetch (Ok user) ->
+      { data | user = user, loading = False, oldNickname = user.nickname }
+      ! []
+      ~ ( if sessionFetch then
+            let session = data.session
+            in [ Outer.UpdateSession { session | user = user } ]
+          else []
+        )
+    UserFetched _ (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
 
     FetchUsers group ->
@@ -101,19 +111,22 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      { data | validate = False, page = Auth } ! [] ~ []
+      { data | loading = False, validate = False, page = Auth } ! [] ~ []
 
     GoToRegister ->
-      { data | validate = False } ! [] ~ []
+      { data | loading = False, validate = False } ! [] ~ []
 
     GoToProfile nickname ->
       if String.isEmpty nickname then
-        { data | loading = True, user = data.session.user }
-        ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
+        if String.isEmpty data.session.user.nickname then
+          { data | loading = True } ! [] ~ [ Outer.Navigate Url.auth ]
+        else
+          { data | loading = True, user = data.session.user }
+          ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
       else
         { data | loading = True }
         ! [ Api.fetchPackages (Search.searchByAuthor nickname) PackagesFetched
-          , wrapMsg <| FetchUser nickname
+          , wrapMsg <| FetchUser False nickname
           ] ~ []
 
     GoToUserList group ->
@@ -121,7 +134,7 @@ update message data =
 
     GoToUserEdit nickname ->
       { data | loading = True, validate = False, page = Edit }
-      ! [ wrapMsg <| FetchUser (if String.isEmpty nickname then data.session.user.nickname else nickname) ]
+      ! [ wrapMsg <| FetchUser False (if String.isEmpty nickname then data.session.user.nickname else nickname) ]
       ~ []
 
     GoToAbout ->
