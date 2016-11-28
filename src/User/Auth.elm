@@ -40,17 +40,17 @@ auth data =
           ]
       , div []
           [ Textfield.render Mdl [4] data.mdl
-            [ Textfield.label "Password"
-            , Textfield.floatingLabel
-            , Textfield.password
-            , Textfield.value data.user.password
-            , Textfield.onInput <| UMsg.InputPassword >> UserMsg
-            , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
-            , if data.validate && String.isEmpty data.user.password then
-                Textfield.error "Can't be empty"
-              else
-                Options.nop
-            ]
+              [ Textfield.label "Password"
+              , Textfield.floatingLabel
+              , Textfield.password
+              , Textfield.value data.user.password
+              , Textfield.onInput <| UMsg.InputPassword >> UserMsg
+              , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
+              , if data.validate && String.isEmpty data.user.password then
+                  Textfield.error "Can't be empty"
+                else
+                  Options.nop
+              ]
           ]
       , div [ class "profile-panel" ]
           [ Button.render Mdl [5] data.mdl

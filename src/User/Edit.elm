@@ -50,6 +50,33 @@ card data =
         ]
     , Card.text
         [ Card.border ]
+        [ subtitle "Leave this field empty, if you don't want to change the password."
+        , div []
+            [ Textfield.render Mdl [12] data.mdl
+              [ Textfield.label "Password"
+              , Textfield.floatingLabel
+              , Textfield.password
+              , Textfield.value data.user.password
+              , Textfield.onInput <| UMsg.InputPassword >> UserMsg
+              ]
+            ]
+        , div []
+            [ Textfield.render Mdl [13] data.mdl
+              [ Textfield.label "Retry password"
+              , Textfield.floatingLabel
+              , Textfield.password
+              , Textfield.value data.user.retryPassword
+              , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
+              , if (not <| data.user.password == data.user.retryPassword)
+                && ((not <| String.isEmpty data.user.retryPassword) || data.validate) then
+                  Textfield.error <| "Doesn't match password!"
+                else
+                  Options.nop
+              ]
+            ]
+        ]
+    , Card.text
+        [ Card.border ]
         [ subtitle "To add a group, enter the name and then press Enter"
         , Textfield.render Mdl [15] data.mdl
             [ Textfield.label "User group"

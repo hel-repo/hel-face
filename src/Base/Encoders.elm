@@ -93,10 +93,20 @@ packageEncoder pkg oldPkg =
 
 -- User related encoding
 -----------------------------------------------------------------------------------
-userEncoder : User -> String
-userEncoder user =
+userEncoder : User -> String -> String
+userEncoder user oldNickname =
   encode 0
-    <| object
-         [ ("nickname", string user.nickname)
-         , ("groups", list <| List.map string user.groups)
-         ]
+    <| object <|
+         List.concat
+           [ ( if user.nickname == oldNickname then
+                 []
+               else
+                 [ ("nickname", string user.nickname) ]
+             )
+           , [ ("groups", list <| List.map string user.groups) ]
+           , ( if String.isEmpty user.password then
+                 []
+               else
+                 [ ("password", string user.password) ]
+             )
+           ]

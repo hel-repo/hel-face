@@ -107,7 +107,7 @@ fetchUsersByGroup group msg =
 saveUser : User -> String -> (Result Http.Error ApiResult -> a) -> Cmd a
 saveUser user oldNickname msg =
   Http.send msg
-    <| xpatch ( Config.apiHost ++ "users/" ++ oldNickname ) ( userEncoder user )
+    <| xpatch ( Config.apiHost ++ "users/" ++ oldNickname ) ( userEncoder user oldNickname )
 
 removeUser : String -> (Result Http.Error ApiResult -> a) -> Cmd a
 removeUser nickname msg =
