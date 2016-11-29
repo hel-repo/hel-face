@@ -122,10 +122,10 @@ update message data =
           { data | loading = True } ! [] ~ [ Outer.Navigate Url.auth ]
         else
           { data | loading = True, user = data.session.user }
-          ! [ Api.fetchPackages (Search.searchByAuthor data.session.user.nickname) PackagesFetched ] ~ []
+          ! [ Api.fetchPackages (Search.searchByOwner data.session.user.nickname) PackagesFetched ] ~ []
       else
         { data | loading = True }
-        ! [ Api.fetchPackages (Search.searchByAuthor nickname) PackagesFetched
+        ! [ Api.fetchPackages (Search.searchByOwner nickname) PackagesFetched
           , wrapMsg <| FetchUser False nickname
           ] ~ []
 
