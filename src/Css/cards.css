@@ -95,6 +95,13 @@
 .screen-desc {
   padding-left: 10px;
 }
+.screen-img {
+
+}
+.screen-img img {
+  max-width: 100%;
+  max-height: 500px;
+}
 
 
 .version-tabs .mdl-tabs__tab-bar {
