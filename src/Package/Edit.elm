@@ -276,7 +276,7 @@ packageCard data package =
                 [ Textfield.label "Full description"
                 , Textfield.floatingLabel
                 , Textfield.textarea
-                , Textfield.rows 10
+                , Textfield.rows 6
                 , Textfield.value package.description
                 , Textfield.onInput <| PMsg.InputDescription >> PackageMsg
                 , cs "edit-card-desc-box"
@@ -285,7 +285,7 @@ packageCard data package =
         ]
     , Card.text
         [ Card.border ]
-        [ subtitle "Enter a value, and then press Enter"
+        [ subtitle "To add new tag, enter a value in textbox, and then press Enter"
         , Textfield.render Mdl [15] data.mdl
             [ Textfield.label "Package owner"
             , Textfield.floatingLabel
@@ -297,6 +297,7 @@ packageCard data package =
                 Textfield.error "A package must have at least one owner. Consider adding yourself."
               else
                 Options.nop
+            , cs "edit-card-tagbox"
             ]
         , div [] ( List.map (chip PMsg.RemoveOwner) package.owners )
         , Textfield.render Mdl [16] data.mdl
@@ -306,6 +307,7 @@ packageCard data package =
             , Textfield.value data.tags.author
             , Textfield.onInput <| PMsg.InputAuthor >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , cs "edit-card-tagbox"
             ]
         , div [] ( List.map (chip PMsg.RemoveAuthor) package.authors )
         , Textfield.render Mdl [17] data.mdl
@@ -315,6 +317,7 @@ packageCard data package =
             , Textfield.value data.tags.content
             , Textfield.onInput <| PMsg.InputContent >> PackageMsg
             , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , cs "edit-card-tagbox"
             ]
         , div [] ( List.map (chip PMsg.RemoveContent) package.tags )
         ]

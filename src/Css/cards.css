@@ -164,3 +164,15 @@
   background: #1fbb85 !important;
   margin-right: 20px;
 }
+.edit-card-tagbox {
+  padding: 30px 0 5px 0;
+}
+.edit-card-tagbox .mdl-textfield__label:after {
+  bottom: 4px;
+}
+.edit-card-tagbox .mdl-textfield__label {
+  top: 34px;
+}
+.edit-card-tagbox.is-focused .mdl-textfield__label {
+  top: 14px;
+}
