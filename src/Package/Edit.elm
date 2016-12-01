@@ -44,7 +44,7 @@ subtitle str =
 
 file : PackageData -> VersionFile -> Int -> Html Msg
 file data file index =
-  div [ class "edit-card-item" ]
+  div [ class "edit-card-item mdl-shadow--2dp" ]
     [ Button.render Mdl [100 + index*4] data.mdl
         [ Button.icon
         , Button.ripple
@@ -114,7 +114,7 @@ files data version =
 
 dependency : PackageData -> VersionDependency -> Int -> Html Msg
 dependency data d index =
-  div [ class "edit-card-item" ]
+  div [ class "edit-card-item mdl-shadow--2dp" ]
     [ Button.render Mdl [200 + index*3] data.mdl
         [ Button.icon
         , Button.ripple
@@ -170,7 +170,7 @@ dependencies data version =
 
 screenshot : PackageData -> Screenshot -> Int -> Html Msg
 screenshot data screen index =
-  div [ class "edit-card-item" ]
+  div [ class "edit-card-item mdl-shadow--2dp" ]
     [ Button.render Mdl [300 + index*3] data.mdl
         [ Button.icon
         , Button.ripple

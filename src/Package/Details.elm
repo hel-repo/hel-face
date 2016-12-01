@@ -149,7 +149,7 @@ versionDesc name version =
 
 file : VersionFile -> Html Msg
 file file =
-  Lists.li []
+  Lists.li [ cs "mdl-shadow--2dp" ]
     [ Lists.content []
       [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18 ] ]
       , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
@@ -173,7 +173,7 @@ files version =
 dependency : VersionDependency -> Html Msg
 dependency d =
   Lists.li
-    [ Lists.withSubtitle ]
+    [ Lists.withSubtitle, cs "mdl-shadow--2dp" ]
     [ Lists.content [ ]
         [ span [ class "list-icon" ] [ Lists.icon "folder" [ Icon.size18 ] ]
         , a [ href <| Url.package d.name ] [ text d.name ]
