@@ -11,7 +11,7 @@ import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
 import Material.Menu as Menu
-import Material.Options as Options exposing (cs)
+import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 import Material.Typography as Typo
 
@@ -79,7 +79,7 @@ package data index package =
   cell
     [ size All 6, size Tablet 8 ]
     [ Card.view
-        [ ]
+        [ css "z-index" <| toString <| 100-index ]
         [ Card.title
           [ cs "card-title" ]
           [ Card.head [] [ a [ href <| Url.package package.name ] [ text package.name ] ] ]

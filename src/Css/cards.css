@@ -25,6 +25,7 @@
 .mdl-card {
   background: #424242;
   width: auto;
+  overflow: visible;
 }
 .mdl-card__subtitle-text, .subtitle {
   color: rgba(256,256,256,.54);
