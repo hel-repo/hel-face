@@ -40,7 +40,7 @@ singleUserDecoder =
 -----------------------------------------------------------------------------------
 pkgScreenshotList : List (String, String) -> Json.Decoder (List Screenshot)
 pkgScreenshotList list =
-  Json.succeed (List.map (\(url, desc) -> Screenshot url desc) list)
+  Json.succeed (List.map (\(url, desc) -> Screenshot url desc False) list)
 
 screenshots : Json.Decoder (List Screenshot)
 screenshots =

@@ -39,12 +39,14 @@ userByName name = { emptyUser | nickname = name }
 type alias Screenshot =
   { url : String
   , description : String
+  , remove : Bool
   }
 
 emptyScreenshot : Screenshot
 emptyScreenshot =
   { url = ""
   , description = ""
+  , remove = False
   }
 
 type alias PkgVersionFileData =

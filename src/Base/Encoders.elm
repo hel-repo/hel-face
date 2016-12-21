@@ -3,7 +3,7 @@ module Base.Encoders exposing (..)
 import Array
 import Json.Encode as Json exposing (..)
 
-import Base.Models exposing (Package, Version, VersionDependency, VersionFile, User)
+import Base.Models exposing (Package, Screenshot, Version, VersionDependency, VersionFile, User)
 
 
 -- Package related encoding
@@ -41,7 +41,7 @@ package pkg =
       , ("authors", array <| Array.fromList <| List.map string pkg.authors)
       , ("tags", array <| Array.fromList <| List.map string pkg.tags)
       , ("versions", object <| List.map (\v -> (v.version, if v.remove then null else version v)) pkg.versions)
-      , ("screenshots", object <| List.map (\s -> (s.url, string s.description)) pkg.screenshots)
+      , ("screenshots", object <| List.map (\s -> (s.url, if s.remove then null else string s.description)) pkg.screenshots)
       ]
   in
     object
@@ -67,6 +67,12 @@ getEquivalent : a -> List a -> (a -> a -> Bool) -> Maybe a
 getEquivalent item list comparator =
   List.head <| List.filter ( \i -> comparator item i ) list
 
+resolvedScreenshots : Package -> Package -> List Screenshot
+resolvedScreenshots p op =
+  let nullified = List.map ( \screen -> { screen | remove = True } )
+    <| List.filter ( \oldScreen -> List.all ( \screen -> screen.url /= oldScreen.url ) p.screenshots ) op.screenshots
+  in List.append nullified p.screenshots
+
 -- Nullify missing items and name field, to create valid 'patch' object
 resolved : Package -> Package -> Package
 resolved pkg oldPkg =
@@ -84,6 +90,7 @@ resolved pkg oldPkg =
     { pkg
       | versions = List.append nullified prepared
       , name = if pkg.name /= oldPkg.name then pkg.name else ""
+      , screenshots = resolvedScreenshots pkg oldPkg
     }
 
 packageEncoder : Package -> Package -> String
