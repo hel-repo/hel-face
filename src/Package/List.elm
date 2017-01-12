@@ -63,14 +63,14 @@ card data index package =
             [ Button.render Mdl [10, index*3+1] data.mdl
                 [ Button.icon
                 , Button.ripple
-                , Button.onClick <| SomethingOccurred "Thank you! :3"
+                , Options.onClick <| SomethingOccurred "Thank you! :3"
                 , cs "noselect"
                 ]
                 [ Icon.i "favorite_border" ]
             , Button.render Mdl [10, index*3+2] data.mdl
                 [ Button.icon
                 , Button.ripple
-                , Button.onClick <| PackageMsg (PMsg.SharePackage package.name)
+                , Options.onClick <| PackageMsg (PMsg.SharePackage package.name)
                 , cs "noselect"
                 ]
                 [ Icon.i "share" ]
@@ -95,7 +95,7 @@ view data =
                   [ if data.packages.offset > 0 then
                       Button.render Mdl [99] data.mdl
                         [ Button.ripple
-                        , Button.onClick <| PackageMsg PMsg.PreviousPage
+                        , Options.onClick <| PackageMsg PMsg.PreviousPage
                         ]
                         [ text "< Prev Page"]
                     else
@@ -103,7 +103,7 @@ view data =
                   , if (data.packages.total - data.packages.offset) > Config.pageSize then
                       Button.render Mdl [100] data.mdl
                         [ Button.ripple
-                        , Button.onClick <| PackageMsg PMsg.NextPage
+                        , Options.onClick <| PackageMsg PMsg.NextPage
                         ]
                         [ text "Next Page >"]
                     else

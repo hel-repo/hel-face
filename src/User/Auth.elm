@@ -31,12 +31,12 @@ auth data =
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.nickname
-              , Textfield.onInput <| UMsg.InputNickname >> UserMsg
+              , Options.onInput <| UMsg.InputNickname >> UserMsg
               , if data.validate && String.isEmpty data.user.nickname then
                   Textfield.error "Can't be empty"
                 else
                   Options.nop
-              ]
+              ] []
           ]
       , div []
           [ Textfield.render Mdl [4] data.mdl
@@ -44,19 +44,19 @@ auth data =
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.password
-              , Textfield.onInput <| UMsg.InputPassword >> UserMsg
-              , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
+              , Options.onInput <| UMsg.InputPassword >> UserMsg
+              , Options.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
               , if data.validate && String.isEmpty data.user.password then
                   Textfield.error "Can't be empty"
                 else
                   Options.nop
-              ]
+              ] []
           ]
       , div [ class "profile-panel" ]
           [ Button.render Mdl [5] data.mdl
               [ Button.raised
               , Button.ripple
-              , Button.onClick <| UserMsg (UMsg.LogIn data.user.nickname data.user.password)
+              , Options.onClick <| UserMsg (UMsg.LogIn data.user.nickname data.user.password)
               ]
               [ text "Log In"]
           , Options.styled p

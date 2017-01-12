@@ -40,13 +40,13 @@ card data =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.user.nickname
-            , Textfield.onInput <| UMsg.InputNickname >> UserMsg
+            , Options.onInput <| UMsg.InputNickname >> UserMsg
             , if data.validate && String.isEmpty data.user.nickname then
                 Textfield.error "User can not be nameless!"
               else
                 Options.nop
             , cs "edit-card-title"
-            ]
+            ] []
         ]
     , Card.text
         [ Card.border ]
@@ -57,8 +57,8 @@ card data =
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.password
-              , Textfield.onInput <| UMsg.InputPassword >> UserMsg
-              ]
+              , Options.onInput <| UMsg.InputPassword >> UserMsg
+              ] []
             ]
         , div []
             [ Textfield.render Mdl [13] data.mdl
@@ -66,13 +66,13 @@ card data =
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.retryPassword
-              , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
+              , Options.onInput <| UMsg.InputRetryPassword >> UserMsg
               , if (not <| data.user.password == data.user.retryPassword)
                 && ((not <| String.isEmpty data.user.retryPassword) || data.validate) then
                   Textfield.error <| "Doesn't match password!"
                 else
                   Options.nop
-              ]
+              ] []
             ]
         ]
     , Card.text
@@ -83,9 +83,9 @@ card data =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.groupTag
-            , Textfield.onInput <| UMsg.InputGroup >> UserMsg
-            , Textfield.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
-            ]
+            , Options.onInput <| UMsg.InputGroup >> UserMsg
+            , Options.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
+            ] []
         , div [] ( List.map chip data.user.groups )
         ]
     , Card.text
@@ -94,14 +94,14 @@ card data =
             [ Button.raised
             , Button.colored
             , Button.ripple
-            , Button.onClick <| UserMsg ( UMsg.SaveUser data.user )
+            , Options.onClick <| UserMsg ( UMsg.SaveUser data.user )
             , cs "save-button"
             ]
             [ text "Save" ]
         , Button.render Mdl [61] data.mdl
             [ Button.raised
             , Button.ripple
-            , Button.onClick <| Back
+            , Options.onClick <| Back
             ]
             [ text "Cancel" ]
         ]

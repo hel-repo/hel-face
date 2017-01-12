@@ -36,7 +36,7 @@ update msg model =
     -- Transfer MDL events
     Mdl mmsg ->
       let
-        (uModel, uCmd) = Material.update mmsg model
+        (uModel, uCmd) = Material.update Mdl mmsg model
       in let
           packageData = uModel.packageData
           userData = uModel.userData

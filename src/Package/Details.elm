@@ -64,7 +64,7 @@ screensCard data package =
                       Options.nop
                     else
                       Button.disabled
-                  , Button.onClick <| PackageMsg PMsg.PreviousScreenshot
+                  , Options.onClick <| PackageMsg PMsg.PreviousScreenshot
                   ]
                   [ text "<" ]
               , Button.render Mdl [1,1] data.mdl
@@ -74,7 +74,7 @@ screensCard data package =
                       Options.nop
                     else
                       Button.disabled
-                  , Button.onClick <| PackageMsg PMsg.NextScreenshot
+                  , Options.onClick <| PackageMsg PMsg.NextScreenshot
                   ]
                   [ text ">" ]
               , Options.styled span
@@ -90,7 +90,7 @@ screensCard data package =
 chip : String -> Html Msg
 chip str =
   Chip.span
-    [ Chip.onClick <| RoutePackageList <| searchByTag str
+    [ Options.onClick <| RoutePackageList <| searchByTag str
     , cs "noselect"
     ]
     [ Chip.content [] [ text str ] ]

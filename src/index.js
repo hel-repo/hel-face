@@ -5,8 +5,8 @@ require('./Css/cards.css');
 require('./Css/user.css');
 require('./Css/about.css');
 
-require('./Images/logo.png');
 require('./Images/about.png');
+require('./Images/logo.png');
 
 var Elm = require('./Main.elm');
 

@@ -74,21 +74,21 @@ view model =
               [ img [ src "static/media/logo.7c5853e0.png", class "header-image" ] [] ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl
-                  [ Textfield.style
+                  [ Options.input
                       [ Options.attribute <| attribute "spellcheck" "false"
                       , Options.attribute <| attribute "autocomplete" "off"
                       , Options.attribute <| attribute "autocorrect" "off"
                       , Options.attribute <| attribute "autocapitalize" "off"
                       ]
                   , Textfield.value model.search
-                  , Textfield.onInput InputSearch
-                  , Textfield.on "keyup" keyDecoder
-                  ]
+                  , Options.onInput InputSearch
+                  , Options.on "keyup" keyDecoder
+                  ] []
               , Button.render Mdl [1] model.mdl
                   [ Button.icon
                   , Button.ripple
                   , cs "search-icon noselect"
-                  , Button.onClick <| InputKey Config.enterKey
+                  , Options.onClick <| InputKey Config.enterKey
                   ]
                   [ Icon.i "search"]
               ]
@@ -97,25 +97,25 @@ view model =
                   [ Button.render Mdl [5] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick <| RoutePackageEdit ""
+                      , Options.onClick <| RoutePackageEdit ""
                       ]
                       [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
                   , Button.render Mdl [4] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick RouteProfile
+                      , Options.onClick RouteProfile
                       ]
                       [ Icon.view "account_circle" [ Icon.size36 ] ]
                   , Button.render Mdl [3] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick RouteAbout
+                      , Options.onClick RouteAbout
                       ]
                       [ Icon.view "help_outline" [ Icon.size36 ] ]
                   , Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick <| UserMsg UMsg.LogOut
+                      , Options.onClick <| UserMsg UMsg.LogOut
                       ]
                       [ Icon.view "exit_to_app" [ Icon.size36 ] ]
                   ]
@@ -124,13 +124,13 @@ view model =
                   [ Button.render Mdl [3] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick RouteAuth
+                      , Options.onClick RouteAuth
                       ]
                       [ Icon.view "fingerprint" [ Icon.size36 ] ]
                   , Button.render Mdl [2] model.mdl
                       [ Button.minifab
                       , Button.ripple
-                      , Button.onClick RouteAbout
+                      , Options.onClick RouteAbout
                       ]
                       [ Icon.view "help_outline" [ Icon.size36 ] ]
                   ]

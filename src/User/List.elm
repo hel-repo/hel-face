@@ -9,7 +9,7 @@ import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
 import Material.Menu as Menu
-import Material.Options exposing (cs)
+import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
@@ -22,7 +22,7 @@ import User.Models exposing (UserData)
 badge : String -> Html Msg
 badge group =
   Chip.button
-    [ Chip.onClick <| Navigate <| Url.usersByGroup group
+    [ Options.onClick <| Navigate <| Url.usersByGroup group
     , cs (if group == "admins" then "admin-badge" else "user-badge" )
     ]
     [ Chip.content []

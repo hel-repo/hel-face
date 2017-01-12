@@ -48,7 +48,7 @@ file data file index =
     [ Button.render Mdl [100 + index*4] data.mdl
         [ Button.icon
         , Button.ripple
-        , Button.onClick <| PackageMsg <| PMsg.RemoveFile index
+        , Options.onClick <| PackageMsg <| PMsg.RemoveFile index
         , cs "edit-card-close noselect"
         ]
         [ Icon.i "close"]
@@ -59,12 +59,12 @@ file data file index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value file.dir
-            , Textfield.onInput <| (PMsg.InputFilePath index) >> PackageMsg
+            , Options.onInput <| (PMsg.InputFilePath index) >> PackageMsg
             , if data.validate && String.isEmpty file.dir then
                 Textfield.error "Which folder will this file be installed in?"
               else
                 Options.nop
-            ]
+            ] []
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
@@ -73,12 +73,12 @@ file data file index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value file.name
-            , Textfield.onInput <| (PMsg.InputFileName index) >> PackageMsg
+            , Options.onInput <| (PMsg.InputFileName index) >> PackageMsg
             , if data.validate && String.isEmpty file.name then
                 Textfield.error "How this file will be named?"
               else
                 Options.nop
-            ]
+            ] []
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "link" [ Icon.size18, cs "noselect" ] ]
@@ -87,12 +87,12 @@ file data file index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value file.url
-            , Textfield.onInput <| (PMsg.InputFileUrl index) >> PackageMsg
+            , Options.onInput <| (PMsg.InputFileUrl index) >> PackageMsg
             , if data.validate && String.isEmpty file.url then
                 Textfield.error "Specify a direct URL for downloading this file"
               else
                 Options.nop
-            ]
+            ] []
         ]
     ]
 
@@ -104,7 +104,7 @@ files data version =
     , Button.render Mdl [40] data.mdl
         [ Button.raised
         , Button.ripple
-        , Button.onClick <| PackageMsg PMsg.AddFile
+        , Options.onClick <| PackageMsg PMsg.AddFile
         , cs "edit-card-add-button"
         ]
         [ text "New file" ]
@@ -118,7 +118,7 @@ dependency data d index =
     [ Button.render Mdl [200 + index*3] data.mdl
         [ Button.icon
         , Button.ripple
-        , Button.onClick <| PackageMsg <| PMsg.RemoveDependency index
+        , Options.onClick <| PackageMsg <| PMsg.RemoveDependency index
         , cs "edit-card-close"
         ]
         [ Icon.i "close"]
@@ -129,12 +129,12 @@ dependency data d index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value d.name
-            , Textfield.onInput <| (PMsg.InputDependencyName index) >> PackageMsg
+            , Options.onInput <| (PMsg.InputDependencyName index) >> PackageMsg
             , if data.validate && String.isEmpty d.name then
                 Textfield.error "Can't be empty! Specify dependency name"
               else
                 Options.nop
-            ]
+            ] []
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "dns" [ Icon.size18, cs "noselect" ] ]
@@ -143,12 +143,12 @@ dependency data d index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value d.version
-            , Textfield.onInput <| (PMsg.InputDependencyVersion index) >> PackageMsg
+            , Options.onInput <| (PMsg.InputDependencyVersion index) >> PackageMsg
             , if data.validate && String.isEmpty d.version then
                 Textfield.error "Can't be empty! You can use asterisk (*) for generic version."
               else
                 Options.nop
-            ]
+            ] []
         ]
     ]
 
@@ -160,7 +160,7 @@ dependencies data version =
     , Button.render Mdl [50] data.mdl
         [ Button.raised
         , Button.ripple
-        , Button.onClick <| PackageMsg PMsg.AddDependency
+        , Options.onClick <| PackageMsg PMsg.AddDependency
         , cs "edit-card-add-button"
         ]
         [ text "New dependency" ]
@@ -174,7 +174,7 @@ screenshot data screen index =
     [ Button.render Mdl [300 + index*3] data.mdl
         [ Button.icon
         , Button.ripple
-        , Button.onClick <| PackageMsg <| PMsg.RemoveScreenshot index
+        , Options.onClick <| PackageMsg <| PMsg.RemoveScreenshot index
         , cs "edit-card-close"
         ]
         [ Icon.i "close"]
@@ -185,8 +185,8 @@ screenshot data screen index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value screen.url
-            , Textfield.onInput <| (PMsg.InputScreenshotUrl index) >> PackageMsg
-            ]
+            , Options.onInput <| (PMsg.InputScreenshotUrl index) >> PackageMsg
+            ] []
         ]
     , div [ class "edit-card-desc-box" ]
         [ span [ class "list-icon" ] [ Lists.icon "description" [ Icon.size18, cs "noselect" ] ]
@@ -195,8 +195,8 @@ screenshot data screen index =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value screen.description
-            , Textfield.onInput <| (PMsg.InputScreenshotDescription index) >> PackageMsg
-            ]
+            , Options.onInput <| (PMsg.InputScreenshotDescription index) >> PackageMsg
+            ] []
         ]
     ]
 
@@ -208,7 +208,7 @@ screenshots data package =
     , Button.render Mdl [60] data.mdl
         [ Button.raised
         , Button.ripple
-        , Button.onClick <| PackageMsg PMsg.AddScreenshot
+        , Options.onClick <| PackageMsg PMsg.AddScreenshot
         , cs "edit-card-add-button"
         ]
         [ text "Add screenshot" ]
@@ -244,20 +244,20 @@ packageCard data package =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value package.name
-            , Textfield.onInput <| PMsg.InputName >> PackageMsg
+            , Options.onInput <| PMsg.InputName >> PackageMsg
             , if data.validate && String.isEmpty package.name then
                 Textfield.error "You must give your package some name!"
               else
                 Options.nop
             , cs "edit-card-title"
-            ]
+            ] []
         , Textfield.render Mdl [12] data.mdl
             [ Textfield.label "License"
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value package.license
-            , Textfield.onInput <| PMsg.InputLicense >> PackageMsg
-            ]
+            , Options.onInput <| PMsg.InputLicense >> PackageMsg
+            ] []
         ]
     , Card.text
         [ Card.border ]
@@ -269,18 +269,18 @@ packageCard data package =
                 , Textfield.textarea
                 , Textfield.rows 3
                 , Textfield.value package.shortDescription
-                , Textfield.onInput <| PMsg.InputShortDescription >> PackageMsg
+                , Options.onInput <| PMsg.InputShortDescription >> PackageMsg
                 , cs "edit-card-desc-box"
-                ]
+                ] []
             , Textfield.render Mdl [14] data.mdl
                 [ Textfield.label "Full description"
                 , Textfield.floatingLabel
                 , Textfield.textarea
                 , Textfield.rows 6
                 , Textfield.value package.description
-                , Textfield.onInput <| PMsg.InputDescription >> PackageMsg
+                , Options.onInput <| PMsg.InputDescription >> PackageMsg
                 , cs "edit-card-desc-box"
-                ]
+                ] []
             ]
         ]
     , Card.text
@@ -291,34 +291,34 @@ packageCard data package =
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.tags.owner
-            , Textfield.onInput <| PMsg.InputOwner >> PackageMsg
-            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , Options.onInput <| PMsg.InputOwner >> PackageMsg
+            , Options.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             , if data.validate && List.isEmpty package.owners then
                 Textfield.error "A package must have at least one owner. Consider adding yourself."
               else
                 Options.nop
             , cs "edit-card-tagbox"
-            ]
+            ] []
         , div [] ( List.map (chip PMsg.RemoveOwner) package.owners )
         , Textfield.render Mdl [16] data.mdl
             [ Textfield.label "Author of program"
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.tags.author
-            , Textfield.onInput <| PMsg.InputAuthor >> PackageMsg
-            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , Options.onInput <| PMsg.InputAuthor >> PackageMsg
+            , Options.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             , cs "edit-card-tagbox"
-            ]
+            ] []
         , div [] ( List.map (chip PMsg.RemoveAuthor) package.authors )
         , Textfield.render Mdl [17] data.mdl
             [ Textfield.label "Content tag"
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.tags.content
-            , Textfield.onInput <| PMsg.InputContent >> PackageMsg
-            , Textfield.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
+            , Options.onInput <| PMsg.InputContent >> PackageMsg
+            , Options.on "keyup" <| keyDecoder (PMsg.InputKey >> PackageMsg)
             , cs "edit-card-tagbox"
-            ]
+            ] []
         , div [] ( List.map (chip PMsg.RemoveContent) package.tags )
         ]
     , Card.text
@@ -329,14 +329,14 @@ packageCard data package =
         , Button.render Mdl [20] data.mdl
             [ Button.raised
             , Button.ripple
-            , Button.onClick <| PackageMsg PMsg.AddVersion
+            , Options.onClick <| PackageMsg PMsg.AddVersion
             , cs "edit-card-add-button"
             ]
             [ Icon.i "add", text "Add version" ]
         , Button.render Mdl [21] data.mdl
             [ Button.raised
             , Button.ripple
-            , Button.onClick <| PackageMsg PMsg.RemoveVersion
+            , Options.onClick <| PackageMsg PMsg.RemoveVersion
             , cs "edit-card-remove-button"
             ]
             [ Icon.i "delete", text "Remove version" ]
@@ -355,21 +355,21 @@ packageCard data package =
                             [ Textfield.label "Version number"
                             , Textfield.floatingLabel
                             , Textfield.value version.version
-                            , Textfield.onInput <| PMsg.InputVersion >> PackageMsg
+                            , Options.onInput <| PMsg.InputVersion >> PackageMsg
                             , if data.validate && String.isEmpty version.version then
                                 Textfield.error "Can't be empty. Specify version number using semantic versioning rules (x.y.z)."
                               else
                                 Options.nop
-                            ] ]
+                            ] [] ]
                         [ Textfield.render Mdl [31] data.mdl
                             [ Textfield.label "Version changes"
                             , Textfield.floatingLabel
                             , Textfield.textarea
                             , Textfield.rows 5
                             , Textfield.value version.changes
-                            , Textfield.onInput <| PMsg.InputChanges >> PackageMsg
+                            , Options.onInput <| PMsg.InputChanges >> PackageMsg
                             , cs "edit-card-desc-box"
-                            ] ]
+                            ] [] ]
                     , columns [ files data version ] [ dependencies data version ]
                     ]
                 Nothing ->
@@ -382,14 +382,14 @@ packageCard data package =
             [ Button.raised
             , Button.colored
             , Button.ripple
-            , Button.onClick <| PackageMsg ( PMsg.SavePackage package )
+            , Options.onClick <| PackageMsg ( PMsg.SavePackage package )
             , cs "save-button"
             ]
             [ text "Save" ]
         , Button.render Mdl [61] data.mdl
             [ Button.raised
             , Button.ripple
-            , Button.onClick <| Back
+            , Options.onClick <| Back
             ]
             [ text "Cancel" ]
         ]

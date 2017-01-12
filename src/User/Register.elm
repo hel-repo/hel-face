@@ -31,12 +31,12 @@ register data =
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.nickname
-              , Textfield.onInput <| UMsg.InputNickname >> UserMsg
+              , Options.onInput <| UMsg.InputNickname >> UserMsg
               , if data.validate && isEmpty data.user.nickname then
                   Textfield.error "Can't be empty"
                 else
                   Options.nop
-              ]
+              ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [11] data.mdl
@@ -44,12 +44,12 @@ register data =
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.email
-              , Textfield.onInput <| UMsg.InputEmail >> UserMsg
+              , Options.onInput <| UMsg.InputEmail >> UserMsg
               , if data.validate && isEmpty data.user.email then
                   Textfield.error "Can't be empty"
                 else
                   Options.nop
-              ]
+              ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [12] data.mdl
@@ -57,12 +57,12 @@ register data =
             , Textfield.floatingLabel
             , Textfield.password
             , Textfield.value data.user.password
-            , Textfield.onInput <| UMsg.InputPassword >> UserMsg
+            , Options.onInput <| UMsg.InputPassword >> UserMsg
             , if data.validate && isEmpty data.user.password then
                 Textfield.error "Can't be empty"
               else
                 Options.nop
-            ]
+            ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [13] data.mdl
@@ -70,19 +70,19 @@ register data =
             , Textfield.floatingLabel
             , Textfield.password
             , Textfield.value data.user.retryPassword
-            , Textfield.onInput <| UMsg.InputRetryPassword >> UserMsg
+            , Options.onInput <| UMsg.InputRetryPassword >> UserMsg
             , if (not <| data.user.password == data.user.retryPassword)
               && ((not <| isEmpty data.user.retryPassword) || data.validate) then
                 Textfield.error <| "Doesn't match password!"
               else
                 Options.nop
-            ]
+            ] []
           ]
       , div [ class "profile-panel" ]
           [ Button.render Mdl [14] data.mdl
               [ Button.raised
               , Button.ripple
-              , Button.onClick <| UserMsg (UMsg.Register data.user)
+              , Options.onClick <| UserMsg (UMsg.Register data.user)
               ]
               [ text "Register"]
           , Options.styled p
