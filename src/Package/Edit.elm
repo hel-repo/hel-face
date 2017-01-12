@@ -64,6 +64,7 @@ file data file index =
                 Textfield.error "Which folder will this file be installed in?"
               else
                 Options.nop
+            , cs "align-middle"
             ] []
         ]
     , div [ class "edit-card-desc-box" ]
@@ -78,6 +79,7 @@ file data file index =
                 Textfield.error "How this file will be named?"
               else
                 Options.nop
+            , cs "align-middle"
             ] []
         ]
     , div [ class "edit-card-desc-box" ]
@@ -92,6 +94,7 @@ file data file index =
                 Textfield.error "Specify a direct URL for downloading this file"
               else
                 Options.nop
+            , cs "align-middle"
             ] []
         ]
     ]
@@ -134,6 +137,7 @@ dependency data d index =
                 Textfield.error "Can't be empty! Specify dependency name"
               else
                 Options.nop
+            , cs "align-middle"
             ] []
         ]
     , div [ class "edit-card-desc-box" ]
@@ -148,6 +152,7 @@ dependency data d index =
                 Textfield.error "Can't be empty! You can use asterisk (*) for generic version."
               else
                 Options.nop
+            , cs "align-middle"
             ] []
         ]
     ]
@@ -186,6 +191,7 @@ screenshot data screen index =
             , Textfield.text_
             , Textfield.value screen.url
             , Options.onInput <| (PMsg.InputScreenshotUrl index) >> PackageMsg
+            , cs "align-middle"
             ] []
         ]
     , div [ class "edit-card-desc-box" ]
@@ -196,6 +202,7 @@ screenshot data screen index =
             , Textfield.text_
             , Textfield.value screen.description
             , Options.onInput <| (PMsg.InputScreenshotDescription index) >> PackageMsg
+            , cs "align-middle"
             ] []
         ]
     ]
