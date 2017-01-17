@@ -6,6 +6,10 @@ search query = "#search/" ++ query
 packages : String
 packages = "#packages/"
 
+packagesPage : Int -> String
+packagesPage page =
+  "?page=" ++ (toString page) ++ packages
+
 package : String -> String
 package name = "#packages/" ++ name
 

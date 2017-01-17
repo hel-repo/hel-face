@@ -95,7 +95,7 @@ view data =
                   [ if data.packages.offset > 0 then
                       Button.render Mdl [99] data.mdl
                         [ Button.ripple
-                        , Options.onClick <| PackageMsg PMsg.PreviousPage
+                        , Options.onClick <| Navigate <| Url.packagesPage <| (data.packages.offset // Config.pageSize) - 1
                         ]
                         [ text "< Prev Page"]
                     else
@@ -103,7 +103,7 @@ view data =
                   , if (data.packages.total - data.packages.offset) > Config.pageSize then
                       Button.render Mdl [100] data.mdl
                         [ Button.ripple
-                        , Options.onClick <| PackageMsg PMsg.NextPage
+                        , Options.onClick <| Navigate <| Url.packagesPage <| (data.packages.offset // Config.pageSize) + 1
                         ]
                         [ text "Next Page >"]
                     else

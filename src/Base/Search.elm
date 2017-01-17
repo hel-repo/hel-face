@@ -62,8 +62,8 @@ searchByOwners owners =
   | owners = owners
   }
 
-searchOffset : Int -> SearchData -> SearchData
-searchOffset offset data =
+searchOffset : SearchData -> Int -> SearchData
+searchOffset data offset =
   { data
   | offset = offset
   }

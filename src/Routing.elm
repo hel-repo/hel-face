@@ -3,8 +3,9 @@ module Routing exposing (..)
 import Http exposing (decodeUri)
 import UrlParser exposing (..)
 
+import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Search exposing (SearchData, searchAll, searchData)
+import Base.Search exposing (SearchData, searchAll, searchData, searchOffset)
 import Package.Messages as PMsg
 import User.Messages as UMsg
 
@@ -42,6 +43,7 @@ route =
     [ map (PackageListRoute searchAll) top
     , map (PackageListRoute searchAll) (s "search")
     , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
+    , map (PackageListRoute << (searchOffset searchAll) << ((*) Config.pageSize) << (Maybe.withDefault 1)) (s "packages" <?> intParam "page")
     , map (PackageListRoute searchAll) (s "packages")
     , map PackageRoute (s "packages" </> string)
     , map (PackageEditRoute "") (s "edit")
