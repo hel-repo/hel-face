@@ -9,7 +9,7 @@ import Material.Elevation as Elevation
 import Material.Grid exposing (..)
 import Material.Icon as Icon
 import Material.Menu as Menu
-import Material.Options as Options exposing (cs)
+import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
@@ -34,7 +34,9 @@ card data index user =
   cell
     [ size All 4 ]
     [ Card.view
-        [ Elevation.e2 ]
+        [ Elevation.e2
+        , css "z-index" <| toString <| 100-index
+        ]
         [ Card.title
             [ cs "card-title user-card-title" ]
             [ Card.head [] [ a [ href <| Url.user user.nickname ] [ text user.nickname ] ] ]
