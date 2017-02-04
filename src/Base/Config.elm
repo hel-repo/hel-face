@@ -20,3 +20,6 @@ notificationDelay = 10 * second
 
 pageSize : Int
 pageSize = 20
+
+shortDescriptionLimit : Int
+shortDescriptionLimit = 120

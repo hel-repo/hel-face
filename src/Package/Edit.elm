@@ -15,6 +15,7 @@ import Material.Spinner as Loading
 import Material.Tabs as Tabs
 import Material.Textfield as Textfield
 
+import Base.Config as Config
 import Base.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
 import Base.Models exposing (Package, Version, VersionDependency, VersionFile, Screenshot)
@@ -271,11 +272,14 @@ packageCard data package =
         [ div [ ]
             [ subtitle "You can use Markdown markup language in description fields"
             , Textfield.render Mdl [13] data.mdl
-                [ Textfield.label "Short description"
+                [ Textfield.label <| "Short description ("
+                    ++ (toString <| String.length package.shortDescription) ++ " of "
+                    ++ (toString Config.shortDescriptionLimit) ++ ")"
                 , Textfield.floatingLabel
                 , Textfield.textarea
                 , Textfield.rows 3
                 , Textfield.value package.shortDescription
+                , Textfield.maxlength Config.shortDescriptionLimit
                 , Options.onInput <| PMsg.InputShortDescription >> PackageMsg
                 , cs "edit-card-desc-box"
                 ] []
