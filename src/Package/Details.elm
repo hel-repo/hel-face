@@ -17,7 +17,7 @@ import Material.Grid as Grid
 import Material.Icon as Icon
 import Material.List as Lists
 import Material.Menu as Menu
-import Material.Options as Options exposing (cs)
+import Material.Options as Options exposing (cs, attribute)
 import Material.Progress as Progress
 import Material.Spinner as Loading
 import Material.Tabs as Tabs
@@ -202,11 +202,14 @@ detailsCard data package =
     [ Card.title [ Card.border ]
         [ Card.head [] [ text package.name ]
         , Card.subhead [ ]
-            [ span [ class "card-subtitle-icon noselect" ] [ Icon.view "person" [ Icon.size18 ] ]
+            [ span [ class "card-subtitle-icon noselect" ]
+                [ Icon.view "person" [ Icon.size18, Options.attribute <| Html.Attributes.title "Authors of package" ] ]
             , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
-            , span [ class "card-subtitle-icon card-license noselect" ] [ Icon.view "copyright" [ Icon.size18 ] ]
+            , span [ class "card-subtitle-icon card-license noselect" ]
+                [ Icon.view "copyright" [ Icon.size18, Options.attribute <| Html.Attributes.title "Source code license" ] ]
             , span [ class "align-top" ] [ license package.license ]
-            , span [ class "card-subtitle-icon card-license noselect" ] [ Icon.view "turned_in_not" [ Icon.size18 ] ]
+            , span [ class "card-subtitle-icon card-license noselect" ]
+                [ Icon.view "turned_in_not" [ Icon.size18, Options.attribute <| Html.Attributes.title "Package maintainers" ] ]
             , span [ class "align-top" ] [ text ( join ", " package.owners ) ]
             ]
         ]
