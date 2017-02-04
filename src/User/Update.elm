@@ -4,6 +4,7 @@ import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
 import Base.Models exposing (User, emptyUser)
+import Base.Ports exposing (title)
 import Base.Search as Search
 import Base.Tools as Tools exposing ((~), wrapMsg)
 import Base.Url as Url
@@ -111,10 +112,12 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      { data | loading = False, validate = False, page = Auth } ! [] ~ []
+      { data | loading = False, validate = False, page = Auth }
+      ! [ title "HEL: Login" ] ~ []
 
     GoToRegister ->
-      { data | loading = False, validate = False } ! [] ~ []
+      { data | loading = False, validate = False }
+      ! [ title "HEL: Registration" ] ~ []
 
     GoToProfile nickname ->
       if String.isEmpty nickname then
@@ -122,23 +125,26 @@ update message data =
           { data | loading = True } ! [] ~ [ Outer.Navigate Url.auth ]
         else
           { data | loading = True, user = data.session.user }
-          ! [ Api.fetchPackages (Search.searchByOwner data.session.user.nickname) PackagesFetched ] ~ []
+          ! [ title "HEL: My profile", Api.fetchPackages (Search.searchByOwner data.session.user.nickname) PackagesFetched ] ~ []
       else
         { data | loading = True }
-        ! [ Api.fetchPackages (Search.searchByOwner nickname) PackagesFetched
+        ! [ title <| "HEL: " ++ nickname ++ " profile"
+          , Api.fetchPackages (Search.searchByOwner nickname) PackagesFetched
           , wrapMsg <| FetchUser False nickname
           ] ~ []
 
     GoToUserList group ->
-      data ! [ wrapMsg <| FetchUsers group ] ~ []
+      data ! [ title "HEL: User list", wrapMsg <| FetchUsers group ] ~ []
 
     GoToUserEdit nickname ->
       { data | loading = True, validate = False, page = Edit }
-      ! [ wrapMsg <| FetchUser False (if String.isEmpty nickname then data.session.user.nickname else nickname) ]
+      ! [ title <| "Edit: " ++ (if String.isEmpty nickname then "my" else nickname) ++ " profile"
+        , wrapMsg <| FetchUser False (if String.isEmpty nickname then data.session.user.nickname else nickname)
+        ]
       ~ []
 
     GoToAbout ->
-      data ! [] ~ []
+      data ! [ title "HEL: About" ] ~ []
 
     -- Other
     InputNickname nickname ->

@@ -7,6 +7,7 @@ import Base.Api as Api
 import Base.Config as Config
 import Base.Messages as Outer
 import Base.Models exposing (emptyPackage, emptyVersion, emptyDependency, emptyFile, emptyScreenshot)
+import Base.Ports exposing (title)
 import Base.Search exposing (SearchData, searchAll, searchApiPath)
 import Base.Semver as Semver
 import Base.Tools as Tools exposing ((~), (!!), wrapMsg)
@@ -100,15 +101,18 @@ update message data =
 
     -- Navigation
     GoToPackageList searchData ->
-      data ! [ wrapMsg (FetchPackages searchData) ] ~ []
+      data ! [ title "HEL Repository", wrapMsg (FetchPackages searchData) ] ~ []
     GoToPackageDetails name ->
-      { data | screenshot = 0, screenshotLoading = True } ! [ wrapMsg (FetchPackage name) ] ~ []
+      { data | screenshot = 0, screenshotLoading = True }
+      ! [ title <| "HEL: " ++ name, wrapMsg (FetchPackage name) ] ~ []
     GoToPackageEdit name ->
       if not <| isEmpty name then
-        { data | validate = False } ! [ wrapMsg (FetchPackage name) ] ~ []
+        { data | validate = False }
+        ! [ title <| "Edit: " ++ name, wrapMsg (FetchPackage name) ] ~ []
       else
         let newPackage = { emptyPackage | owners = [data.session.user.nickname] }
-        in { data | package = newPackage, oldPackage = newPackage, validate = False } ! [] ~ []
+        in { data | package = newPackage, oldPackage = newPackage, validate = False }
+           ! [ title "HEL: new package" ] ~ []
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []

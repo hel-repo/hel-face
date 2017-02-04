@@ -11,4 +11,8 @@ var Logo = require('./Images/logo.png');
 var Elm = require('./Main.elm');
 
 var root = document.getElementById('root');
-Elm.Main.embed(root, { logo: Logo });
+var app = Elm.Main.embed(root, { logo: Logo });
+
+app.ports.title.subscribe(function(title) {
+    document.title = title;
+});
