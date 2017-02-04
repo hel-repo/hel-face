@@ -43,7 +43,7 @@ route =
     [ map (PackageListRoute searchAll) top
     , map (PackageListRoute searchAll) (s "search")
     , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
-    , map (PackageListRoute << (searchOffset searchAll) << ((*) Config.pageSize) << (Maybe.withDefault 1)) (s "packages" <?> intParam "page")
+    , map (PackageListRoute << (searchOffset searchAll) << ((*) Config.pageSize) << (Maybe.withDefault 0)) (s "packages" <?> intParam "page")
     , map (PackageListRoute searchAll) (s "packages")
     , map PackageRoute (s "packages" </> string)
     , map (PackageEditRoute "") (s "edit")

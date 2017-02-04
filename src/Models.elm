@@ -48,14 +48,19 @@ type alias Model =
   , search : String
   , packageData : PackageData
   , userData : UserData
+  , logo: String
+  }
+
+type alias Flags =
+  { logo: String
   }
 
 materialModel : Material.Model
 materialModel =
   Material.model
 
-initialModel : Routing.Route -> Model
-initialModel route =
+initialModel : Routing.Route -> String -> Model
+initialModel route logo =
   { mdl = materialModel
   , route = route
   , session = emptySession
@@ -63,4 +68,5 @@ initialModel route =
   , search = ""
   , packageData = emptyPackageData materialModel
   , userData = emptyUserData materialModel
+  , logo = logo
   }

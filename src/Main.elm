@@ -17,18 +17,18 @@ import Update exposing (update)
 import View exposing (view)
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
   let
     currentRoute = Maybe.withDefault NotFoundRoute <| Url.parseHash Routing.route location
   in
-    ( initialModel currentRoute
+    ( initialModel currentRoute flags.logo
     , batchMsg <| CheckSession :: (Routing.routeMessage currentRoute)
     )
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-  Navigation.program UpdateUrl
+  Navigation.programWithFlags UpdateUrl
     { init = init
     , view = view
     , subscriptions = always <| every Config.tickDelay Tick
