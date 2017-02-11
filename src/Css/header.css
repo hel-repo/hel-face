@@ -1,3 +1,5 @@
+/* Header-related styles */
+
 .header {
   background: #212121;
   padding: 0.1rem 1rem;
@@ -5,11 +7,6 @@
   align-items: center;
   width: 100%;
 }
-.mdl-layout__header {
-  background: #212121;
-  border-bottom: 2px solid #bb1f2f;
-}
-
 .header-title {
   cursor: pointer;
   font-family: Roboto,Helvetica,Arial,sans-serif;
@@ -23,7 +20,6 @@
   width: auto;
   height: 50px;
 }
-
 
 .search {
   flex: 1;
@@ -47,29 +43,11 @@
   background: #666;
 }
 
-/* MDL tweaks */
-.mdl-textfield__label {
-  color: #fff;
-}
-.is-focused .mdl-textfield__label,
-.is-dirty .mdl-textfield__label {
-  color: #888 !important;
-}
-.mdl-textfield__label:after {
-  background: rgb(255, 82, 82);
-}
-.mdl-textfield__input {
-  color: #fff;
-  border-bottom: 1px solid rgba(256,256,256,.12);
-}
-
-
 .buttons .mdl-button {
   color: #666;
   height: 46px;
   width: 46px;
 }
-
 
 @media (max-width: 700px) {
   .header {

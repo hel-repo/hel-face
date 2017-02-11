@@ -1,3 +1,6 @@
+/* User-related interfaces style */
+
+/* Authorization / Registration */
 .auth-card {
   text-align: center;
 }
@@ -6,6 +9,7 @@
   padding-left: 10px;
 }
 
+/* Profile */
 .profile-panel {
 }
 .profile-avatar {
@@ -56,9 +60,4 @@
 
 .appboard-button {
   margin-left: 10px;
-}
-
-/* MDL tweaks */
-.mdl-textfield__error {
-  color: rgb(255, 82, 82);
 }

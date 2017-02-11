@@ -1,7 +1,8 @@
 require('./Css/material.min.css');
-require('./Css/main.css');
+require('./Css/mdl-tweaks.css');
+require('./Css/general.css');
 require('./Css/header.css');
-require('./Css/cards.css');
+require('./Css/package.css');
 require('./Css/user.css');
 require('./Css/about.css');
 
