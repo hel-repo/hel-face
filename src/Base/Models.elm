@@ -16,6 +16,8 @@ emptySession =
   , apiVersion = "0.0.0"
   }
 
+type SnackbarType = Info | Error
+
 
 -- User related models
 -----------------------------------------------------------------------------------

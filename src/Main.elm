@@ -31,6 +31,6 @@ main =
   Navigation.programWithFlags UpdateUrl
     { init = init
     , view = view
-    , subscriptions = always <| every Config.tickDelay Tick
+    , subscriptions = always Sub.none
     , update = update
     }

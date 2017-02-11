@@ -58,6 +58,19 @@
     linear-gradient(to right, rgb(255,82,82), rgb(255,82,82));
 }
 
+.mdl-snackbar {
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.snackbar-info .mdl-snackbar {
+  background: #1fbb85;
+}
+.snackbar-error .mdl-snackbar {
+  background: #bb1f2f;
+}
+
+
 /* Custom elements */
 .card-title {
   flex-direction: column;

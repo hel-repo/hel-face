@@ -86,9 +86,6 @@ pre code {
 .banner:empty {
   display: none;
 }
-.notification-text {
-  padding-left: 10px;
-}
 
 .invisible {
   display: none;

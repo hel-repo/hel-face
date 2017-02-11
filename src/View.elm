@@ -2,9 +2,7 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, href, src)
-import Html.Events exposing (onClick)
 import Json.Decode as Decode
-import String exposing (contains, isEmpty)
 
 import Material.Button as Button
 import Material.Card as Card
@@ -12,12 +10,14 @@ import Material.Elevation as Elevation
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs)
+import Material.Snackbar as Snackbar
 import Material.Textfield as Textfield
 
 import About
 import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
+import Base.Models exposing (SnackbarType(..))
 import Base.Url as Url
 import Package.List
 import Package.Details
@@ -36,29 +36,6 @@ keyDecoder =
   Decode.map InputKey
     <| Decode.map identity
         (Decode.at ["keyCode"] Decode.int)
-
-
-notification : Notification -> Html Msg
-notification data =
-  div
-    [ class
-        ( case data.ntype of
-            Error -> "error"
-            _ -> "info"
-        )
-    , onClick DismissNotification
-    ]
-    ( if (isEmpty data.message) || (data.delay <= 0) then []
-      else
-        [ Icon.view
-            ( case data.ntype of
-                Error -> "error_outline"
-                _ -> "info_outline"
-            )
-            [ cs "align-middle" ]
-        , span [ class "align-middle notification-text" ] [ text data.message ]
-        ]
-    )
 
 
 view : Model -> Html Msg
@@ -134,7 +111,11 @@ view model =
                       [ Icon.view "help_outline" [ Icon.size36 ] ]
                   ]
           ]
-      , notification model.notification
+      , div [ let c = case model.snackbarType of
+                        Error -> "snackbar-error"
+                        Info -> "snackbar-info"
+              in class c ]
+            [ Snackbar.view model.snackbar |> Html.map Snackbar ]
       ]
     , drawer = []
     , tabs = ( [], [] )

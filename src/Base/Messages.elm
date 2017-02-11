@@ -1,11 +1,12 @@
 module Base.Messages exposing (..)
 
 import Http exposing (Error)
-import Material
 import Navigation exposing (Location)
-import Time exposing (Time)
 
-import Base.Models exposing (Session, User)
+import Material
+import Material.Snackbar as Snackbar
+
+import Base.Models exposing (Session, SnackbarType, User)
 import Base.Search exposing (SearchData)
 import Package.Messages as PMsg
 import User.Messages as UMsg
@@ -13,7 +14,7 @@ import User.Messages as UMsg
 
 type Msg
   = Mdl (Material.Msg Msg)
-  | Tick Time
+  | Snackbar (Snackbar.Msg SnackbarType)
   | UpdateUrl Location
   | UpdateSession Session
   -- Network
@@ -23,7 +24,6 @@ type Msg
   -- Notifications
   | ErrorOccurred String
   | SomethingOccurred String
-  | DismissNotification
   -- Routing
   | Navigate String
   | RoutePackageList SearchData

@@ -1,14 +1,17 @@
 module Update exposing (..)
 
-import Material
 import Navigation
 import UrlParser as Url
+
+import Material
+import Material.Helpers exposing (map1st, map2nd)
+import Material.Snackbar as Snackbar
 
 import Models exposing (..)
 import Base.Api as Api
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Session)
+import Base.Models exposing (Session, SnackbarType(..))
 import Base.Search exposing (SearchData, searchData, searchQuery)
 import Base.Tools exposing (wrapMsg, batchMsg)
 import Base.Url as Url
@@ -30,7 +33,17 @@ updateSession model session =
       , userData = { userData | session = session }
     }
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+notify : SnackbarType -> String -> Model -> (Model, Cmd Msg)
+notify stype message model =
+  let
+    (snackbar_, eff) =
+      Snackbar.add (Snackbar.toast stype message) model.snackbar
+        |> map2nd (Cmd.map Snackbar)
+  in
+    ({ model | snackbar = snackbar_ }, eff)
+
+
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     -- Transfer MDL events
@@ -46,29 +59,27 @@ update msg model =
           , userData = { userData | mdl = uModel.mdl }
           } ! [ uCmd ]
 
-    Tick time ->
-      if model.notification.delay > 0 then
-        let
-          notification = model.notification
-        in
-          { model
-            | notification = { notification | delay = max 0 (notification.delay - Config.tickDelay) }
-          } ! []
-      else
-        model ! []
+    -- Transfer snackbar events
+    Snackbar (Snackbar.Begin t) ->
+      { model | snackbarType = t } ! []
 
+    Snackbar msg_ ->
+      Snackbar.update msg_ model.snackbar
+        |> map1st (\s -> { model | snackbar = s })
+        |> map2nd (Cmd.map Snackbar)
+
+    -- Network
     UpdateSession session ->
       ( updateSession model session ) ! []
 
-    -- Network
     CheckSession ->
       model ! [ Api.checkSession SessionChecked ]
 
     SessionChecked (Ok session) ->
-       model ! List.append
-         ( if String.isEmpty session.user.nickname then []
-         else [ Api.fetchUser session.user.nickname UserFetched ] )
-         [ wrapMsg <| UpdateSession session ]
+      model ! List.append
+        ( if String.isEmpty session.user.nickname then []
+        else [ Api.fetchUser session.user.nickname UserFetched ] )
+        [ wrapMsg <| UpdateSession session ]
     SessionChecked (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
 
@@ -120,13 +131,10 @@ update msg model =
 
     -- Notifications handling
     ErrorOccurred str ->
-      { model | notification = error str } ! []
+      notify Error str model
 
     SomethingOccurred str ->
-      { model | notification = info str } ! []
-
-    DismissNotification ->
-      { model | notification = emptyNotification } ! []
+      notify Info str model
 
     -- Input
     InputSearch str ->
