@@ -38,7 +38,7 @@ about session =
         [ text "Version / API:"
         , span [ class "about-value" ] [ text <| Config.version ++ " / " ++ session.apiVersion ]
         ]
-      , div [ class "about-copyright" ] [ text "2016 (c) Fingercomp, Totoro" ]
+      , div [ class "about-copyright" ] [ text "2017 (c) Fingercomp, Totoro" ]
       ]
     ]
 
