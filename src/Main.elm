@@ -5,10 +5,8 @@
 
 import Navigation
 import UrlParser as Url
-import Time exposing (every)
 
 import Models exposing (..)
-import Base.Config as Config
 import Base.Helpers.Tools exposing (batchMsg)
 import Base.Messages exposing (Msg(..))
 import Base.Ports exposing (load)
@@ -32,6 +30,6 @@ main =
   Navigation.programWithFlags UpdateUrl
     { init = init
     , view = view
-    , subscriptions = load StorageLoaded
+    , subscriptions = \model -> load StorageLoaded
     , update = update
     }

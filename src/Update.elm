@@ -70,6 +70,10 @@ update msg model =
         |> map1st (\s -> { model | snackbar = s })
         |> map2nd (Cmd.map Snackbar)
 
+    -- Handle local storage actions
+    StorageLoaded value ->
+      model ! []
+
     -- Network
     ChangeSession session ->
       ( updateSession model session ) ! []
