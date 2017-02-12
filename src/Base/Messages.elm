@@ -17,7 +17,7 @@ type Msg
   = Mdl (Material.Msg Msg)
   | Snackbar (Snackbar.Msg SnackbarType)
   | UpdateUrl Location
-  | SearchBox String
+  | StorageLoaded String
   -- Network
   | ChangeSession Session
   | CheckSession
@@ -39,6 +39,7 @@ type Msg
   -- Input
   | InputSearch String
   | InputKey Int
+  | SearchBox String
   -- Modules communication
   | PackageMsg PMsg.Msg
   | UserMsg UMsg.Msg

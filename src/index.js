@@ -17,3 +17,11 @@ var app = Elm.Main.embed(root, { logo: Logo });
 app.ports.title.subscribe(function(title) {
     document.title = title;
 });
+
+var storageKey = "config"
+app.ports.save.subscribe(function(value) {
+  localStorage.setItem(storageKey, value);
+});
+app.ports.doload.subscribe(function() {
+  app.ports.load.send(localStorage.getItem(storageKey));
+});

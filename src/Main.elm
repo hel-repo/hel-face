@@ -9,8 +9,9 @@ import Time exposing (every)
 
 import Models exposing (..)
 import Base.Config as Config
-import Base.Messages exposing (Msg(..))
 import Base.Helpers.Tools exposing (batchMsg)
+import Base.Messages exposing (Msg(..))
+import Base.Ports exposing (load)
 
 import Routing exposing (Route(..))
 import Update exposing (update)
@@ -31,6 +32,6 @@ main =
   Navigation.programWithFlags UpdateUrl
     { init = init
     , view = view
-    , subscriptions = always Sub.none
+    , subscriptions = load StorageLoaded
     , update = update
     }
