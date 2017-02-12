@@ -1,4 +1,4 @@
-module Package.Details exposing (..)
+module Package.View.Details exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, target)
@@ -24,10 +24,11 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Package, Version, VersionDependency, VersionFile)
-import Base.Search exposing (searchByTag)
-import Base.Tools exposing ((!!))
-import Base.Url as Url
+import Base.Helpers.Search exposing (queryPkgAll, queryPkgByTag)
+import Base.Models.Network exposing (firstPage)
+import Base.Models.Package exposing (Package, Version, VersionDependency, VersionFile)
+import Base.Helpers.Tools exposing ((!!))
+import Base.Network.Url as Url
 import Package.Messages as PMsg
 import Package.Models exposing (PackageData)
 
@@ -90,7 +91,7 @@ screensCard data package =
 chip : String -> Html Msg
 chip str =
   Chip.span
-    [ Options.onClick <| RoutePackageList <| searchByTag str
+    [ Options.onClick <| RoutePackageList <| firstPage <| queryPkgByTag queryPkgAll str
     , cs "noselect"
     ]
     [ Chip.content [] [ text str ] ]
@@ -106,6 +107,8 @@ license name =
     "MIT" ->
       licenseLink "http://choosealicense.com/licenses/mit/" name
     "Apache 2.0" ->
+      licenseLink "http://choosealicense.com/licenses/apache-2.0/" name
+    "Apache-2.0" ->
       licenseLink "http://choosealicense.com/licenses/apache-2.0/" name
     "BSD" ->
       licenseLink "http://choosealicense.com/licenses/bsd-2-clause/" name

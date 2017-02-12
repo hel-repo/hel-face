@@ -1,4 +1,4 @@
-module Package.List exposing (..)
+module Package.View.List exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -15,9 +15,9 @@ import Material.Spinner as Loading
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Package)
-import Base.Url as Url
-import Package.Details exposing (notFoundCard)
+import Base.Models.Package exposing (Package)
+import Base.Network.Url as Url
+import Package.View.Details exposing (notFoundCard)
 import Package.Models exposing (PackageData)
 import Package.Messages as PMsg
 
@@ -86,24 +86,24 @@ view data =
         , cs "spinner"
         ]
     else
-      if isEmpty data.packages.list then div [ class "page" ] [ notFoundCard ]
+      if isEmpty data.page.list then div [ class "page" ] [ notFoundCard ]
       else
         div []
-          [ grid [] <| map2 (card data) (List.range 1 <| length data.packages.list) data.packages.list
+          [ grid [] <| map2 (card data) (List.range 1 <| length data.page.list) data.page.list
           , div [ class "more" ]
               [ span []
-                  [ if data.packages.offset > 0 then
+                  [ if data.page.offset > 0 then
                       Button.render Mdl [99] data.mdl
                         [ Button.ripple
-                        , Options.onClick <| Navigate <| Url.packagesPage <| (data.packages.offset // Config.pageSize) - 1
+                        , Options.onClick <| PackageMsg PMsg.PreviousPage
                         ]
                         [ text "< Prev Page"]
                     else
                       div [] []
-                  , if (data.packages.total - data.packages.offset) > Config.pageSize then
+                  , if (data.page.total - data.page.offset) > Config.pageSize then
                       Button.render Mdl [100] data.mdl
                         [ Button.ripple
-                        , Options.onClick <| Navigate <| Url.packagesPage <| (data.packages.offset // Config.pageSize) + 1
+                        , Options.onClick <| PackageMsg PMsg.NextPage
                         ]
                         [ text "Next Page >"]
                     else

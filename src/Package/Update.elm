@@ -3,14 +3,16 @@ module Package.Update exposing (..)
 import List exposing (drop, filter, length, map2, member, reverse, sortBy, take)
 import String exposing (isEmpty)
 
-import Base.Api as Api
 import Base.Config as Config
+import Base.Helpers.Search exposing (PackagePage, queryPkgAll, packageQueryToPhrase)
+import Base.Helpers.Semver as Semver
+import Base.Helpers.Tools as Tools exposing ((~), (!!), wrapMsg)
 import Base.Messages as Outer
-import Base.Models exposing (emptyPackage, emptyVersion, emptyDependency, emptyFile, emptyScreenshot)
+import Base.Models.Network exposing (firstPage)
+import Base.Models.Package exposing (emptyPackage, emptyVersion, emptyDependency, emptyFile, emptyScreenshot)
+import Base.Network.Api as Api
+import Base.Network.Url as Url
 import Base.Ports exposing (title)
-import Base.Search exposing (SearchData, searchAll, searchApiPath)
-import Base.Semver as Semver
-import Base.Tools as Tools exposing ((~), (!!), wrapMsg)
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
 
@@ -32,32 +34,42 @@ update message data =
       { data | loading = False } ! [] ~ [ Outer.ErrorOccurred message ]
 
     -- Network
-    FetchPackages searchData ->
-      { data | loading = True, searchData = searchData } ! [ Api.fetchPackagesPage searchData PackagesFetched ] ~ []
+    FetchPackages page ->
+      { data | loading = True, page = page } ! [ Api.fetchPackages page PackagesFetched ] ~ []
     PackagesFetched (Ok page) ->
       { data
-        | packages = page
+        | page = { page | query = data.page.query }  -- save search query
         , loading = False
       } ! [] ~ []
     PackagesFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch packages!") ] ~ []
 
     NextPage ->
-      if (data.packages.total - data.packages.offset) > Config.pageSize then
+      if (data.page.total - data.page.offset) > Config.pageSize then
         let
-          searchData = data.searchData
-          nextPageData = { searchData | offset = searchData.offset + Config.pageSize }
+          page = data.page
+          nextPage = { page | offset = page.offset + Config.pageSize }
         in
-          data ! [ wrapMsg <| FetchPackages nextPageData ] ~ []
+          data
+          ! []
+          ~ [ Outer.Navigate <| Url.packages
+                (Just <| packageQueryToPhrase page.query)
+                (Just <| nextPage.offset // Config.pageSize)
+            ]
       else data ! [] ~ []
 
     PreviousPage ->
-      if data.packages.offset > 0 then
+      if data.page.offset > 0 then
         let
-          searchData = data.searchData
-          prevPageData = { searchData | offset = max 0 <| searchData.offset - Config.pageSize }
+          page = data.page
+          prevPage = { page | offset = max 0 (page.offset - Config.pageSize) }
         in
-          data ! [ wrapMsg <| FetchPackages prevPageData ] ~ []
+          data
+          ! []
+          ~ [ Outer.Navigate <| Url.packages
+                (Just <| packageQueryToPhrase page.query)
+                (Just <| prevPage.offset // Config.pageSize)
+            ]
       else data ! [] ~ []
 
     FetchPackage name ->
@@ -95,13 +107,15 @@ update message data =
     PackageRemoved (Ok _) ->
       { data | loading = False }
       ! []
-      ~ [ Outer.RoutePackageList searchAll, Outer.SomethingOccurred "Package was succesfully removed!" ]
+      ~ [ Outer.RoutePackageList <| firstPage queryPkgAll, Outer.SomethingOccurred "Package was succesfully removed!" ]
     PackageRemoved (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to remove the package!") ] ~ []
 
     -- Navigation
-    GoToPackageList searchData ->
-      data ! [ title "HEL Repository", wrapMsg (FetchPackages searchData) ] ~ []
+    GoToPackageList page ->
+      data
+      ! [ title "HEL Repository", wrapMsg (FetchPackages page) ]
+      ~ [ Outer.SearchBox (packageQueryToPhrase page.query) ]
     GoToPackageDetails name ->
       { data | screenshot = 0, screenshotLoading = True }
       ! [ title <| "HEL: " ++ name, wrapMsg (FetchPackage name) ] ~ []

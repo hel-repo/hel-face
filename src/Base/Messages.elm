@@ -6,8 +6,9 @@ import Navigation exposing (Location)
 import Material
 import Material.Snackbar as Snackbar
 
-import Base.Models exposing (Session, SnackbarType, User)
-import Base.Search exposing (SearchData)
+import Base.Helpers.Search exposing (PackagePage)
+import Base.Models.Generic exposing (SnackbarType)
+import Base.Models.User exposing (User, Session)
 import Package.Messages as PMsg
 import User.Messages as UMsg
 
@@ -16,8 +17,9 @@ type Msg
   = Mdl (Material.Msg Msg)
   | Snackbar (Snackbar.Msg SnackbarType)
   | UpdateUrl Location
-  | UpdateSession Session
+  | SearchBox String
   -- Network
+  | ChangeSession Session
   | CheckSession
   | SessionChecked (Result Error Session)
   | UserFetched (Result Error User)
@@ -26,7 +28,7 @@ type Msg
   | SomethingOccurred String
   -- Routing
   | Navigate String
-  | RoutePackageList SearchData
+  | RoutePackageList PackagePage
   | RoutePackageDetails String
   | RoutePackageEdit String
   | RouteAuth

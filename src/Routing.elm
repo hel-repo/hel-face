@@ -5,13 +5,14 @@ import UrlParser exposing (..)
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Search exposing (SearchData, searchAll, searchData, searchOffset)
+import Base.Models.Network exposing (firstPage, customPage)
+import Base.Helpers.Search exposing (PackagePage, queryPkgAll, queryPkgByName, phraseToPackageQuery)
 import Package.Messages as PMsg
 import User.Messages as UMsg
 
 
 type Route
-  = PackageListRoute SearchData
+  = PackageListRoute PackagePage
   | PackageRoute String
   | PackageEditRoute String
   | AuthRoute
@@ -37,14 +38,22 @@ routeMessage route =
     AboutRoute -> [ UserMsg <| UMsg.GoToAbout ]
     _ -> []
 
+parsePackages : Maybe String -> Maybe Int -> Route
+parsePackages mQuery mPage =
+  let
+    offset = (Maybe.withDefault 0 mPage) * Config.pageSize
+    phrase = Maybe.withDefault "" <| decodeUri <| Maybe.withDefault "" mQuery
+    query = phraseToPackageQuery phrase
+  in
+    PackageListRoute <| customPage offset query
+
 route : Parser (Route -> a) a
 route =
   oneOf
-    [ map (PackageListRoute searchAll) top
-    , map (PackageListRoute searchAll) (s "search")
-    , map (PackageListRoute << searchData << (Maybe.withDefault "" << decodeUri)) (s "search" </> string)
-    , map (PackageListRoute << (searchOffset searchAll) << ((*) Config.pageSize) << (Maybe.withDefault 0)) (s "packages" <?> intParam "page")
-    , map (PackageListRoute searchAll) (s "packages")
+    [ map parsePackages (top <?> stringParam "search" <?> intParam "page")
+    , map (PackageListRoute <| firstPage queryPkgAll) top
+    , map parsePackages (s "packages" <?> stringParam "search" <?> intParam "page")
+    , map (PackageListRoute <| firstPage queryPkgAll) (s "packages")
     , map PackageRoute (s "packages" </> string)
     , map (PackageEditRoute "") (s "edit")
     , map PackageEditRoute (s "edit" </> string)

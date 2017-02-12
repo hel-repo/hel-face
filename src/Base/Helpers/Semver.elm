@@ -1,11 +1,11 @@
-module Base.Semver exposing (sort)
+module Base.Helpers.Semver exposing (sort)
 
 import List exposing (append, foldl, length, repeat, reverse, sortWith)
 import Regex exposing (HowMany(..), split, regex)
 import String exposing (toInt)
 
-import Base.Tools exposing (zip)
-import Base.Models exposing (Version)
+import Base.Helpers.Tools exposing (zip)
+import Base.Models.Package exposing (Version)
 
 
 splitToParts : Version -> List String
@@ -52,7 +52,7 @@ comparator a b =
     foldl process EQ parts
 
 
--- Sort versions according to rules of Semantic Versioning, in reverse order
+-- Sort versions according to rules of Semantic Versioning, in reversed order
 sort : List Version -> List Version
 sort list =
   reverse <| sortWith comparator list

@@ -1,4 +1,4 @@
-module Base.Input exposing (..)
+module Base.Json.Input exposing (..)
 
 import Json.Decode as Json
 

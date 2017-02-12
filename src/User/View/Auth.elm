@@ -1,4 +1,4 @@
-module User.Auth exposing (..)
+module User.View.Auth exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -12,9 +12,9 @@ import Material.Options as Options exposing (cs)
 import Material.Textfield as Textfield
 import Material.Typography as Typo
 
-import Base.Input exposing (keyDecoder)
+import Base.Json.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
-import Base.Url as Url
+import Base.Network.Url as Url
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 

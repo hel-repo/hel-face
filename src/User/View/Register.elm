@@ -1,4 +1,4 @@
-module User.Register exposing (..)
+module User.View.Register exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -14,7 +14,7 @@ import Material.Textfield as Textfield
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
-import Base.Url as Url
+import Base.Network.Url as Url
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 

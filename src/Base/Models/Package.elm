@@ -1,43 +1,8 @@
-module Base.Models exposing (..)
+module Base.Models.Package exposing (..)
+
+import Base.Config as Config
 
 
--- Global state model
------------------------------------------------------------------------------------
-type alias Session =
-  { user : User
-  , loggedin : Bool
-  , apiVersion : String
-  }
-
-emptySession : Session
-emptySession =
-  { user = emptyUser
-  , loggedin = False
-  , apiVersion = "0.0.0"
-  }
-
-type SnackbarType = Info | Error
-
-
--- User related models
------------------------------------------------------------------------------------
-type alias User =
-  { nickname : String
-  , password : String
-  , retryPassword : String
-  , email : String
-  , groups : List String
-  }
-
-emptyUser : User
-emptyUser = { nickname = "", password = "", retryPassword = "", email = "", groups = [] }
-
-userByName : String -> User
-userByName name = { emptyUser | nickname = name }
-
-
--- Package related models
------------------------------------------------------------------------------------
 type alias Screenshot =
   { url : String
   , description : String
@@ -50,6 +15,7 @@ emptyScreenshot =
   , description = ""
   , remove = False
   }
+
 
 type alias PkgVersionFileData =
   { dir : String
@@ -71,6 +37,7 @@ emptyFile =
   , remove = False
   }
 
+
 type alias PkgVersionDependencyData =
   { deptype : String
   , version : String
@@ -90,6 +57,7 @@ emptyDependency =
   , version = "*"
   , remove = False
   }
+
 
 type alias PkgVersionData =
   { files : List VersionFile
@@ -114,6 +82,7 @@ emptyVersion =
   , remove = False
   }
 
+
 type alias PkgStatsDate =
   { created : String
   , lastUpdated : String
@@ -126,6 +95,7 @@ type alias Stats =
 
 emptyStats: Stats
 emptyStats = { views = 0, date = { created = "", lastUpdated = "" } }
+
 
 type alias Package =
   { name : String
@@ -147,41 +117,9 @@ emptyPackage =
   , shortDescription = ""
   , owners = []
   , authors = []
-  , license = "MIT"
+  , license = Config.defaultLicense
   , tags = []
   , versions = []
   , screenshots = []
   , stats = emptyStats
-  }
-
-
--- Networking models
------------------------------------------------------------------------------------
-type alias Page =
-  { list : List Package
-  , offset : Int
-  , total: Int
-  }
-
-emptyPage : Page
-emptyPage = { list = [], offset = 0, total = 0 }
-
-
-type alias ApiResult =
-  { code : Int
-  , data : String
-  , loggedIn : Bool
-  , success : Bool
-  , title : String
-  , version : String
-  }
-
-emptyApiResult : ApiResult
-emptyApiResult =
-  { code = 204
-  , data = "Success!"
-  , loggedIn = True
-  , success = True
-  , title = "No Content"
-  , version = "0.0.0"
   }

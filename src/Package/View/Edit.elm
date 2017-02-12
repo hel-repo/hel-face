@@ -1,4 +1,4 @@
-module Package.Edit exposing (..)
+module Package.View.Edit exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -16,10 +16,10 @@ import Material.Tabs as Tabs
 import Material.Textfield as Textfield
 
 import Base.Config as Config
-import Base.Input exposing (keyDecoder)
+import Base.Json.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Package, Version, VersionDependency, VersionFile, Screenshot)
-import Base.Tools exposing ((!!))
+import Base.Models.Package exposing (Package, Version, VersionDependency, VersionFile, Screenshot)
+import Base.Helpers.Tools exposing ((!!))
 import Package.Messages as PMsg
 import Package.Models exposing (PackageData)
 

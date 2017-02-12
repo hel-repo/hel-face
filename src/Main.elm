@@ -10,7 +10,7 @@ import Time exposing (every)
 import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Tools exposing (batchMsg)
+import Base.Helpers.Tools exposing (batchMsg)
 
 import Routing exposing (Route(..))
 import Update exposing (update)

@@ -1,4 +1,4 @@
-module User.Profile exposing (..)
+module User.View.Profile exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -16,8 +16,8 @@ import Material.Spinner as Loading
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Package)
-import Base.Url as Url
+import Base.Models.Package exposing (Package)
+import Base.Network.Url as Url
 import Package.Messages as PMsg
 import User.Messages as UMsg
 import User.Models exposing (UserData)
@@ -164,8 +164,8 @@ packages data =
         ]
     , Card.actions
         [ cs "profile-packages-container" ]
-        [ if List.isEmpty data.packages then div [ class "page" ] [ noPackages data ]
-          else grid [] <| List.map2 (package data) (List.range 1 <| List.length data.packages) data.packages
+        [ if List.isEmpty data.packages.list then div [ class "page" ] [ noPackages data ]
+          else grid [] <| List.map2 (package data) (List.range 1 <| List.length data.packages.list) data.packages.list
         ]
     ]
 

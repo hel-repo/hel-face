@@ -1,10 +1,10 @@
-module Base.Http exposing (..)
+module Base.Network.Http exposing (..)
 
 import Http exposing (Body, Request, expectJson, expectStringResponse, emptyBody, stringBody)
 import Json.Decode as Decode exposing (field)
 
-import Base.Models exposing (ApiResult, emptyApiResult)
-import Base.Decoders exposing (apiResultDecoder)
+import Base.Models.Network exposing (ApiResult, emptyApiResult)
+import Base.Json.Decoders exposing (apiResultDecoder)
 
 
 xpatch : String -> String -> Request ApiResult

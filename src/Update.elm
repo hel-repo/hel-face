@@ -8,13 +8,15 @@ import Material.Helpers exposing (map1st, map2nd)
 import Material.Snackbar as Snackbar
 
 import Models exposing (..)
-import Base.Api as Api
 import Base.Config as Config
+import Base.Helpers.Search exposing (PackagePage, packageQueryToPhrase, phraseToPackageQuery)
+import Base.Helpers.Tools exposing (wrapMsg, batchMsg)
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Session, SnackbarType(..))
-import Base.Search exposing (SearchData, searchData, searchQuery)
-import Base.Tools exposing (wrapMsg, batchMsg)
-import Base.Url as Url
+import Base.Models.Generic exposing (SnackbarType(..))
+import Base.Models.Network exposing (firstPage)
+import Base.Models.User exposing (Session)
+import Base.Network.Api as Api
+import Base.Network.Url as Url
 import Package.Update
 import User.Update
 
@@ -69,7 +71,7 @@ update msg model =
         |> map2nd (Cmd.map Snackbar)
 
     -- Network
-    UpdateSession session ->
+    ChangeSession session ->
       ( updateSession model session ) ! []
 
     CheckSession ->
@@ -79,13 +81,13 @@ update msg model =
       model ! List.append
         ( if String.isEmpty session.user.nickname then []
         else [ Api.fetchUser session.user.nickname UserFetched ] )
-        [ wrapMsg <| UpdateSession session ]
+        [ wrapMsg <| ChangeSession session ]
     SessionChecked (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
 
     UserFetched (Ok user) ->
       let session = model.session
-      in model ! [ wrapMsg <| UpdateSession { session | user = user } ]
+      in model ! [ wrapMsg <| ChangeSession { session | user = user } ]
     UserFetched (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred "Cannot fetch your user data!" ]
 
@@ -94,22 +96,22 @@ update msg model =
       let currentRoute = Maybe.withDefault NotFoundRoute <| Url.parseHash Routing.route location
       in ( { model | route = currentRoute }, batchMsg ( Routing.routeMessage currentRoute ) )
 
+    SearchBox phrase ->
+      { model | search = phrase } ! []
+
     Navigate url ->
       model ! [ Navigation.newUrl url ]
 
     Back ->
       model ! [ Navigation.back 1 ]
 
-    RoutePackageList searchData ->
+    RoutePackageList page ->
       let
         packageData = model.packageData
-        query = searchQuery searchData
+        phrase = packageQueryToPhrase page.query
       in
-        { model
-          | packageData = { packageData | share = "" }
-          , search = query
-        }
-        ! [ Navigation.newUrl <| Url.search query ]
+        { model | packageData = { packageData | share = "", page = page } }
+        ! [ Navigation.newUrl <| Url.packages (Just phrase) (Just (page.offset // Config.pageSize)) ]
 
     RoutePackageDetails name ->
       ( model, Navigation.newUrl <| Url.package name )
@@ -142,8 +144,10 @@ update msg model =
 
     InputKey key ->
       model ! (
-        if key == Config.enterKey then [ wrapMsg <| RoutePackageList <| searchData model.search ]
-        else []
+        if key == Config.enterKey then
+          [ wrapMsg <| RoutePackageList <| firstPage <| phraseToPackageQuery model.search ]
+        else
+          [ ]
       )
 
     -- Hook module messages up

@@ -5,7 +5,8 @@ import Routing
 import Material
 import Material.Snackbar as Snackbar
 
-import Base.Models exposing (Session, emptySession, SnackbarType(..))
+import Base.Models.Generic exposing (SnackbarType(..))
+import Base.Models.User exposing (Session, emptySession)
 import Package.Models exposing (PackageData, emptyPackageData)
 import User.Models exposing (UserData, emptyUserData)
 

@@ -9,7 +9,7 @@ import Material.Grid exposing (..)
 
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (Session)
+import Base.Models.User exposing (Session)
 
 
 about : Session -> Html Msg

@@ -2,16 +2,17 @@ module Package.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Models exposing (ApiResult, Package, Page)
-import Base.Search exposing (SearchData)
+import Base.Helpers.Search exposing (PackagePage)
+import Base.Models.Network exposing (ApiResult)
+import Base.Models.Package exposing (Package)
 
 
 type Msg
   = NoOp
   | ErrorOccurred String
   -- Network
-  | FetchPackages SearchData
-  | PackagesFetched (Result Error Page)
+  | FetchPackages PackagePage
+  | PackagesFetched (Result Error PackagePage)
   | NextPage
   | PreviousPage
   | FetchPackage String
@@ -21,7 +22,7 @@ type Msg
   | RemovePackage String
   | PackageRemoved (Result Error ApiResult)
   -- Navigation
-  | GoToPackageList SearchData
+  | GoToPackageList PackagePage
   | GoToPackageDetails String
   | GoToPackageEdit String
   | GoToVersion Int

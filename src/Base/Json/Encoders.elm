@@ -1,13 +1,34 @@
-module Base.Encoders exposing (..)
+module Base.Json.Encoders exposing (..)
 
 import Array
 import Json.Encode as Json exposing (..)
 
-import Base.Models exposing (Package, Screenshot, Version, VersionDependency, VersionFile, User)
+import Base.Models.Package exposing (Package, Screenshot, Version, VersionDependency, VersionFile)
+import Base.Models.User exposing (User)
+
+
+-- User related encoding
+------------------------------------------------------------------------------------------------------------------------
+userEncoder : User -> String -> String
+userEncoder user oldNickname =
+  encode 0 <| object <|
+    List.concat
+      [ ( if user.nickname == oldNickname then
+            []
+          else
+            [ ("nickname", string user.nickname) ]
+        )
+      , [ ("groups", list <| List.map string user.groups) ]
+      , ( if String.isEmpty user.password then
+            []
+          else
+            [ ("password", string user.password) ]
+        )
+      ]
 
 
 -- Package related encoding
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 file : VersionFile -> Value
 file f =
   object
@@ -41,7 +62,8 @@ package pkg =
       , ("authors", array <| Array.fromList <| List.map string pkg.authors)
       , ("tags", array <| Array.fromList <| List.map string pkg.tags)
       , ("versions", object <| List.map (\v -> (v.version, if v.remove then null else version v)) pkg.versions)
-      , ("screenshots", object <| List.map (\s -> (s.url, if s.remove then null else string s.description)) pkg.screenshots)
+      , ("screenshots",
+           object <| List.map (\s -> (s.url, if s.remove then null else string s.description)) pkg.screenshots)
       ]
   in
     object
@@ -96,24 +118,3 @@ resolved pkg oldPkg =
 packageEncoder : Package -> Package -> String
 packageEncoder pkg oldPkg =
   encode 0 <| package <| resolved pkg oldPkg
-
-
--- User related encoding
------------------------------------------------------------------------------------
-userEncoder : User -> String -> String
-userEncoder user oldNickname =
-  encode 0
-    <| object <|
-         List.concat
-           [ ( if user.nickname == oldNickname then
-                 []
-               else
-                 [ ("nickname", string user.nickname) ]
-             )
-           , [ ("groups", list <| List.map string user.groups) ]
-           , ( if String.isEmpty user.password then
-                 []
-               else
-                 [ ("password", string user.password) ]
-             )
-           ]

@@ -1,4 +1,4 @@
-module Base.Tools exposing (..)
+module Base.Helpers.Tools exposing (..)
 
 import Task exposing (Task)
 
@@ -23,10 +23,12 @@ batchMsg list =
 zip : List a -> List b -> List (a, b)
 zip = List.map2 (,)
 
+
 -- Get element of a list by index
 infixl 9 !!
 (!!) : List a -> Int -> Maybe a
 (!!) xs n  = List.head (List.drop n xs)
+
 
 -- Manage unique list items
 add : List a -> a -> List a

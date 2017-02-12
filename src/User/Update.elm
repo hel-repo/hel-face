@@ -1,15 +1,16 @@
 module User.Update exposing (..)
 
-import Base.Api as Api
 import Base.Config as Config
+import Base.Helpers.Search as Search exposing (queryPkgByOwner, queryPkgAll)
+import Base.Helpers.Tools as Tools exposing ((~), wrapMsg)
 import Base.Messages as Outer
-import Base.Models exposing (User, emptyUser)
+import Base.Models.Network exposing (firstPage)
+import Base.Models.User exposing (User, emptyUser)
+import Base.Network.Api as Api
+import Base.Network.Url as Url
 import Base.Ports exposing (title)
-import Base.Search as Search
-import Base.Tools as Tools exposing ((~), wrapMsg)
-import Base.Url as Url
 import User.Messages exposing (Msg(..))
-import User.Models exposing (UserData, Page(..))
+import User.Models exposing (UserData, UIPage(..))
 
 
 update : Msg -> UserData -> ( UserData, Cmd Msg, List Outer.Msg )
@@ -38,7 +39,7 @@ update message data =
           , loading = False
         }
         ! [ wrapMsg <| FetchUser True data.user.nickname ]
-        ~ [ Outer.Navigate Url.packages, Outer.UpdateSession session ]
+        ~ [ Outer.Navigate (Url.packages Nothing Nothing), Outer.ChangeSession session ]
     LoggedIn (Err _) ->
       { data | validate = True }
       ! [ wrapMsg (ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?") ]
@@ -52,7 +53,7 @@ update message data =
         session = { oldSession | loggedin = False, user = emptyUser }
       in
         { data | loading = False, session = session }
-        ! [] ~ [ Outer.Navigate Url.auth, Outer.UpdateSession session ]
+        ! [] ~ [ Outer.Navigate Url.auth, Outer.ChangeSession session ]
     LoggedOut (Err _) ->
       data
       ! [ wrapMsg (ErrorOccurred "For some reason, you can't close your session. Maybe you stay a little longer?") ]
@@ -65,7 +66,7 @@ update message data =
       ! []
       ~ ( if sessionFetch then
             let session = data.session
-            in [ Outer.UpdateSession { session | user = user } ]
+            in [ Outer.ChangeSession { session | user = user } ]
           else []
         )
     UserFetched _ (Err _) ->
@@ -105,8 +106,8 @@ update message data =
     UserRemoved (Err _) ->
       data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user account wasn't removed!" ] ~ []
 
-    PackagesFetched (Ok packages) ->
-      { data | packages = packages, loading = False } ! [] ~ []
+    PackagesFetched (Ok page) ->
+      { data | packages = page, loading = False } ! [] ~ []
     PackagesFetched (Err _) ->
       data ! [ wrapMsg (ErrorOccurred "Failed to fetch the list of your packages!") ] ~ []
 
@@ -125,11 +126,13 @@ update message data =
           { data | loading = True } ! [] ~ [ Outer.Navigate Url.auth ]
         else
           { data | loading = True, user = data.session.user }
-          ! [ title "HEL: My profile", Api.fetchPackages (Search.searchByOwner data.session.user.nickname) PackagesFetched ] ~ []
+          ! [ title "HEL: My profile"
+            , Api.fetchPackages (firstPage (queryPkgByOwner queryPkgAll data.session.user.nickname)) PackagesFetched
+            ] ~ []
       else
         { data | loading = True }
         ! [ title <| "HEL: " ++ nickname ++ " profile"
-          , Api.fetchPackages (Search.searchByOwner nickname) PackagesFetched
+          , Api.fetchPackages (firstPage (queryPkgByOwner queryPkgAll nickname)) PackagesFetched
           , wrapMsg <| FetchUser False nickname
           ] ~ []
 

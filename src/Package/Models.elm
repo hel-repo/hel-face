@@ -2,8 +2,10 @@ module Package.Models exposing (..)
 
 import Material
 
-import Base.Models exposing (Package, emptyPackage, Page, emptyPage, Session, emptySession)
-import Base.Search exposing (SearchData, searchAll)
+import Base.Helpers.Search exposing (PackageQuery, PackagePage, queryPkgAll)
+import Base.Models.Network exposing (firstPage)
+import Base.Models.Package exposing (Package, emptyPackage)
+import Base.Models.User exposing (Session, emptySession)
 
 
 type TagType = Owner | Author | Content
@@ -26,8 +28,7 @@ emptyTags =
 type alias PackageData =
   { mdl : Material.Model
   , session : Session
-  , packages : Page
-  , searchData : SearchData -- last search query
+  , page : PackagePage      -- current subset of total packages collection
   , package : Package
   , oldPackage : Package    -- backup for changes resolver
   , version : Int           -- currently selected version tab
@@ -43,8 +44,7 @@ emptyPackageData : Material.Model -> PackageData
 emptyPackageData materialModel =
   { mdl = materialModel
   , session = emptySession
-  , packages = emptyPage
-  , searchData = searchAll
+  , page = firstPage queryPkgAll
   , package = emptyPackage
   , oldPackage = emptyPackage
   , loading = False

@@ -2,7 +2,9 @@ module User.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Models exposing (ApiResult, Package, User)
+import Base.Helpers.Search exposing (PackagePage)
+import Base.Models.Network exposing (ApiResult)
+import Base.Models.User exposing (User)
 
 
 type Msg
@@ -23,7 +25,7 @@ type Msg
   | UserSaved (Result Error ApiResult)
   | RemoveUser String
   | UserRemoved (Result Error ApiResult)
-  | PackagesFetched (Result Error (List Package))
+  | PackagesFetched (Result Error (PackagePage))
   -- Navigation
   | GoToAuth
   | GoToRegister

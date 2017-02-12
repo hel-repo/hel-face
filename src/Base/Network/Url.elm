@@ -1,14 +1,19 @@
-module Base.Url exposing (..)
+module Base.Network.Url exposing (..)
 
-search : String -> String
-search query = "#search/" ++ query
+import Http exposing (encodeUri)
+import Base.Helpers.Search exposing (prefixedWord)
 
-packages : String
-packages = "#packages/"
 
-packagesPage : Int -> String
-packagesPage page =
-  "?page=" ++ (toString page) ++ packages
+packages : Maybe String -> Maybe Int -> String
+packages query page =
+  let
+    q = prefixedWord "search=" (encodeUri <| Maybe.withDefault "" query)
+    p = case page of
+          Just number -> "page=" ++ (toString number)
+          Nothing -> ""
+    params = String.join "&" (List.filter (not << String.isEmpty) [q, p])
+  in
+    (if String.isEmpty params then "" else "?" ++ params) ++ "#packages"
 
 package : String -> String
 package name = "#packages/" ++ name

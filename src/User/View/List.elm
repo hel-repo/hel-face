@@ -1,4 +1,4 @@
-module User.List exposing (..)
+module User.View.List exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -13,8 +13,8 @@ import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (User)
-import Base.Url as Url
+import Base.Models.User exposing (User)
+import Base.Network.Url as Url
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 

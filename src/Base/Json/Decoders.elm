@@ -1,23 +1,16 @@
-module Base.Decoders exposing (..)
+module Base.Json.Decoders exposing (..)
 
 import Json.Decode as Json exposing (field, oneOf, succeed)
 import Json.Decode.Extra exposing ((|:))
 
-import Base.Models exposing (..)
-
-
--- Global state related models
------------------------------------------------------------------------------------
-sessionDecoder : Json.Decoder Session
-sessionDecoder =
-  Json.succeed Session
-    |: (Json.succeed userByName |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ])
-    |: oneOf [ field "logged_in" Json.bool, succeed False ]
-    |: (field "version" Json.string)
+import Base.Helpers.Search exposing (PackagePage, queryPkgAll)
+import Base.Models.Network exposing (Page, ApiResult)
+import Base.Models.Package exposing (..)
+import Base.Models.User exposing (..)
 
 
 -- User related models
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 userDecoder : Json.Decoder User
 userDecoder =
   Json.succeed User
@@ -36,8 +29,16 @@ singleUserDecoder =
   Json.at ["data"] userDecoder
 
 
+sessionDecoder : Json.Decoder Session
+sessionDecoder =
+  Json.succeed Session
+    |: (Json.succeed userByName |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ])
+    |: oneOf [ field "logged_in" Json.bool, succeed False ]
+    |: (field "version" Json.string)
+
+
 -- Package related modelds
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 pkgScreenshotList : List (String, String) -> Json.Decoder (List Screenshot)
 pkgScreenshotList list =
   Json.succeed (List.map (\(url, desc) -> Screenshot url desc False) list)
@@ -119,10 +120,11 @@ packagesDecoder : Json.Decoder (List Package)
 packagesDecoder =
   Json.at ["data", "list"] <| Json.list packageDecoder
 
-packagesPageDecoder : Json.Decoder Page
+packagesPageDecoder : Json.Decoder PackagePage
 packagesPageDecoder =
   Json.succeed Page
     |: (Json.at ["data", "list"] <| Json.list packageDecoder)
+    |: succeed queryPkgAll  -- we don't know which filters were applied, so we assume there were no filters
     |: Json.at ["data", "offset"] Json.int
     |: Json.at ["data", "total"] Json.int
 
@@ -132,7 +134,7 @@ singlePackageDecoder =
 
 
 -- Networking models
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 apiResultDecoder : Json.Decoder ApiResult
 apiResultDecoder =
   Json.succeed ApiResult

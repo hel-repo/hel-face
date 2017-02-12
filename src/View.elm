@@ -17,18 +17,18 @@ import About
 import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
-import Base.Models exposing (SnackbarType(..))
-import Base.Url as Url
-import Package.List
-import Package.Details
-import Package.Edit
+import Base.Models.Generic exposing (SnackbarType(..))
+import Base.Network.Url as Url
+import Package.View.List
+import Package.View.Details
+import Package.View.Edit
 import Routing exposing (Route(..))
-import User.Auth
 import User.Messages as UMsg
-import User.Profile
-import User.Register
-import User.List
-import User.Edit
+import User.View.Auth
+import User.View.Profile
+import User.View.Register
+import User.View.List
+import User.View.Edit
 
 
 keyDecoder : Decode.Decoder Msg
@@ -46,7 +46,7 @@ view model =
       [ div
           [ class "header" ]
           [ a
-              [ class "header-title noselect", href Url.packages ]
+              [ class "header-title noselect", href <| Url.packages Nothing Nothing ]
               [ img [ src model.logo, class "header-image" ] [] ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl
@@ -127,28 +127,28 @@ viewBody : Model -> Html Msg
 viewBody model =
   case model.route of
     PackageListRoute searchData ->
-      Package.List.view model.packageData
+      Package.View.List.view model.packageData
 
     PackageRoute name ->
-      Package.Details.view model.packageData
+      Package.View.Details.view model.packageData
 
     PackageEditRoute name ->
-      Package.Edit.view model.packageData
+      Package.View.Edit.view model.packageData
 
     AuthRoute ->
-      User.Auth.view model.userData
+      User.View.Auth.view model.userData
 
     RegisterRoute ->
-      User.Register.view model.userData
+      User.View.Register.view model.userData
 
     ProfileRoute nickname ->
-      User.Profile.view model.userData
+      User.View.Profile.view model.userData
 
     UserListRoute group ->
-      User.List.view model.userData
+      User.View.List.view model.userData
 
     UserEditRoute nickname ->
-      User.Edit.view model.userData
+      User.View.Edit.view model.userData
 
     AboutRoute ->
       About.view model.session

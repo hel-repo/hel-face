@@ -14,3 +14,6 @@ pageSize = 20
 
 shortDescriptionLimit : Int
 shortDescriptionLimit = 120
+
+defaultLicense : String
+defaultLicense = "MIT"

@@ -1,4 +1,4 @@
-module User.Edit exposing (..)
+module User.View.Edit exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
@@ -11,7 +11,7 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 import Material.Textfield as Textfield
 
-import Base.Input exposing (keyDecoder)
+import Base.Json.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
 import User.Messages as UMsg
 import User.Models exposing (UserData)
