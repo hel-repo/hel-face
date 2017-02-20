@@ -9,6 +9,7 @@ import Base.Models.User exposing (User, emptyUser)
 import Base.Network.Api as Api
 import Base.Network.Url as Url
 import Base.Ports exposing (title)
+import User.Localization as L
 import User.Messages exposing (Msg(..))
 import User.Models exposing (UserData, UIPage(..))
 
@@ -42,7 +43,7 @@ update message data =
         ~ [ Outer.Navigate (Url.packages Nothing Nothing), Outer.ChangeSession session ]
     LoggedIn (Err _) ->
       { data | validate = True }
-      ! [ wrapMsg (ErrorOccurred "Looks like either your nickname or password were incorrect. Wanna try again?") ]
+      ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.incorrentLoginData) ]
       ~ []
 
     LogOut ->
@@ -56,7 +57,7 @@ update message data =
         ! [] ~ [ Outer.Navigate Url.auth, Outer.ChangeSession session ]
     LoggedOut (Err _) ->
       data
-      ! [ wrapMsg (ErrorOccurred "For some reason, you can't close your session. Maybe you stay a little longer?") ]
+      ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.cannotLogout) ]
       ~ []
 
     FetchUser sessionFetch name ->
@@ -70,7 +71,7 @@ update message data =
           else []
         )
     UserFetched _ (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to fetch user data!") ] ~ []
+      data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToFetchUserData) ] ~ []
 
     FetchUsers group ->
       { data | loading = True }
@@ -79,46 +80,46 @@ update message data =
     UsersFetched (Ok users) ->
       { data | users = users, loading = False } ! [] ~ []
     UsersFetched (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to fetch user list!") ] ~ []
+      data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToFetchUserList) ] ~ []
 
     Register user ->
       { data | loading = True } ! [ Api.register user Registered ] ~ []
     Registered (Ok _) ->
       { data | loading = False }
       ! []
-      ~ [ Outer.Navigate Url.auth, Outer.SomethingOccurred "You have registered successfully!" ]
+      ~ [ Outer.Navigate Url.auth, Outer.SomethingOccurred (L.get data.session.lang L.registrationSuccessfull) ]
     Registered (Err _) ->
       { data | validate = True }
-      ! [ wrapMsg (ErrorOccurred "Failed to register! Check the entered data, please.") ]
+      ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.registrationFailed) ]
       ~ []
 
     SaveUser user ->
       { data | loading = True } ! [ Api.saveUser user data.oldNickname UserSaved ] ~ []
     UserSaved (Ok _) ->
-      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User data was successfully saved!" ]
+      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred (L.get data.session.lang L.userDataSaved) ]
     UserSaved (Err _) ->
-      { data | validate = True } ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user data wasn't saved!" ] ~ []
+      { data | validate = True } ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToSaveUserData) ] ~ []
 
     RemoveUser nickname ->
       { data | loading = True } ! [ Api.removeUser nickname UserRemoved ] ~ []
     UserRemoved (Ok _) ->
-      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred "User account was successfully removed!" ]
+      { data | loading = False } ! [] ~ [ Outer.Back, Outer.SomethingOccurred (L.get data.session.lang L.userRemoved) ]
     UserRemoved (Err _) ->
-      data ! [ wrapMsg <| ErrorOccurred "Oops! Something went wrong, and user account wasn't removed!" ] ~ []
+      data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToRemoveUser) ] ~ []
 
     PackagesFetched (Ok page) ->
       { data | packages = page, loading = False } ! [] ~ []
     PackagesFetched (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to fetch the list of your packages!") ] ~ []
+      data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToFetchPackages) ] ~ []
 
     -- Navigation callbacks
     GoToAuth ->
       { data | loading = False, validate = False, page = Auth }
-      ! [ title "HEL: Login" ] ~ []
+      ! [ title (L.get data.session.lang L.helLogin) ] ~ []
 
     GoToRegister ->
       { data | loading = False, validate = False }
-      ! [ title "HEL: Registration" ] ~ []
+      ! [ title (L.get data.session.lang L.helRegister) ] ~ []
 
     GoToProfile nickname ->
       if String.isEmpty nickname then
@@ -126,28 +127,31 @@ update message data =
           { data | loading = True } ! [] ~ [ Outer.Navigate Url.auth ]
         else
           { data | loading = True, user = data.session.user }
-          ! [ title "HEL: My profile"
+          ! [ title (L.get data.session.lang L.helMyProfile)
             , Api.fetchPackages (firstPage (queryPkgByOwner queryPkgAll data.session.user.nickname)) PackagesFetched
             ] ~ []
       else
         { data | loading = True }
-        ! [ title <| "HEL: " ++ nickname ++ " profile"
+        ! [ title <| "HEL: " ++ nickname ++ (L.get data.session.lang L.helProfile)
           , Api.fetchPackages (firstPage (queryPkgByOwner queryPkgAll nickname)) PackagesFetched
           , wrapMsg <| FetchUser False nickname
           ] ~ []
 
     GoToUserList group ->
-      data ! [ title "HEL: User list", wrapMsg <| FetchUsers group ] ~ []
+      data ! [ title (L.get data.session.lang L.helUserList), wrapMsg <| FetchUsers group ] ~ []
 
     GoToUserEdit nickname ->
       { data | loading = True, validate = False, page = Edit }
-      ! [ title <| "Edit: " ++ (if String.isEmpty nickname then "my" else nickname) ++ " profile"
+      ! [ title <|
+            (L.get data.session.lang L.edit) ++
+            (if String.isEmpty nickname then (L.get data.session.lang L.helMy) else nickname) ++
+            (L.get data.session.lang L.helProfile)
         , wrapMsg <| FetchUser False (if String.isEmpty nickname then data.session.user.nickname else nickname)
         ]
       ~ []
 
     GoToAbout ->
-      data ! [ title "HEL: About" ] ~ []
+      data ! [ title (L.get data.session.lang L.helAbout) ] ~ []
 
     -- Other
     InputNickname nickname ->

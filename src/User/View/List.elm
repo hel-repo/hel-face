@@ -15,6 +15,7 @@ import Material.Spinner as Loading
 import Base.Messages exposing (Msg(..))
 import Base.Models.User exposing (User)
 import Base.Network.Url as Url
+import User.Localization as L
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -49,10 +50,10 @@ card data index user =
                     [ Menu.ripple, Menu.bottomRight ]
                     [ Menu.item
                         [ Menu.onSelect <| Navigate <| Url.editUser user.nickname ]
-                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                        [ Icon.view "mode_edit" [ cs "menu-icon" ], text (L.get data.session.lang L.edit) ]
                     , Menu.item
                         [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser user.nickname ]
-                        [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                        [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                     ]
                 ]
               else []
@@ -60,14 +61,14 @@ card data index user =
         ]
     ]
 
-notFoundCard : Html Msg
-notFoundCard =
+notFoundCard : UserData -> Html Msg
+notFoundCard data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
+    [ Card.title [] [ Card.head [] [ text (L.get data.session.lang L.delete) ] ]
     , Card.text []
-        [ div [] [ text "No users was found by this query." ]
-        , div [] [ text "Check the spelling, or try different request, please." ]
+        [ div [] [ text (L.get data.session.lang L.noUsers) ]
+        , div [] [ text (L.get data.session.lang L.checkSpelling) ]
         ]
     ]
 
@@ -79,5 +80,5 @@ view data =
       , cs "spinner"
       ]
   else
-    if List.isEmpty data.users then div [ class "page" ] [ notFoundCard ]
+    if List.isEmpty data.users then div [ class "page" ] [ notFoundCard data ]
     else grid [] <| List.map2 (card data) (List.range 1 <| List.length data.users) data.users

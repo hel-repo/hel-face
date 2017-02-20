@@ -7,7 +7,6 @@ import Material
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Snackbar as Snackbar
 
-import Models exposing (..)
 import Base.Config as Config
 import Base.Helpers.Search exposing (PackagePage, packageQueryToPhrase, phraseToPackageQuery)
 import Base.Helpers.Tools exposing (wrapMsg, batchMsg)
@@ -17,6 +16,8 @@ import Base.Models.Network exposing (firstPage)
 import Base.Models.User exposing (Session)
 import Base.Network.Api as Api
 import Base.Network.Url as Url
+import Localization as L
+import Models exposing (..)
 import Package.Update
 import User.Update
 
@@ -87,13 +88,13 @@ update msg model =
         else [ Api.fetchUser session.user.nickname UserFetched ] )
         [ wrapMsg <| ChangeSession session ]
     SessionChecked (Err _) ->
-      model ! [ wrapMsg <| ErrorOccurred "Failed to check user session data!" ]
+      model ! [ wrapMsg <| ErrorOccurred (L.get model.session.lang L.failedToGetSession) ]
 
     UserFetched (Ok user) ->
       let session = model.session
       in model ! [ wrapMsg <| ChangeSession { session | user = user } ]
     UserFetched (Err _) ->
-      model ! [ wrapMsg <| ErrorOccurred "Cannot fetch your user data!" ]
+      model ! [ wrapMsg <| ErrorOccurred (L.get model.session.lang L.failedToGetProfile) ]
 
     -- Routing
     UpdateUrl location ->

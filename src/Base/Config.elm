@@ -17,3 +17,6 @@ shortDescriptionLimit = 120
 
 defaultLicense : String
 defaultLicense = "MIT"
+
+defaultLanguage: String
+defaultLanguage = "en"

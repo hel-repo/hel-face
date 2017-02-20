@@ -15,6 +15,7 @@ import Material.Typography as Typo
 import Base.Json.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
 import Base.Network.Url as Url
+import User.Localization as L
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -23,31 +24,31 @@ auth : UserData -> Html Msg
 auth data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ Card.border ] [ Card.head [] [ text "Authorization" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text (L.get data.session.lang L.authorization) ] ]
     , Card.text []
       [ div []
           [ Textfield.render Mdl [3] data.mdl
-              [ Textfield.label "Nickname"
+              [ Textfield.label (L.get data.session.lang L.nickname)
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.nickname
               , Options.onInput <| UMsg.InputNickname >> UserMsg
               , if data.validate && String.isEmpty data.user.nickname then
-                  Textfield.error "Can't be empty"
+                  Textfield.error (L.get data.session.lang L.cantBeEmpty)
                 else
                   Options.nop
               ] []
           ]
       , div []
           [ Textfield.render Mdl [4] data.mdl
-              [ Textfield.label "Password"
+              [ Textfield.label (L.get data.session.lang L.password)
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.password
               , Options.onInput <| UMsg.InputPassword >> UserMsg
               , Options.on "keyup" <| keyDecoder (UMsg.InputKey >> UserMsg)
               , if data.validate && String.isEmpty data.user.password then
-                  Textfield.error "Can't be empty"
+                  Textfield.error (L.get data.session.lang L.cantBeEmpty)
                 else
                   Options.nop
               ] []
@@ -58,13 +59,13 @@ auth data =
               , Button.ripple
               , Options.onClick <| UserMsg (UMsg.LogIn data.user.nickname data.user.password)
               ]
-              [ text "Log In"]
+              [ text (L.get data.session.lang L.login)]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ text "or" ]
+              [ text (L.get data.session.lang L.or) ]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ a [ href Url.register ] [ text "register" ] ]
+              [ a [ href Url.register ] [ text (L.get data.session.lang L.register) ] ]
           ]
       ]
     ]

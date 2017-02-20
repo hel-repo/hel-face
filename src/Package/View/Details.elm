@@ -29,6 +29,7 @@ import Base.Models.Network exposing (firstPage)
 import Base.Models.Package exposing (Package, Version, VersionDependency, VersionFile)
 import Base.Helpers.Tools exposing ((!!))
 import Base.Network.Url as Url
+import Package.Localization as L
 import Package.Messages as PMsg
 import Package.Models exposing (PackageData)
 
@@ -140,12 +141,12 @@ subtitle : String -> Html Msg
 subtitle str =
   Options.styled p [ Typo.button, cs "subtitle" ] [ text str ]
 
-versionDesc : String -> Version -> Html Msg
-versionDesc name version =
+versionDesc : PackageData -> String -> Version -> Html Msg
+versionDesc data name version =
   div [ ]
-    [ subtitle "Installation"
+    [ subtitle (L.get data.session.lang L.installation)
     , div [ class "padding-bottom" ] [ div [ class "code install-code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
-    , subtitle "Changelog"
+    , subtitle (L.get data.session.lang L.changelog)
     , Markdown.toHtmlWith { defaultOptions | sanitize = True } [ class "padding-bottom" ] version.changes
     ]
 
@@ -160,17 +161,17 @@ file file =
       ]
     ]
 
-files : Version -> Html Msg
-files version =
+files : PackageData -> Version -> Html Msg
+files data version =
   case version.files of
     x::_ ->
       div
         [ class "files list-of-cards" ]
-        [ subtitle "Files"
+        [ subtitle (L.get data.session.lang L.files)
         , Lists.ul [] ( List.map file version.files )
         ]
     [ ] ->
-      div [ class "files" ] [ subtitle "No files" ]
+      div [ class "files" ] [ subtitle (L.get data.session.lang L.noFiles) ]
 
 
 dependency : VersionDependency -> Html Msg
@@ -185,17 +186,17 @@ dependency d =
         ]
     ]
 
-dependencies : Version -> Html Msg
-dependencies version =
+dependencies : PackageData -> Version -> Html Msg
+dependencies data version =
   case version.depends of
     x::_ ->
       div
         [ class "dep-block list-of-cards" ]
-        [ subtitle "Depends on"
+        [ subtitle (L.get data.session.lang L.dependsOn)
         , Lists.ul [ ] ( List.map dependency version.depends )
         ]
     [ ] ->
-      div [ class "dep-block" ] [ subtitle "No dependencies" ]
+      div [ class "dep-block" ] [ subtitle (L.get data.session.lang L.noDependencies) ]
 
 
 detailsCard : PackageData -> Package -> Html Msg
@@ -206,13 +207,19 @@ detailsCard data package =
         [ Card.head [] [ text package.name ]
         , Card.subhead [ ]
             [ span [ class "card-subtitle-icon noselect" ]
-                [ Icon.view "person" [ Icon.size18, Options.attribute <| Html.Attributes.title "Authors of package" ] ]
+                [ Icon.view "person"
+                    [ Icon.size18, Options.attribute
+                        <| Html.Attributes.title (L.get data.session.lang L.authorsOfPackage) ] ]
             , span [ class "align-top" ] [ text ( join ", " package.authors ) ]
             , span [ class "card-subtitle-icon card-license noselect" ]
-                [ Icon.view "copyright" [ Icon.size18, Options.attribute <| Html.Attributes.title "Source code license" ] ]
+                [ Icon.view "copyright"
+                    [ Icon.size18, Options.attribute
+                        <| Html.Attributes.title (L.get data.session.lang L.sourceCodeLicense) ] ]
             , span [ class "align-top" ] [ license package.license ]
             , span [ class "card-subtitle-icon card-license noselect" ]
-                [ Icon.view "turned_in_not" [ Icon.size18, Options.attribute <| Html.Attributes.title "Package maintainers" ] ]
+                [ Icon.view "turned_in_not"
+                    [ Icon.size18, Options.attribute
+                        <| Html.Attributes.title (L.get data.session.lang L.packageMaintainers) ] ]
             , span [ class "align-top" ] [ text ( join ", " package.owners ) ]
             ]
         ]
@@ -222,23 +229,23 @@ detailsCard data package =
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
-                    [ Menu.onSelect <| SomethingOccurred "Thanks!"
+                    [ Menu.onSelect <| SomethingOccurred (L.get data.session.lang L.thanks)
                     , Menu.divider ]
-                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
+                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text (L.get data.session.lang L.like) ]
                 , Menu.item
                     [ Menu.onSelect <| RoutePackageEdit package.name ]
-                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text (L.get data.session.lang L.edit) ]
                 , Menu.item
                     [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
-                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                 ]
             ]
           else
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
-                    [ Menu.onSelect <| SomethingOccurred "Thank you!" ]
-                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text "Like" ]
+                    [ Menu.onSelect <| SomethingOccurred (L.get data.session.lang L.thanks) ]
+                    [ Icon.view "favorite_border" [ cs "menu-icon" ], text (L.get data.session.lang L.like) ]
                 ]
             ]
         )
@@ -255,37 +262,37 @@ detailsCard data package =
                 Just version ->
                   div
                     [ class "page" ]
-                    [ versionDesc package.name version
+                    [ versionDesc data package.name version
                     , Grid.grid [ cs "no-padding-grid" ]
                         [ Grid.cell
                             [ Grid.size Grid.Desktop 6
                             , Grid.size Grid.Tablet 8
                             , Grid.size Grid.Phone 4
                             ]
-                            [ files version ]
+                            [ files data version ]
                         , Grid.cell
                             [ Grid.size Grid.Desktop 6
                             , Grid.size Grid.Tablet 8
                             , Grid.size Grid.Phone 4
                             ]
-                            [ dependencies version ]
+                            [ dependencies data version ]
                         ]
                     ]
                 Nothing ->
-                  div [ class "banner" ] [ text "This package does not have any versions. So, you can not download it." ]
+                  div [ class "banner" ] [ text (L.get data.session.lang L.packageWithoutVersions) ]
             ]
         ]
     ]
 
 
-notFoundCard : Html Msg
-notFoundCard =
+notFoundCard : PackageData -> Html Msg
+notFoundCard data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
+    [ Card.title [] [ Card.head [] [ text (L.get data.session.lang L.nothingFound) ] ]
     , Card.text []
-        [ div [] [ text "No packages with this name was found in repository." ]
-        , div [] [ text "Check the spelling, or try different name, please." ]
+        [ div [] [ text (L.get data.session.lang L.noPackagesWithThisName) ]
+        , div [] [ text (L.get data.session.lang L.checkSpelling) ]
         ]
     ]
 
@@ -301,7 +308,7 @@ view data =
     div
       [ class "page" ]
       ( if String.isEmpty data.package.name then
-          [ notFoundCard ]
+          [ notFoundCard data ]
         else
           [ screensCard data data.package
           , detailsCard data data.package

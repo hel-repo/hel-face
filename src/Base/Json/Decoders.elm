@@ -3,6 +3,7 @@ module Base.Json.Decoders exposing (..)
 import Json.Decode as Json exposing (field, oneOf, succeed)
 import Json.Decode.Extra exposing ((|:))
 
+import Base.Config as Config
 import Base.Helpers.Search exposing (PackagePage, queryPkgAll)
 import Base.Models.Network exposing (Page, ApiResult)
 import Base.Models.Package exposing (..)
@@ -35,6 +36,7 @@ sessionDecoder =
     |: (Json.succeed userByName |: oneOf [ Json.at ["data"] <| field "nickname" Json.string, succeed "" ])
     |: oneOf [ field "logged_in" Json.bool, succeed False ]
     |: (field "version" Json.string)
+    |: succeed Config.defaultLanguage
 
 
 -- Package related modelds

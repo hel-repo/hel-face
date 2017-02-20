@@ -15,6 +15,7 @@ import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
 import Base.Network.Url as Url
+import User.Localization as L
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -23,57 +24,57 @@ register : UserData -> Html Msg
 register data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ Card.border ] [ Card.head [] [ text "Registration" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text (L.get data.session.lang L.registration) ] ]
     , Card.text [ ]
       [ div [ ]
           [ Textfield.render Mdl [10] data.mdl
-              [ Textfield.label "Nickname"
+              [ Textfield.label (L.get data.session.lang L.nickname)
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.nickname
               , Options.onInput <| UMsg.InputNickname >> UserMsg
               , if data.validate && isEmpty data.user.nickname then
-                  Textfield.error "Can't be empty"
+                  Textfield.error (L.get data.session.lang L.cantBeEmpty)
                 else
                   Options.nop
               ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [11] data.mdl
-              [ Textfield.label "E-mail"
+              [ Textfield.label (L.get data.session.lang L.email)
               , Textfield.floatingLabel
               , Textfield.text_
               , Textfield.value data.user.email
               , Options.onInput <| UMsg.InputEmail >> UserMsg
               , if data.validate && isEmpty data.user.email then
-                  Textfield.error "Can't be empty"
+                  Textfield.error (L.get data.session.lang L.cantBeEmpty)
                 else
                   Options.nop
               ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [12] data.mdl
-            [ Textfield.label "Password"
+            [ Textfield.label (L.get data.session.lang L.password)
             , Textfield.floatingLabel
             , Textfield.password
             , Textfield.value data.user.password
             , Options.onInput <| UMsg.InputPassword >> UserMsg
             , if data.validate && isEmpty data.user.password then
-                Textfield.error "Can't be empty"
+                Textfield.error (L.get data.session.lang L.cantBeEmpty)
               else
                 Options.nop
             ] []
           ]
       , div [ ]
           [ Textfield.render Mdl [13] data.mdl
-            [ Textfield.label "Retype the password"
+            [ Textfield.label (L.get data.session.lang L.retryPassword)
             , Textfield.floatingLabel
             , Textfield.password
             , Textfield.value data.user.retryPassword
             , Options.onInput <| UMsg.InputRetryPassword >> UserMsg
             , if (not <| data.user.password == data.user.retryPassword)
               && ((not <| isEmpty data.user.retryPassword) || data.validate) then
-                Textfield.error <| "Doesn't match password!"
+                Textfield.error <| (L.get data.session.lang L.doesNotMatch)
               else
                 Options.nop
             ] []
@@ -84,13 +85,13 @@ register data =
               , Button.ripple
               , Options.onClick <| UserMsg (UMsg.Register data.user)
               ]
-              [ text "Register"]
+              [ text (L.get data.session.lang L.register)]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ text "or" ]
+              [ text (L.get data.session.lang L.or) ]
           , Options.styled p
               [ Typo.subhead, cs "auth-alter" ]
-              [ a [ href Url.auth ] [ text "log in" ] ]
+              [ a [ href Url.auth ] [ text (L.get data.session.lang L.login) ] ]
           ]
       ]
     ]

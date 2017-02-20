@@ -10,23 +10,24 @@ import Material.Grid exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models.User exposing (Session)
+import Localization as L
 
 
 about : Session -> Html Msg
 about session =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [ Card.border ] [ Card.head [] [ text "About us" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text (L.get session.lang L.aboutUs) ] ]
     , Card.text []
       [ div []
           [ img [ src "static/media/about.6c5ea71c.png" ] [] ]
       , p [ class "about-title" ] [ text "HEL Package Repository" ]
       , div
           [ class "about-description" ]
-          [ div [] [ text "An easy way to distribute your applications." ] ]
+          [ div [] [ text (L.get session.lang L.anEasyWay) ] ]
       , p [] []
       , div []
-          [ text "IRC channel:"
+          [ text (L.get session.lang L.irc)
           , span [ class "about-value" ] [ a [ href "https://webchat.esper.net/?channels=#cc.ru" ] [ text "#cc.ru" ] ]
           ]
       , div []
@@ -35,7 +36,7 @@ about session =
           ]
       , p [] []
       , div []
-        [ text "Version / API:"
+        [ text (L.get session.lang L.version)
         , span [ class "about-value" ] [ text <| Config.version ++ " / " ++ session.apiVersion ]
         ]
       , div [ class "about-copyright" ] [ text "2017 (c) Fingercomp, Totoro" ]

@@ -13,6 +13,7 @@ import Material.Textfield as Textfield
 
 import Base.Json.Input exposing (keyDecoder)
 import Base.Messages exposing (Msg(..))
+import User.Localization as L
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -36,13 +37,13 @@ card data =
     [ Elevation.e2 ]
     [ Card.title [ Card.border ]
         [ Textfield.render Mdl [11] data.mdl
-            [ Textfield.label "Nickname"
+            [ Textfield.label (L.get data.session.lang L.nickname)
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.user.nickname
             , Options.onInput <| UMsg.InputNickname >> UserMsg
             , if data.validate && String.isEmpty data.user.nickname then
-                Textfield.error "User can not be nameless!"
+                Textfield.error (L.get data.session.lang L.cannotBeNameless)
               else
                 Options.nop
             , cs "edit-card-title"
@@ -50,10 +51,10 @@ card data =
         ]
     , Card.text
         [ Card.border ]
-        [ subtitle "Leave this field empty, if you don't want to change the password."
+        [ subtitle (L.get data.session.lang L.leaveEmpty)
         , div []
             [ Textfield.render Mdl [12] data.mdl
-              [ Textfield.label "Password"
+              [ Textfield.label (L.get data.session.lang L.password)
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.password
@@ -62,14 +63,14 @@ card data =
             ]
         , div []
             [ Textfield.render Mdl [13] data.mdl
-              [ Textfield.label "Retry password"
+              [ Textfield.label (L.get data.session.lang L.retryPassword)
               , Textfield.floatingLabel
               , Textfield.password
               , Textfield.value data.user.retryPassword
               , Options.onInput <| UMsg.InputRetryPassword >> UserMsg
               , if (not <| data.user.password == data.user.retryPassword)
                 && ((not <| String.isEmpty data.user.retryPassword) || data.validate) then
-                  Textfield.error <| "Doesn't match password!"
+                  Textfield.error <| (L.get data.session.lang L.doesNotMatch)
                 else
                   Options.nop
               ] []
@@ -77,9 +78,9 @@ card data =
         ]
     , Card.text
         [ Card.border ]
-        [ subtitle "To add a group, enter the name and then press Enter"
+        [ subtitle (L.get data.session.lang L.toAddGroup)
         , Textfield.render Mdl [15] data.mdl
-            [ Textfield.label "User group"
+            [ Textfield.label (L.get data.session.lang L.userGroup)
             , Textfield.floatingLabel
             , Textfield.text_
             , Textfield.value data.groupTag
@@ -97,13 +98,13 @@ card data =
             , Options.onClick <| UserMsg ( UMsg.SaveUser data.user )
             , cs "save-button"
             ]
-            [ text "Save" ]
+            [ text (L.get data.session.lang L.save) ]
         , Button.render Mdl [61] data.mdl
             [ Button.raised
             , Button.ripple
             , Options.onClick <| Back
             ]
-            [ text "Cancel" ]
+            [ text (L.get data.session.lang L.cancel) ]
         ]
     ]
 

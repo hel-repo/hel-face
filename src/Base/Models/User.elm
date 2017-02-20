@@ -1,5 +1,8 @@
 module Base.Models.User exposing (..)
 
+import Base.Config as Config
+
+
 type alias User =
   { nickname : String
   , password : String
@@ -19,6 +22,7 @@ type alias Session =
   { user : User
   , loggedin : Bool
   , apiVersion : String
+  , lang : String
   }
 
 emptySession : Session
@@ -26,4 +30,5 @@ emptySession =
   { user = emptyUser
   , loggedin = False
   , apiVersion = "0.0.0"
+  , lang = Config.defaultLanguage
   }

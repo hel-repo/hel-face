@@ -19,6 +19,7 @@ import Base.Messages exposing (Msg(..))
 import Base.Models.Package exposing (Package)
 import Base.Network.Url as Url
 import Package.Messages as PMsg
+import User.Localization as L
 import User.Messages as UMsg
 import User.Models exposing (UserData)
 
@@ -40,17 +41,17 @@ profile : UserData -> Html Msg
 profile data =
   Card.view
     [ Elevation.e3 ]
-    [ Card.title [ Card.border ] [ Card.head [] [ text "Profile" ] ]
+    [ Card.title [ Card.border ] [ Card.head [] [ text (L.get data.session.lang L.profile) ] ]
     , Card.menu [ cs "noselect" ]
         ( if List.member "admins" data.session.user.groups then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
                     [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]
-                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text (L.get data.session.lang L.edit) ]
                 , Menu.item
                     [ Menu.onSelect <| UserMsg <| UMsg.RemoveUser data.user.nickname ]
-                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                 ]
             ]
           else []
@@ -58,11 +59,11 @@ profile data =
     , Card.text [ cs "profile-panel" ]
       [ div [ class "profile-avatar" ] [ Icon.view "account_circle" [ cs "avatar" ] ]
       , div [ class "profile-info" ]
-          [ subtitle "Nickname"
+          [ subtitle (L.get data.session.lang L.nickname)
           , div
               [ class "profile-nickname" ]
               [ text data.user.nickname ]
-          , subtitle "Groups"
+          , subtitle (L.get data.session.lang L.groups)
           , div
               [ class "profile-badges" ]
               ( List.map
@@ -89,10 +90,10 @@ package data index package =
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
                     [ Menu.onSelect <| RoutePackageEdit package.name ]
-                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text "Edit" ]
+                    [ Icon.view "mode_edit" [ cs "menu-icon" ], text (L.get data.session.lang L.edit) ]
                 , Menu.item
                     [ Menu.onSelect <| PackageMsg (PMsg.RemovePackage package.name) ]
-                    [ Icon.view "delete" [ cs "menu-icon danger" ], text "Delete" ]
+                    [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                 ]
             ]
         , Card.text [] [ text package.shortDescription ]
@@ -103,14 +104,14 @@ noPackages : UserData -> Html Msg
 noPackages data =
   Card.view
     [ ]
-    [ Card.title [] [ Card.head [] [ text "Nothing found!" ] ]
+    [ Card.title [] [ Card.head [] [ text (L.get data.session.lang L.nothingFound) ] ]
     , Card.text []
         [ div []
             [ text
                 ( if data.user.nickname == data.session.user.nickname then
-                    "You've not added any packages to this repository yet."
+                    (L.get data.session.lang L.youHaveNotAddedAnything)
                   else
-                    "This user have not added any packages to repository yet."
+                    (L.get data.session.lang L.thisUserHaveNotAddedAnything)
                 )
             ]
         ]
@@ -123,7 +124,7 @@ appboard data =
       [ Elevation.e2
       , cs "profile-packages"
       ]
-      [ Card.title [ Card.border ] [ Card.head [] [ text "Dashboard" ] ]
+      [ Card.title [ Card.border ] [ Card.head [] [ text (L.get data.session.lang L.dashboard) ] ]
       , Card.actions
           [ ]
           [ Button.render Mdl [100] data.mdl
@@ -131,21 +132,21 @@ appboard data =
               , Button.ripple
               , Options.onClick <| Navigate Url.users
               ]
-              [ text "All users" ]
+              [ text (L.get data.session.lang L.allUsers) ]
           , Button.render Mdl [101] data.mdl
               [ Button.raised
               , Button.ripple
               , Options.onClick <| Navigate <| Url.usersByGroup "admins"
               , cs "appboard-button"
               ]
-              [ text "Admins" ]
+              [ text (L.get data.session.lang L.admins) ]
           , Button.render Mdl [102] data.mdl
               [ Button.raised
               , Button.ripple
               , Options.onClick <| Navigate <| Url.usersByGroup "banned"
               , cs "appboard-button"
               ]
-              [ text "Banlist" ]
+              [ text (L.get data.session.lang L.banlist) ]
           ]
       ]
   else
@@ -160,7 +161,12 @@ packages data =
     [ Card.title
         [ Card.border ]
         [ Card.head []
-            [ text (if data.user.nickname == data.session.user.nickname then "My packages" else "Packages") ]
+            [ text <|
+                if data.user.nickname == data.session.user.nickname then
+                  (L.get data.session.lang L.myPackages)
+                else
+                  (L.get data.session.lang L.packages)
+            ]
         ]
     , Card.actions
         [ cs "profile-packages-container" ]

@@ -14,6 +14,7 @@ import Material.Snackbar as Snackbar
 import Material.Textfield as Textfield
 
 import About
+import Localization as L
 import Models exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
@@ -158,7 +159,7 @@ viewBody model =
         [ class "page" ]
         [ Card.view
           [ Elevation.e2 ]
-          [ Card.title [] [ Card.head [] [ text "404: Page does not exist!" ] ]
-          , Card.text [] [ text "Check the address for typing errors." ]
+          [ Card.title [] [ Card.head [] [ text (L.get model.session.lang L.error404) ] ]
+          , Card.text [] [ text (L.get model.session.lang L.checkSpelling) ]
           ]
         ]

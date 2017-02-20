@@ -13,6 +13,7 @@ import Base.Models.Package exposing (emptyPackage, emptyVersion, emptyDependency
 import Base.Network.Api as Api
 import Base.Network.Url as Url
 import Base.Ports exposing (title)
+import Package.Localization as L
 import Package.Messages exposing (Msg(..))
 import Package.Models exposing (..)
 
@@ -42,7 +43,7 @@ update message data =
         , loading = False
       } ! [] ~ []
     PackagesFetched (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to fetch packages!") ] ~ []
+      data ! [ wrapMsg (ErrorOccurred (L.get data.session.lang L.failedToFetchPackages)) ] ~ []
 
     NextPage ->
       if (data.page.total - data.page.offset) > Config.pageSize then
@@ -85,7 +86,7 @@ update message data =
           , loading = False
         } ! [] ~ []
     PackageFetched (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to fetch package!") ] ~ []
+      data ! [ wrapMsg (ErrorOccurred (L.get data.session.lang L.failedToFetchPackage)) ] ~ []
 
     SavePackage package ->
       { data | loading = True }
@@ -98,18 +99,22 @@ update message data =
     PackageSaved (Ok _) ->
       { data | loading = False }
       ! []
-      ~ [ Outer.RoutePackageDetails data.package.name, Outer.SomethingOccurred "Package was succesfully saved!" ]
+      ~ [ Outer.RoutePackageDetails data.package.name
+        , Outer.SomethingOccurred (L.get data.session.lang L.packageSuccessfullySaved)
+        ]
     PackageSaved (Err _) ->
-      { data | validate = True } ! [ wrapMsg (ErrorOccurred "Failed to save the package!") ] ~ []
+      { data | validate = True } ! [ wrapMsg (ErrorOccurred (L.get data.session.lang L.failedToSavePackage)) ] ~ []
 
     RemovePackage name ->
       { data | loading = True } ! [ Api.removePackage name PackageRemoved ] ~ []
     PackageRemoved (Ok _) ->
       { data | loading = False }
       ! []
-      ~ [ Outer.RoutePackageList <| firstPage queryPkgAll, Outer.SomethingOccurred "Package was succesfully removed!" ]
+      ~ [ Outer.RoutePackageList <| firstPage queryPkgAll
+        , Outer.SomethingOccurred (L.get data.session.lang L.packageSuccessfullyRemoved)
+        ]
     PackageRemoved (Err _) ->
-      data ! [ wrapMsg (ErrorOccurred "Failed to remove the package!") ] ~ []
+      data ! [ wrapMsg (ErrorOccurred (L.get data.session.lang L.failedToRemovePackage)) ] ~ []
 
     -- Navigation
     GoToPackageList page ->
