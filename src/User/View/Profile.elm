@@ -36,17 +36,32 @@ subtitle : String -> Html Msg
 subtitle str =
   Options.styled p [ Typo.button, cs "subtitle" ] [ text str ]
 
+checkmark: Bool -> Html Msg
+checkmark x =
+    if x then
+      Icon.view "check" [ cs "menu-icon" ]
+    else
+      Options.span [ cs "menu-icon" ] []
+
 
 profile : UserData -> Html Msg
 profile data =
   Card.view
-    [ Elevation.e3 ]
+    [ Elevation.e3
+    , css "z-index" <| toString 10
+    ]
     [ Card.title [ Card.border ] [ Card.head [] [ text (L.get data.session.lang L.profile) ] ]
     , Card.menu [ cs "noselect" ]
         ( if List.member "admins" data.session.user.groups then
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
+                    []
+                    [ checkmark (data.session.lang == "en"), text "English" ]
+                , Menu.item
+                    [ Menu.divider ]
+                    [ checkmark (data.session.lang == "ru"), text "Русский" ]
+                , Menu.item
                     [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]
                     [ Icon.view "mode_edit" [ cs "menu-icon" ], text (L.get data.session.lang L.edit) ]
                 , Menu.item
