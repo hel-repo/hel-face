@@ -56,10 +56,10 @@ profile data =
             [ Menu.render Mdl [20] data.mdl
                 [ Menu.ripple, Menu.bottomRight ]
                 [ Menu.item
-                    []
+                    [ Menu.onSelect <| UserMsg <| UMsg.ChangeLanguage "en" ]
                     [ checkmark (data.session.lang == "en"), text "English" ]
                 , Menu.item
-                    [ Menu.divider ]
+                    [ Menu.onSelect <| UserMsg <| UMsg.ChangeLanguage "ru", Menu.divider ]
                     [ checkmark (data.session.lang == "ru"), text "Русский" ]
                 , Menu.item
                     [ Menu.onSelect <| Navigate <| Url.editUser data.user.nickname ]

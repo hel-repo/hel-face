@@ -41,3 +41,4 @@ type Msg
   | InputGroup String
   | RemoveGroup String
   | InputKey Int
+  | ChangeLanguage String

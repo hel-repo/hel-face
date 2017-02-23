@@ -184,3 +184,10 @@ update message data =
             data ! [] ~ []
       else
         data ! [] ~ []
+
+    ChangeLanguage code ->
+      let
+        old = data.session
+        session = { old | lang = code }
+      in
+        { data | session = session } ! [] ~ [ Outer.ChangeSession session ]
