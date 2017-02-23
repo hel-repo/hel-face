@@ -23,5 +23,5 @@ app.ports.save.subscribe(function(value) {
   localStorage.setItem(storageKey, value);
 });
 app.ports.doload.subscribe(function() {
-  app.ports.load.send(localStorage.getItem(storageKey));
+  app.ports.load.send(localStorage.getItem(storageKey) || "en");
 });
