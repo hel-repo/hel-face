@@ -69,7 +69,17 @@ profile data =
                     [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                 ]
             ]
-          else []
+          else
+            [ Menu.render Mdl [20] data.mdl
+                [ Menu.ripple, Menu.bottomRight ]
+                [ Menu.item
+                    [ Menu.onSelect <| UserMsg <| UMsg.ChangeLanguage "en" ]
+                    [ checkmark (data.session.lang == "en"), text "English" ]
+                , Menu.item
+                    [ Menu.onSelect <| UserMsg <| UMsg.ChangeLanguage "ru" ]
+                    [ checkmark (data.session.lang == "ru"), text "Русский" ]
+                ]
+            ]
         )
     , Card.text [ cs "profile-panel" ]
       [ div [ class "profile-avatar" ] [ Icon.view "account_circle" [ cs "avatar" ] ]
