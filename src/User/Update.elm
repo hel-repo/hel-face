@@ -8,7 +8,7 @@ import Base.Models.Network exposing (firstPage)
 import Base.Models.User exposing (User, emptyUser)
 import Base.Network.Api as Api
 import Base.Network.Url as Url
-import Base.Ports exposing (title)
+import Base.Ports exposing (title, save)
 import User.Localization as L
 import User.Messages exposing (Msg(..))
 import User.Models exposing (UserData, UIPage(..))
@@ -190,4 +190,4 @@ update message data =
         old = data.session
         session = { old | lang = code }
       in
-        { data | session = session } ! [] ~ [ Outer.ChangeSession session ]
+        { data | session = session } ! [ save code ] ~ [ Outer.ChangeSession session ]

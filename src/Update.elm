@@ -72,8 +72,12 @@ update msg model =
         |> map2nd (Cmd.map Snackbar)
 
     -- Handle local storage actions
-    StorageLoaded value ->
-      model ! []
+    StorageLoaded code ->
+      let
+        old = model.session
+        session = { old | lang = code }
+      in
+        ( updateSession model session ) ! []
 
     -- Network
     ChangeSession session ->
@@ -86,7 +90,7 @@ update msg model =
       model ! List.append
         ( if String.isEmpty session.user.nickname then []
         else [ Api.fetchUser session.user.nickname UserFetched ] )
-        [ wrapMsg <| ChangeSession session ]
+        [ wrapMsg <| ChangeSession { session | lang = model.session.lang } ]   -- don't allow to rewrite lang variable
     SessionChecked (Err _) ->
       model ! [ wrapMsg <| ErrorOccurred (L.get model.session.lang L.failedToGetSession) ]
 
