@@ -14,6 +14,7 @@ import Material.Options as Options exposing (cs)
 import Material.Spinner as Loading
 
 import Base.Config as Config
+import Base.Helpers.Localization exposing (localeAware)
 import Base.Messages exposing (Msg(..))
 import Base.Models.Package exposing (Package)
 import Base.Network.Url as Url
@@ -51,7 +52,7 @@ card data index package =
         , Card.text
             []
             ( if package.name /= data.share then
-                [ text package.shortDescription ]
+                [ text <| localeAware data.session.lang package.shortDescription ]
               else
                 [ div [ ] [ text (L.get data.session.lang L.directLink) ]
                 , div [ class "code" ] [ text <| "hel.fomalhaut.me/" ++ (Url.package package.name) ]

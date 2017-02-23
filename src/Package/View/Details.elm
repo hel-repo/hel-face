@@ -24,6 +24,7 @@ import Material.Tabs as Tabs
 import Material.Typography as Typo
 
 import Base.Messages exposing (Msg(..))
+import Base.Helpers.Localization exposing (localeAware)
 import Base.Helpers.Search exposing (queryPkgAll, queryPkgByTag)
 import Base.Models.Network exposing (firstPage)
 import Base.Models.Package exposing (Package, Version, VersionDependency, VersionFile)
@@ -81,7 +82,7 @@ screensCard data package =
                   [ text ">" ]
               , Options.styled span
                   [ Typo.body1, cs "screen-desc" ]
-                  [ text screen.description ]
+                  [ text <| localeAware data.session.lang screen.description ]
               ]
           ]
       Nothing -> div [ ] [ ]
@@ -147,7 +148,8 @@ versionDesc data name version =
     [ subtitle (L.get data.session.lang L.installation)
     , div [ class "padding-bottom" ] [ div [ class "code install-code" ] [ text <| "hpm install " ++ name ++ "@" ++ version.version ] ]
     , subtitle (L.get data.session.lang L.changelog)
-    , Markdown.toHtmlWith { defaultOptions | sanitize = True } [ class "padding-bottom" ] version.changes
+    , Markdown.toHtmlWith { defaultOptions | sanitize = True } [ class "padding-bottom" ]
+        <| localeAware data.session.lang version.changes
     ]
 
 
@@ -249,7 +251,10 @@ detailsCard data package =
                 ]
             ]
         )
-    , Card.text [] [ Markdown.toHtmlWith { defaultOptions | sanitize = True } [] package.description ]
+    , Card.text []
+        [ Markdown.toHtmlWith { defaultOptions | sanitize = True } []
+            <| localeAware data.session.lang package.description
+        ]
     , Card.actions [] ( List.map chip package.tags )
     , Card.actions [ cs "version-tabs" ]
         [ Tabs.render Mdl [0] data.mdl
