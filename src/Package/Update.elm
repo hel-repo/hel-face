@@ -194,15 +194,7 @@ update message data =
         package = data.package
         versions = updateItem
           package.versions
-          (\v -> { v | files = updateItem v.files (\f -> { f | dir = path } ) index })
-          data.version
-      in { data | package = { package | versions = versions } } ! [] ~ []
-    InputFileName index name ->
-      let
-        package = data.package
-        versions = updateItem
-          package.versions
-          (\v -> { v | files = updateItem v.files (\f -> { f | name = name } ) index })
+          (\v -> { v | files = updateItem v.files (\f -> { f | path = path } ) index })
           data.version
       in { data | package = { package | versions = versions } } ! [] ~ []
     InputFileUrl index url ->

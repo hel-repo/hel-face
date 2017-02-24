@@ -18,22 +18,19 @@ emptyScreenshot =
 
 
 type alias PkgVersionFileData =
-  { dir : String
-  , name : String
+  { path : String
   }
 
 type alias VersionFile =
   { url : String
-  , dir : String
-  , name : String
+  , path : String
   , remove : Bool
   }
 
 emptyFile : VersionFile
 emptyFile =
   { url = ""
-  , dir = ""
-  , name = ""
+  , path = ""
   , remove = False
   }
 

@@ -188,22 +188,8 @@ path =
 whichFolder : Dict String String
 whichFolder =
   fromList
-    [ ("en", "Which folder will this file be installed in?")
-    , ("ru", "В какую папку должен быть установлен этот файл?")
-    ]
-
-fileName : Dict String String
-fileName =
-  fromList
-    [ ("en", "File name")
-    , ("ru", "Имя файла")
-    ]
-
-whatName : Dict String String
-whatName =
-  fromList
-    [ ("en", "How this file will be named?")
-    , ("ru", "Как должен называться этот файл?")
+    [ ("en", "In which folder (and under what name) the file should be installed?")
+    , ("ru", "В какую папку и под каким именем должен быть установлен этот файл?")
     ]
 
 url : Dict String String

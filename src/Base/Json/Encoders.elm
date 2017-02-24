@@ -32,8 +32,7 @@ userEncoder user oldNickname =
 file : VersionFile -> Value
 file f =
   object
-    [ ("dir", string f.dir)
-    , ("name", string f.name)
+    [ ("path", string f.path)
     ]
 
 dependency : VersionDependency -> Value

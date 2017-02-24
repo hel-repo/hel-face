@@ -60,25 +60,10 @@ file data file index =
             [ Textfield.label (L.get data.session.lang L.path)
             , Textfield.floatingLabel
             , Textfield.text_
-            , Textfield.value file.dir
+            , Textfield.value file.path
             , Options.onInput <| (PMsg.InputFilePath index) >> PackageMsg
-            , if data.validate && String.isEmpty file.dir then
+            , if data.validate && String.isEmpty file.path then
                 Textfield.error (L.get data.session.lang L.whichFolder)
-              else
-                Options.nop
-            , cs "align-middle"
-            ] []
-        ]
-    , div [ class "edit-card-desc-box" ]
-        [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18, cs "noselect" ] ]
-        , Textfield.render Mdl [100 + index*4 + 2] data.mdl
-            [ Textfield.label (L.get data.session.lang L.fileName)
-            , Textfield.floatingLabel
-            , Textfield.text_
-            , Textfield.value file.name
-            , Options.onInput <| (PMsg.InputFileName index) >> PackageMsg
-            , if data.validate && String.isEmpty file.name then
-                Textfield.error (L.get data.session.lang L.whatName)
               else
                 Options.nop
             , cs "align-middle"

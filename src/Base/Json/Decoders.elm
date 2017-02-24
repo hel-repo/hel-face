@@ -52,12 +52,11 @@ screenshots =
 pkgVersionFileData : Json.Decoder PkgVersionFileData
 pkgVersionFileData =
   Json.succeed PkgVersionFileData
-    |: (field "dir" Json.string)
-    |: (field "name" Json.string)
+    |: (field "path" Json.string)
 
 pkgVersionFilesList : List (String, PkgVersionFileData) -> Json.Decoder (List VersionFile)
 pkgVersionFilesList list =
-  Json.succeed (List.map (\(url, data) -> VersionFile url data.dir data.name False) list)
+  Json.succeed (List.map (\(url, data) -> VersionFile url data.path False) list)
 
 pkgVersionFiles : Json.Decoder (List VersionFile)
 pkgVersionFiles =

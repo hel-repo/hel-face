@@ -158,8 +158,7 @@ file file =
   Lists.li [ cs "mdl-shadow--2dp" ]
     [ Lists.content []
       [ span [ class "list-icon" ] [ Lists.icon "insert_drive_file" [ Icon.size18 ] ]
-      , span [ class "cell align-top list-white" ] [ text (file.dir ++ "/") ]
-      , a [ class "cell align-top", href file.url, target "_blank" ] [ text file.name ]
+      , a [ class "cell align-top", href file.url, target "_blank" ] [ text file.path ]
       ]
     ]
 
