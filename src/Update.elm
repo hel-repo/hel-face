@@ -87,12 +87,26 @@ update msg model =
       model ! [ Api.checkSession SessionChecked ]
 
     SessionChecked (Ok session) ->
-      model ! List.append
-        ( if String.isEmpty session.user.nickname then []
-        else [ Api.fetchUser session.user.nickname UserFetched ] )
-        [ wrapMsg <| ChangeSession { session | lang = model.session.lang } ]   -- don't allow to rewrite lang variable
+      let
+        cmd1 = wrapMsg <| ChangeSession { session | lang = model.session.lang } -- don't allow to rewrite lang variable
+        cmd2 = if String.isEmpty session.user.nickname then [ cmd1 ]
+               else [ cmd1, Api.fetchUser session.user.nickname UserFetched ]
+        cmd3 = case model.route of
+                 PackageEditRoute _ ->
+                   if session.loggedin then cmd2
+                   else (wrapMsg <| Navigate Url.home) :: cmd2  -- user cannot edit anything, while not logged in
+                 _ -> cmd2
+      in model ! cmd3
+
     SessionChecked (Err _) ->
-      model ! [ wrapMsg <| ErrorOccurred (L.get model.session.lang L.failedToGetSession) ]
+      let
+        cmd1 = wrapMsg <| ErrorOccurred (L.get model.session.lang L.failedToGetSession)
+        cmd2 = case model.route of
+                 PackageEditRoute _ ->
+                   if model.session.loggedin then [ cmd1 ]
+                   else [ wrapMsg <| Navigate Url.home, cmd1 ]
+                 _ -> [ cmd1 ]
+      in model ! cmd2
 
     UserFetched (Ok user) ->
       let session = model.session
@@ -126,7 +140,9 @@ update msg model =
       ( model, Navigation.newUrl <| Url.package name )
 
     RoutePackageEdit name ->
-      ( model, Navigation.newUrl <| Url.edit name )
+      case model.session.loggedin of
+        True -> ( model, Navigation.newUrl <| Url.edit name )
+        False -> ( model, Navigation.newUrl Url.home )
 
     RouteAuth ->
       ( model, Navigation.newUrl Url.auth )

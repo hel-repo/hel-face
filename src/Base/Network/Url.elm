@@ -4,6 +4,9 @@ import Http exposing (encodeUri)
 import Base.Helpers.Search exposing (prefixedWord)
 
 
+home: String
+home = packages Nothing Nothing
+
 packages : Maybe String -> Maybe Int -> String
 packages query page =
   let

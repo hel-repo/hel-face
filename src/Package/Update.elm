@@ -125,13 +125,16 @@ update message data =
       { data | screenshot = 0, screenshotLoading = True }
       ! [ title <| "HEL: " ++ name, wrapMsg (FetchPackage name) ] ~ []
     GoToPackageEdit name ->
-      if not <| isEmpty name then
-        { data | validate = False }
-        ! [ title <| "Edit: " ++ name, wrapMsg (FetchPackage name) ] ~ []
+      if data.session.loggedin then
+        if not <| isEmpty name then
+          { data | validate = False }
+          ! [ title <| "Edit: " ++ name, wrapMsg (FetchPackage name) ] ~ []
+        else
+          let newPackage = { emptyPackage | owners = [data.session.user.nickname] }
+          in { data | package = newPackage, oldPackage = newPackage, validate = False }
+             ! [ title "HEL: new package" ] ~ []
       else
-        let newPackage = { emptyPackage | owners = [data.session.user.nickname] }
-        in { data | package = newPackage, oldPackage = newPackage, validate = False }
-           ! [ title "HEL: new package" ] ~ []
+        data ! [] ~ [ Outer.Navigate Url.home ]
 
     GoToVersion num ->
       { data | version = num } ! [] ~ []

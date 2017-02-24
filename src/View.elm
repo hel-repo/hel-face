@@ -47,7 +47,7 @@ view model =
       [ div
           [ class "header" ]
           [ a
-              [ class "header-title noselect", href <| Url.packages Nothing Nothing ]
+              [ class "header-title noselect", href Url.home ]
               [ img [ src model.logo, class "header-image" ] [] ]
           , div [ class "search" ]
               [ Textfield.render Mdl [0] model.mdl

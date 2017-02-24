@@ -40,7 +40,7 @@ update message data =
           , loading = False
         }
         ! [ wrapMsg <| FetchUser True data.user.nickname ]
-        ~ [ Outer.Navigate (Url.packages Nothing Nothing), Outer.ChangeSession session ]
+        ~ [ Outer.Navigate Url.home, Outer.ChangeSession session ]
     LoggedIn (Err _) ->
       { data | validate = True }
       ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.incorrentLoginData) ]

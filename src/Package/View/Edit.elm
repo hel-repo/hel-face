@@ -259,7 +259,7 @@ packageCard data package =
             [ subtitle (L.get data.session.lang L.youCanUseMarkdown)
             , Textfield.render Mdl [13] data.mdl
                 [ Textfield.label <| (L.get data.session.lang L.shortDescription) ++ " ("
-                    ++ (toString <| String.length package.shortDescription) ++ " of "
+                    ++ (toString <| String.length package.shortDescription) ++ " / "
                     ++ (toString Config.shortDescriptionLimit) ++ ")"
                 , Textfield.floatingLabel
                 , Textfield.textarea
