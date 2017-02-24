@@ -15,6 +15,7 @@ import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 import Material.Typography as Typo
 
+import Base.Helpers.Localization exposing (localeAware)
 import Base.Messages exposing (Msg(..))
 import Base.Models.Package exposing (Package)
 import Base.Network.Url as Url
@@ -121,7 +122,7 @@ package data index package =
                     [ Icon.view "delete" [ cs "menu-icon danger" ], text (L.get data.session.lang L.delete) ]
                 ]
             ]
-        , Card.text [] [ text package.shortDescription ]
+        , Card.text [] [ text <| localeAware data.session.lang package.shortDescription ]
         ]
     ]
 
