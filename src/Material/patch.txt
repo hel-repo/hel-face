@@ -1,0 +1,5 @@
+This is a full copy of debois/elm-mdl library.
+
+The only difference is replacement of `Html.Attributes.value` to `Html.Attributes.defaultValue`
+(Attributes.elm : 420)
+Bugfix of textboxes race condition.
