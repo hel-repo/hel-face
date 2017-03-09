@@ -9,6 +9,7 @@ import Base.Models.User exposing (Session, emptySession)
 
 
 type TagType = Owner | Author | Content
+
 type alias Tags =
   { active : TagType
   , owner : String

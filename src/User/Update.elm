@@ -73,14 +73,43 @@ update message data =
     UserFetched _ (Err _) ->
       data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToFetchUserData) ] ~ []
 
-    FetchUsers group ->
-      { data | loading = True }
-      ! [ if String.isEmpty group then Api.fetchUsers UsersFetched else Api.fetchUsersByGroup group UsersFetched ]
-      ~ []
-    UsersFetched (Ok users) ->
-      { data | users = users, loading = False } ! [] ~ []
+    FetchUsers page ->
+      { data | loading = True, page = page } ! [ Api.fetchUsers page UsersFetched ] ~ []
+    UsersFetched (Ok page) ->
+      { data
+        | page = { page | query = data.page.query }  -- save search query
+        , loading = False
+      } ! [] ~ []
     UsersFetched (Err _) ->
       data ! [ wrapMsg <| ErrorOccurred (L.get data.session.lang L.failedToFetchUserList) ] ~ []
+
+    NextPage ->
+      if (data.page.total - data.page.offset) > Config.pageSize then
+        let
+          page = data.page
+          nextPage = { page | offset = page.offset + Config.pageSize }
+        in
+          data
+          ! []
+          ~ [ Outer.Navigate <| Url.users
+                (Just <| page.query.group)
+                (Just <| nextPage.offset // Config.pageSize)
+            ]
+      else data ! [] ~ []
+
+    PreviousPage ->
+      if data.page.offset > 0 then
+        let
+          page = data.page
+          prevPage = { page | offset = max 0 (page.offset - Config.pageSize) }
+        in
+          data
+          ! []
+          ~ [ Outer.Navigate <| Url.users
+                (Just <| page.query.group)
+                (Just <| prevPage.offset // Config.pageSize)
+            ]
+      else data ! [] ~ []
 
     Register user ->
       { data | loading = True } ! [ Api.register user Registered ] ~ []
@@ -114,7 +143,7 @@ update message data =
 
     -- Navigation callbacks
     GoToAuth ->
-      { data | loading = False, validate = False, page = Auth }
+      { data | loading = False, validate = False, uipage = Auth }
       ! [ title (L.get data.session.lang L.helLogin) ] ~ []
 
     GoToRegister ->
@@ -137,11 +166,11 @@ update message data =
           , wrapMsg <| FetchUser False nickname
           ] ~ []
 
-    GoToUserList group ->
-      data ! [ title (L.get data.session.lang L.helUserList), wrapMsg <| FetchUsers group ] ~ []
+    GoToUserList page ->
+      data ! [ title (L.get data.session.lang L.helUserList), wrapMsg <| FetchUsers page ] ~ []
 
     GoToUserEdit nickname ->
-      { data | loading = True, validate = False, page = Edit }
+      { data | loading = True, validate = False, uipage = Edit }
       ! [ title <|
             (L.get data.session.lang L.edit) ++
             (if String.isEmpty nickname then (L.get data.session.lang L.helMy) else nickname) ++
@@ -174,7 +203,7 @@ update message data =
 
     InputKey key ->
       if key == Config.enterKey then
-        case data.page of
+        case data.uipage of
           Auth ->
             data ! [ wrapMsg <| LogIn data.user.nickname data.user.password ] ~ []
           Edit ->

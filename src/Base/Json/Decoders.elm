@@ -4,7 +4,7 @@ import Json.Decode as Json exposing (field, oneOf, succeed)
 import Json.Decode.Extra exposing ((|:))
 
 import Base.Config as Config
-import Base.Helpers.Search exposing (PackagePage, queryPkgAll)
+import Base.Helpers.Search exposing (PackagePage, queryPkgAll, UserPage, queryUsrAll)
 import Base.Models.Network exposing (Page, ApiResult)
 import Base.Models.Package exposing (..)
 import Base.Models.User exposing (..)
@@ -24,6 +24,14 @@ userDecoder =
 usersDecoder : Json.Decoder (List User)
 usersDecoder =
   Json.at ["data", "list"] <| Json.list userDecoder
+
+usersPageDecoder : Json.Decoder UserPage
+usersPageDecoder =
+  Json.succeed Page
+    |: (Json.at ["data", "list"] <| Json.list userDecoder)
+    |: succeed queryUsrAll  -- we don't know which filters were applied, so we assume there were no filters
+    |: Json.at ["data", "offset"] Json.int
+    |: Json.at ["data", "total"] Json.int
 
 singleUserDecoder : Json.Decoder User
 singleUserDecoder =

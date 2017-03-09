@@ -28,7 +28,7 @@ import User.Models exposing (UserData)
 badge : String -> Html Msg
 badge group =
   Chip.button
-    [ Options.onClick <| Navigate <| Url.usersByGroup group
+    [ Options.onClick <| Navigate <| Url.users (Just group) Nothing
     , cs (if group == "admins" then "admin-badge" else "user-badge" )
     ]
     [ Chip.content [] [ text group ] ]
@@ -156,20 +156,20 @@ appboard data =
           [ Button.render Mdl [100] data.mdl
               [ Button.raised
               , Button.ripple
-              , Options.onClick <| Navigate Url.users
+              , Options.onClick <| Navigate <| Url.users Nothing Nothing
               ]
               [ text (L.get data.session.lang L.allUsers) ]
           , Button.render Mdl [101] data.mdl
               [ Button.raised
               , Button.ripple
-              , Options.onClick <| Navigate <| Url.usersByGroup "admins"
+              , Options.onClick <| Navigate <| Url.users (Just "admins") Nothing
               , cs "appboard-button"
               ]
               [ text (L.get data.session.lang L.admins) ]
           , Button.render Mdl [102] data.mdl
               [ Button.raised
               , Button.ripple
-              , Options.onClick <| Navigate <| Url.usersByGroup "banned"
+              , Options.onClick <| Navigate <| Url.users (Just "banned") Nothing
               , cs "appboard-button"
               ]
               [ text (L.get data.session.lang L.banlist) ]

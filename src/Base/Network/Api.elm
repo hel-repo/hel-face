@@ -4,7 +4,7 @@ import Http
 import String
 
 import Base.Config as Config
-import Base.Helpers.Search exposing (PackagePage, PackageQuery, prefixedWord)
+import Base.Helpers.Search exposing (PackagePage, PackageQuery, prefixedWord, UserPage)
 import Base.Json.Decoders exposing (..)
 import Base.Json.Encoders exposing (packageEncoder, userEncoder)
 import Base.Network.Http exposing (..)
@@ -94,20 +94,23 @@ removePackage name msg =
 
 -- Users
 -----------------------------------------------------------------------------------
+userSearchParams : UserPage -> String
+userSearchParams page =
+  let
+    group = page.query.group
+  in
+    "?offset=" ++ (toString page.offset)
+               ++ (if not <| String.isEmpty group then "&groups=" ++ group else "")
+
 fetchUser : String -> (Result Http.Error User -> a) -> Cmd a
 fetchUser nickname msg =
   Http.send msg
     <| xget (Config.apiHost ++ "users/" ++ nickname) singleUserDecoder
 
-fetchUsers : (Result Http.Error (List User) -> a) -> Cmd a
-fetchUsers msg =
+fetchUsers : UserPage -> (Result Http.Error UserPage -> a) -> Cmd a
+fetchUsers page msg =
   Http.send msg
-    <| xget ( Config.apiHost ++ "users" ) usersDecoder
-
-fetchUsersByGroup : String -> (Result Http.Error (List User) -> a) -> Cmd a
-fetchUsersByGroup group msg =
-  Http.send msg
-    <| xget ( Config.apiHost ++ "users?groups=" ++ group ) usersDecoder
+    <| xget ( Config.apiHost ++ "users" ++ (userSearchParams page) ) usersPageDecoder
 
 saveUser : User -> String -> (Result Http.Error ApiResult -> a) -> Cmd a
 saveUser user oldNickname msg =

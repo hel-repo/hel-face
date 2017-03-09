@@ -165,6 +165,20 @@ checkSpelling =
     , ("ru", "Пожалуйста, проверьте правильность написания, или переформулируйте запрос.")
     ]
 
+prevPage : Dict String String
+prevPage =
+  fromList
+    [ ("en", "< Prev Page")
+    , ("ru", "< Предыдущая")
+    ]
+
+nextPage : Dict String String
+nextPage =
+  fromList
+    [ ("en", "Next Page >")
+    , ("ru", "Следующая >")
+    ]
+
 
 -- Profile
 ------------------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,10 @@ import UrlParser exposing (..)
 import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models.Network exposing (firstPage, customPage)
-import Base.Helpers.Search exposing (PackagePage, queryPkgAll, queryPkgByName, phraseToPackageQuery)
+import Base.Helpers.Search exposing
+  ( PackagePage, queryPkgAll, queryPkgByName, phraseToPackageQuery
+  , UserPage, queryUsrAll, queryUsrByGroup
+  )
 import Package.Messages as PMsg
 import User.Messages as UMsg
 
@@ -18,7 +21,7 @@ type Route
   | AuthRoute
   | RegisterRoute
   | ProfileRoute String
-  | UserListRoute String
+  | UserListRoute UserPage
   | UserEditRoute String
   | AboutRoute
   | NotFoundRoute
@@ -29,11 +32,11 @@ routeMessage route =
   case route of
     PackageRoute name -> [ PackageMsg <| PMsg.GoToPackageDetails name ]
     PackageEditRoute name -> [ PackageMsg <| PMsg.GoToPackageEdit name ]
-    PackageListRoute data -> [ PackageMsg <| PMsg.GoToPackageList data ]
+    PackageListRoute page -> [ PackageMsg <| PMsg.GoToPackageList page ]
     AuthRoute -> [ UserMsg <| UMsg.GoToAuth ]
     RegisterRoute -> [ UserMsg <| UMsg.GoToRegister ]
     ProfileRoute nickname -> [ UserMsg <| UMsg.GoToProfile nickname ]
-    UserListRoute group -> [ UserMsg <| UMsg.GoToUserList group ]
+    UserListRoute page -> [ UserMsg <| UMsg.GoToUserList page ]
     UserEditRoute nickname -> [ UserMsg <| UMsg.GoToUserEdit nickname ]
     AboutRoute -> [ UserMsg <| UMsg.GoToAbout ]
     _ -> []
@@ -46,6 +49,15 @@ parsePackages mQuery mPage =
     query = phraseToPackageQuery phrase
   in
     PackageListRoute <| customPage offset query
+
+parseUsers : Maybe String -> Maybe Int -> Route
+parseUsers mGroup mPage =
+  let
+    offset = (Maybe.withDefault 0 mPage) * Config.pageSize
+    group = Maybe.withDefault "" <| decodeUri <| Maybe.withDefault "" mGroup
+    query = if String.isEmpty group || group == "user" then queryUsrAll else queryUsrByGroup group
+  in
+    UserListRoute <| customPage offset query
 
 route : Parser (Route -> a) a
 route =
@@ -60,8 +72,8 @@ route =
     , map (ProfileRoute "") (s "profile")
     , map ProfileRoute (s "profile" </> string)
     , map ProfileRoute (s "user" </> string)
-    , map (UserListRoute "") (s "users")
-    , map UserListRoute (s "users" </> string)
+    , map parseUsers (s "users" <?> stringParam "group" <?> intParam "page")
+    , map (UserListRoute <| firstPage queryUsrAll) (s "users")
     , map (UserEditRoute "") (s "uedit")
     , map UserEditRoute (s "uedit" </> string)
     , map AuthRoute (s "auth")

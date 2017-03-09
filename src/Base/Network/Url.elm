@@ -39,11 +39,16 @@ user nickname = "#profile/" ++ nickname
 editUser : String -> String
 editUser nickname = "#uedit/" ++ nickname
 
-users : String
-users = "#users"
-
-usersByGroup : String -> String
-usersByGroup group = "#users/" ++ ( if group == "user" then "" else group )
+users : Maybe String -> Maybe Int -> String
+users group page =
+  let
+    g = prefixedWord "group=" (encodeUri <| Maybe.withDefault "" group)
+    p = case page of
+          Just number -> "page=" ++ (toString number)
+          Nothing -> ""
+    params = String.join "&" (List.filter (not << String.isEmpty) [g, p])
+  in
+    (if String.isEmpty params then "" else "?" ++ params) ++ "#users"
 
 about : String
 about = "#about"

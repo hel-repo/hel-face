@@ -3,6 +3,7 @@ module User.View.List exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 
+import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.Elevation as Elevation
@@ -12,6 +13,7 @@ import Material.Menu as Menu
 import Material.Options as Options exposing (cs, css)
 import Material.Spinner as Loading
 
+import Base.Config as Config
 import Base.Messages exposing (Msg(..))
 import Base.Models.User exposing (User)
 import Base.Network.Url as Url
@@ -23,7 +25,7 @@ import User.Models exposing (UserData)
 badge : String -> Html Msg
 badge group =
   Chip.button
-    [ Options.onClick <| Navigate <| Url.usersByGroup group
+    [ Options.onClick <| Navigate <| Url.users (Just group) Nothing
     , cs (if group == "admins" then "admin-badge" else "user-badge" )
     ]
     [ Chip.content []
@@ -65,7 +67,7 @@ notFoundCard : UserData -> Html Msg
 notFoundCard data =
   Card.view
     [ Elevation.e2 ]
-    [ Card.title [] [ Card.head [] [ text (L.get data.session.lang L.delete) ] ]
+    [ Card.title [] [ Card.head [] [ text (L.get data.session.lang L.nothingFound) ] ]
     , Card.text []
         [ div [] [ text (L.get data.session.lang L.noUsers) ]
         , div [] [ text (L.get data.session.lang L.checkSpelling) ]
@@ -80,5 +82,27 @@ view data =
       , cs "spinner"
       ]
   else
-    if List.isEmpty data.users then div [ class "page" ] [ notFoundCard data ]
-    else grid [] <| List.map2 (card data) (List.range 1 <| List.length data.users) data.users
+    if List.isEmpty data.page.list then div [ class "page" ] [ notFoundCard data ]
+    else div []
+      [ grid [] <| List.map2 (card data) (List.range 1 <| List.length data.page.list) data.page.list
+      , div [ class "more" ]
+          [ span []
+              [ if data.page.offset > 0 then
+                  Button.render Mdl [99] data.mdl
+                    [ Button.ripple
+                    , Options.onClick <| UserMsg UMsg.PreviousPage
+                    ]
+                    [ text (L.get data.session.lang L.prevPage) ]
+                else
+                  div [] []
+              , if (data.page.total - data.page.offset) > Config.pageSize then
+                  Button.render Mdl [100] data.mdl
+                    [ Button.ripple
+                    , Options.onClick <| UserMsg UMsg.NextPage
+                    ]
+                    [ text (L.get data.session.lang L.nextPage) ]
+                else
+                  div [] []
+              ]
+          ]
+      ]

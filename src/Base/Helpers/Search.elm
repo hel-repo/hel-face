@@ -3,12 +3,14 @@ module Base.Helpers.Search exposing (
   PackageQuery, PackagePage,
   queryPkgAll, queryPkgByAuthor, queryPkgByAuthors, queryPkgByName,
   queryPkgByOwner, queryPkgByOwners, queryPkgByTag, queryPkgByTags,
-  packageQueryToPhrase, phraseToPackageQuery)
+  packageQueryToPhrase, phraseToPackageQuery,
+  UserPage, queryUsrAll, queryUsrByGroup)
 
 import List
 import Combine exposing (..)
 
 import Base.Models.Package exposing (Package)
+import Base.Models.User exposing (User)
 import Base.Models.Network exposing (Page)
 
 
@@ -28,8 +30,6 @@ Each token can consist of several words, if written inside of quotes:
 `@"Some Author"`, `"two words"` etc.
 
  -}
-
-
 
 
 -- Query models
@@ -76,6 +76,17 @@ queryPkgByOwners query owners =
   { query | owners = List.append owners query.owners }
 
 type alias PackagePage = Page Package PackageQuery
+
+
+type alias UserQuery = { group : String }
+
+queryUsrAll : UserQuery
+queryUsrAll = { group = "" }
+
+queryUsrByGroup : String -> UserQuery
+queryUsrByGroup group = { group = group }
+
+type alias UserPage = Page User UserQuery
 
 
 -- Query to phrase

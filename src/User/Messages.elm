@@ -2,7 +2,7 @@ module User.Messages exposing (..)
 
 import Http exposing (Error)
 
-import Base.Helpers.Search exposing (PackagePage)
+import Base.Helpers.Search exposing (PackagePage, UserPage)
 import Base.Models.Network exposing (ApiResult)
 import Base.Models.User exposing (User)
 
@@ -17,8 +17,10 @@ type Msg
   | LoggedOut (Result Error ApiResult)
   | FetchUser Bool String
   | UserFetched Bool (Result Error User)
-  | FetchUsers String
-  | UsersFetched (Result Error (List User))
+  | FetchUsers UserPage
+  | UsersFetched (Result Error UserPage)
+  | NextPage
+  | PreviousPage
   | Register User
   | Registered (Result Error ApiResult)
   | SaveUser User
@@ -30,7 +32,7 @@ type Msg
   | GoToAuth
   | GoToRegister
   | GoToProfile String
-  | GoToUserList String
+  | GoToUserList UserPage
   | GoToUserEdit String
   | GoToAbout
   -- Other

@@ -2,7 +2,7 @@ module User.Models exposing (..)
 
 import Material
 
-import Base.Helpers.Search exposing (PackagePage, queryPkgAll)
+import Base.Helpers.Search exposing (PackagePage, queryPkgAll, UserPage, queryUsrAll)
 import Base.Models.Network exposing (firstPage)
 import Base.Models.User exposing (Session, emptySession, User, emptyUser)
 
@@ -12,9 +12,9 @@ type UIPage = Auth | Edit | Other
 type alias UserData =
   { mdl : Material.Model
   , session : Session
-  , page : UIPage               -- input selector
+  , uipage : UIPage             -- input selector
   , user : User                 -- auxiliary user model, used by profile / auth interfaces
-  , users : List User           -- auxiliary model for user list interface
+  , page : UserPage             -- auxiliary model for user list interface
   , groupTag : String           -- for user edit dialog
   , oldNickname : String        -- for user edit dialog
   , packages : PackagePage      -- list of user packages (for profile page)
@@ -26,9 +26,9 @@ emptyUserData : Material.Model -> UserData
 emptyUserData materialModel =
   { mdl = materialModel
   , session = emptySession
-  , page = Other
+  , uipage = Other
   , user = emptyUser
-  , users = []
+  , page = firstPage queryUsrAll
   , groupTag = ""
   , oldNickname = ""
   , packages = firstPage queryPkgAll
