@@ -1,7 +1,7 @@
 module Base.Config exposing (..)
 
 apiHost : String
-apiHost = "https://hel-roottree.rhcloud.com/"
+apiHost = "https://api.fomalhaut.me/"
 
 version : String
 version = "1.0.0-beta"
